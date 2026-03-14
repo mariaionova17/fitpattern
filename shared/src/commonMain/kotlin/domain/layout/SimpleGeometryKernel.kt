@@ -11,13 +11,14 @@ import kotlin.math.max
 import kotlin.math.min
 
 class SimpleGeometryKernel (private val eps: Double = 1e-9) : GeometryKernel {
-    override fun intersects(a: Polygon, b: Polygon): Boolean = polygonsIntersect(a, b)
-    override fun intersects(a: Shape, b: Shape): Boolean = shapesIntersect(a, b)
+    override fun intersects(a: Polygon, b: Polygon): Boolean = polygonsOverlapAllowTouch(a, b)
+    override fun intersects(a: Shape, b: Shape): Boolean = shapesOverlapAllowTouch(a, b)
     override fun contains(container: Polygon, subject: Polygon): Boolean = polygonContainsPolygon(container, subject)
     override fun contains(container: Shape, subject: Shape): Boolean = shapeContainsShape(container, subject)
 
     // Polygon-Polygon intersection
-    private fun polygonsIntersect(a: Polygon, b: Polygon): Boolean {
+    // polygon overlaps with another polygon -> true, just touches or doesn't interact -> false
+    private fun polygonsOverlapAllowTouch(a: Polygon, b: Polygon): Boolean {
         require(a.points.size >= 3) { "Polygon A must have >= 3 points" }
         require(b.points.size >= 3) { "Polygon B must have >= 3 points" }
 
@@ -25,52 +26,48 @@ class SimpleGeometryKernel (private val eps: Double = 1e-9) : GeometryKernel {
         if (anyEdgeIntersects(a, b))
             return true
 
-        // if the whole B is inside of A - check via one point
-        if (pointInPolygon(b.points[0], a))
+        // Check if the whole B is inside of A or if the whole A is inside of B
+        if (b.points.all { pointInPolygon(it, a, borderCountsAsInside = true) }) {
             return true
-        // if the whole A is inside of B - check via one point
-        if (pointInPolygon(a.points[0], b))
+        }
+        if (a.points.all { pointInPolygon(it, b, borderCountsAsInside = true) }) {
             return true
+        }
 
         return false
     }
 
     // Shape-Shape intersection
-    private fun shapesIntersect(a: Shape, b: Shape): Boolean {
-        if (!polygonsIntersect(a.contour, b.contour))
+    private fun shapesOverlapAllowTouch(a: Shape, b: Shape): Boolean {
+        if (!polygonsOverlapAllowTouch(a.contour, b.contour)) { // if polygons don't overlap -> shapes won't be
+            return false
+        }
+        // contours overlap (not touching)
+
+        // one polygon is inside other's hole
+        if (a.holes.any { hole -> b.contour.points.all { p -> pointInPolygon(p, hole, borderCountsAsInside = true) } })
+            return false
+        if (b.holes.any { hole -> a.contour.points.all { p -> pointInPolygon(p, hole, borderCountsAsInside = true) } })
             return false
 
-        // If any point of A contour is inside B shape -> intersection
-        if (a.contour.points.any {p -> pointInShape(p, b)})
-            return true
-        // If any point of B contour is inside A shape -> intersection
-        if (b.contour.points.any {p -> pointInShape(p, a)})
-            return true
-
-        if (anyEdgeIntersects(a.contour, b.contour))
-            return true
-
-        // Holes boundaries intersecting the other's filled area
-        for (h in a.holes) {
-            if (polygonsIntersect(h, b.contour) && h.points.any {p -> pointInShape(p, b)})
-                return true
-        }
-        for (h in b.holes) {
-            if (polygonsIntersect(h, a.contour) && h.points.any {p -> pointInShape(p, a)})
-                return true
-        }
-
-        return false
+        return true
     }
 
+    private fun pointStrictlyInShape(p: Point, shape: Shape): Boolean {
+        if (!pointInPolygon(p, shape.contour, borderCountsAsInside = false))
+            return false
+        if (shape.holes.any { hole -> pointInPolygon(p, hole, borderCountsAsInside = true) })
+            return false
+        return true
+    }
 
     private fun pointInPolygon(point: Point, polygon: Polygon, borderCountsAsInside: Boolean = false): Boolean {
         val points = polygon.points
         require(points.size >= 3) { "Polygon must have >= 3 points" }
 
         // Check if the point is on the boundary
-        if (borderCountsAsInside && isPointOnPolygonBoundary(point, polygon))
-            return true
+        if (isPointOnPolygonBoundary(point, polygon))
+            return borderCountsAsInside
 
         // if a ray from the point to the right crosses an uneven number of edges -> the point is inside, even -> outside
         var inside = false
@@ -102,8 +99,9 @@ class SimpleGeometryKernel (private val eps: Double = 1e-9) : GeometryKernel {
 
     private fun isPointOnPolygonBoundary(point: Point, polygon: Polygon): Boolean {
         for ((a, b) in polygon.edges()) {
-            if (isPointOnSegment(point, a, b))
+            if (isPointOnSegment(point, a, b)) {
                 return true
+            }
         }
         return false
     }
@@ -131,7 +129,7 @@ class SimpleGeometryKernel (private val eps: Double = 1e-9) : GeometryKernel {
             if (subject.contour.points.any { p -> pointInPolygon(p, hole, true) })
                 return false
             // subject's edges should not intersect a hole
-            if (anyEdgeIntersects(hole, subject.contour))
+            if (anyEdgeIntersectsOrTouching(hole, subject.contour))
                 return false
         }
         return true
@@ -151,8 +149,35 @@ class SimpleGeometryKernel (private val eps: Double = 1e-9) : GeometryKernel {
         return false
     }
 
+    private fun anyEdgeIntersectsOrTouching(a: Polygon, b: Polygon): Boolean {
+        if (!a.boundingBox().intersects(b.boundingBox()))
+            return false
+        val aEdges = a.edges()
+        val bEdges = b.edges()
+        for ((a1, a2) in aEdges) {
+            for ((b1, b2) in bEdges) {
+                if (segmentsIntersectOrTouching(a1, a2, b1, b2))
+                    return true
+            }
+        }
+        return false
+    }
 
     private fun segmentsIntersect(p1: Point, p2: Point, q1: Point, q2: Point): Boolean {
+        val o1 = orientation(p1, p2, q1)
+        val o2 = orientation(p1, p2, q2)
+        val o3 = orientation(q1, q2, p1)
+        val o4 = orientation(q1, q2, p2)
+
+
+        // segments have an intersection
+        val intersection =
+            ((o1 > eps && o2 < -eps) || (o1 < -eps && o2 > eps)) && ((o3 > eps && o4 < -eps) || (o3 < -eps && o4 > eps))
+
+        return intersection
+    }
+
+    private fun segmentsIntersectOrTouching(p1: Point, p2: Point, q1: Point, q2: Point): Boolean {
         val o1 = orientation(p1, p2, q1)
         val o2 = orientation(p1, p2, q2)
         val o3 = orientation(q1, q2, p1)

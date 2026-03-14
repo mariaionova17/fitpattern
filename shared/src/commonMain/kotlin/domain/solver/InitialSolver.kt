@@ -12,6 +12,7 @@ import domain.pattern.PatternPiece
 import domain.geometry.boundingBox
 import domain.geometry.contains
 import domain.geometry.intersects
+import domain.geometry.isOnTheBorderOf
 import domain.geometry.movedBy
 import domain.layout.LayoutScore
 import domain.layout.LayoutState
@@ -84,15 +85,17 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
                     val movedBoundingBox = orientedBoundingBox.movedBy(offset)
 
                     // if bb is not inside bb of the fabric
-                    if (!fabricBoundingBox.contains(movedBoundingBox))
+                    if (!fabricBoundingBox.contains(movedBoundingBox)) {
                         continue
+                    }
 
                     val placedShape = orientedShape.apply(Transformation(move = offset))
 
                     val placedBoundingBox = placedShape.contour.boundingBox()
 
-                    if (!geometry.contains(fabricShape, placedShape))
+                    if (!geometry.contains(fabricShape, placedShape)) {
                         continue
+                    }
 
                     var intersectsPlacedPiece = false
 
@@ -107,16 +110,21 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
                         }
                     }
 
-                    if (intersectsPlacedPiece)
+                    if (intersectsPlacedPiece) {
                         continue
+                    }
+                    val candidateScore = calculateCandidateScore(placedBoundingBox, placedBoundingBoxes, fabricBoundingBox)
 
-                    val candidateScore = calculateCandidateScore(placedBoundingBox, placedBoundingBoxes)
-                    if (bestPlacement != null && candidateScore >= bestPlacement.score)
+                    if (bestPlacement != null && candidateScore >= bestPlacement.score) {
                         continue
+                    }
 
                     val candidateTransformation = Transformation(offset, orientation, false)
                     val candidate = CandidatePlacement(candidateTransformation, placedShape,placedBoundingBox, candidateScore)
                     bestPlacement = candidate
+                    println("New BEST placement for piece ${piece.id}")
+                    println("Offset: $offset")
+                    println("Score: area=${candidateScore.area}, border=${candidateScore.isOnFabricBorder}")
                 }
             }
         }
@@ -130,9 +138,9 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
         val score: CandidateScore
     )
 
-    private class CandidateScore(val maxX: Double, val maxY: Double, val area: Double): Comparable<CandidateScore>{
+    private class CandidateScore(val area: Double, val maxY: Double, val maxX: Double, val isOnFabricBorder: Int): Comparable<CandidateScore>{
         override fun compareTo(other: CandidateScore): Int {
-            return compareValuesBy(this, other, {it.maxY}, {it.maxX}, {it.area})
+            return compareValuesBy(this, other, {it.area}, {it.isOnFabricBorder}, {it.maxY}, {it.maxX})
         }
     }
 
@@ -189,7 +197,7 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
         return (boundingBoxPoints + sampledContourPoints).distinctBy { shortenNumbers(it) }
     }
 
-    private fun calculateCandidateScore(candidateBoundingBox: BoundingBox, placedBoundingBoxes: List<BoundingBox>): CandidateScore{
+    private fun calculateCandidateScore(candidateBoundingBox: BoundingBox, placedBoundingBoxes: List<BoundingBox>, fabricBoundingBox: BoundingBox): CandidateScore{
         val allBoxes = placedBoundingBoxes + candidateBoundingBox
 
         val minX = allBoxes.minOf { it.minX }
@@ -201,10 +209,16 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
         val height = maxY - minY
         val BoundedArea = width * height
 
+        var isOnFabricBorder = 1
+
+        if (candidateBoundingBox.isOnTheBorderOf(fabricBoundingBox))
+            isOnFabricBorder = 0
+
         return CandidateScore(
+            area = BoundedArea,
             maxY = maxY,
             maxX = maxX,
-            area = BoundedArea
+            isOnFabricBorder = isOnFabricBorder
         )
     }
 

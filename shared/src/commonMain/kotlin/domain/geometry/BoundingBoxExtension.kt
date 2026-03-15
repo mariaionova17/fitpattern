@@ -13,11 +13,11 @@ fun BoundingBox.movedBy(offset: Point): BoundingBox =
         maxY = maxY + offset.y
     )
 
-fun BoundingBox.contains(other: BoundingBox): Boolean =
-    other.minX >= minX && other.maxX <= maxX && other.minY >= minY && other.maxY <= maxY
+fun BoundingBox.contains(other: BoundingBox, eps: Double = 1e-2): Boolean =
+    other.minX >= minX - eps && other.maxX <= maxX + eps && other.minY >= minY - eps && other.maxY <= maxY + eps
 
-fun BoundingBox.intersects(other: BoundingBox): Boolean =
-    !(other.minX > maxX || other.maxX < minX || other.minY > maxY || other.maxY < minY)
+fun BoundingBox.intersects(other: BoundingBox, eps: Double = 1e-2): Boolean =
+    other.minX <= maxX + eps && other.maxX >= minX - eps && other.minY <= maxY + eps && other.maxY >= minY - eps
 
 fun BoundingBox.isOnTheBorderOf(other: BoundingBox, eps: Double = 1e-6): Boolean =
     abs(other.minX - minX) <= eps || abs(other.maxX - maxX) <= eps ||

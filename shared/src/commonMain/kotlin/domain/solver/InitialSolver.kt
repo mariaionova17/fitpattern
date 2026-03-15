@@ -161,8 +161,8 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
     }
 
     //points are considered equal if they have less of a 0.1 difference
-    private fun shortenNumbers(point: Point, cutSize: Int = 10): Pair<Long,Long> =
-        Pair((point.x * cutSize).toLong(), (point.y * cutSize).toLong())
+    private fun shortenNumbers(point: Point, cutSize: Int = 100): Pair<Long,Long> =
+        Pair(kotlin.math.round(point.x * cutSize).toLong(), kotlin.math.round(point.y * cutSize).toLong())
 
     private fun calculateLayoutScore(boundingBoxes: List<BoundingBox>): LayoutScore{
         if (boundingBoxes.isEmpty()) return LayoutScore(0.0, 0.0)

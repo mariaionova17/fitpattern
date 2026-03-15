@@ -53,8 +53,8 @@ fun runTestSolver(): Pair<NestingProblem, NestingResult> {
     val pieces = listOf(
         PatternPiece("A", Shape(contour = Polygon(listOf(
             Point(0.0, 0.0),
-            Point(100.0, 0.0),
-            Point(50.0, 60.0)
+            Point(500.0, 0.0),
+            Point(250.0, 200.0)
         ))),PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0)))),
         PatternPiece("B", Shape(contour = Polygon(listOf(
             Point(0.0, 0.0),
@@ -62,6 +62,16 @@ fun runTestSolver(): Pair<NestingProblem, NestingResult> {
             Point(50.0, 60.0)
         ))),PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0)))),
         PatternPiece("C", Shape(contour = Polygon(listOf(
+            Point(0.0, 0.0),
+            Point(100.0, 0.0),
+            Point(50.0, 60.0)
+        ))),PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0)))),
+        PatternPiece("D", Shape(contour = Polygon(listOf(
+            Point(0.0, 0.0),
+            Point(100.0, 0.0),
+            Point(50.0, 60.0)
+        ))),PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0)))),
+        PatternPiece("E", Shape(contour = Polygon(listOf(
             Point(0.0, 0.0),
             Point(100.0, 0.0),
             Point(50.0, 60.0)

@@ -8,6 +8,26 @@ data class Transformation(
     val mirrorY: Boolean = false
 )
 fun Polygon.rotate(angle: Double): Polygon{
+    if (angle == 0.0)
+        return this
+    if (angle == 90.0) {
+        val pointsRotated = points.map { point ->
+            Point (x = -point.y, y = point.x)
+        }
+        return Polygon(pointsRotated)
+    }
+    if (angle == 180.0) {
+        val pointsRotated = points.map { point ->
+            Point (x = -point.x, y = -point.y)
+        }
+        return Polygon(pointsRotated)
+    }
+    if (angle == 270.0) {
+        val pointsRotated = points.map { point ->
+            Point (x = point.y, y = -point.x)
+        }
+        return Polygon(pointsRotated)
+    }
     val angleRadians = angle * PI / 180.0
     val cos = cos(angleRadians)
     val sin = sin(angleRadians)

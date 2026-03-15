@@ -10,7 +10,8 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class SimpleGeometryKernel (private val eps: Double = 1e-9) : GeometryKernel {
+//TODO fix approximation
+class SimpleGeometryKernel (private val eps: Double = 1e-2) : GeometryKernel {
     override fun intersects(a: Polygon, b: Polygon): Boolean = polygonsOverlapAllowTouch(a, b)
     override fun intersects(a: Shape, b: Shape): Boolean = shapesOverlapAllowTouch(a, b)
     override fun contains(container: Polygon, subject: Polygon): Boolean = polygonContainsPolygon(container, subject)
@@ -76,9 +77,19 @@ class SimpleGeometryKernel (private val eps: Double = 1e-9) : GeometryKernel {
             val edgeEnd = points[i]
             val edgeStart = points[j]
 
+            // if the edge is horizontal -> skip
+            val diff = edgeEnd.y - edgeStart.y
+            if (abs(diff) <= eps) {
+                j = i
+                continue
+            }
+
             val xIntersection = edgeEnd.x + (point.y - edgeEnd.y) * (edgeStart.x - edgeEnd.x) / (edgeStart.y - edgeEnd.y)
 
-            val intersectsRay = ((edgeEnd.y > point.y) != (edgeStart.y > point.y)) && (point.x < xIntersection)
+            if (abs(point.x - xIntersection) <= eps)
+                return borderCountsAsInside
+
+            val intersectsRay = ((edgeEnd.y > point.y + eps) != (edgeStart.y > point.y + eps)) && (point.x < xIntersection - eps)
 
             if (intersectsRay)
                 inside = !inside
@@ -183,8 +194,9 @@ class SimpleGeometryKernel (private val eps: Double = 1e-9) : GeometryKernel {
         val o3 = orientation(q1, q2, p1)
         val o4 = orientation(q1, q2, p2)
 
-        // segments have an intersection X
-        if (o1 * o2 < 0 && o3 * o4 < 0)
+        // segments have an intersection
+        if (((o1 > eps && o2 < -eps) || (o1 < -eps && o2 > eps)) &&
+            ((o3 > eps && o4 < -eps) || (o3 < -eps && o4 > eps)))
             return true
 
         // one point of the segment is on the other segment
@@ -205,7 +217,7 @@ class SimpleGeometryKernel (private val eps: Double = 1e-9) : GeometryKernel {
     }
     private fun isPointOnSegment(point: Point, a: Point, b: Point): Boolean {
         // point is not on the same line as segment
-        if (abs(orientation(a, b, point)) > eps)
+        if (abs(orientation(a, b, point)) > eps * 0.1)
             return false
         // point is on the same line as segment and is between ab ends
         return point.x <= max(a.x, b.x) + eps &&

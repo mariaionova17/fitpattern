@@ -39,9 +39,9 @@ fun runTestSolver(): Pair<NestingProblem, NestingResult> {
         )
 
     /*val pieces = listOf(
-        PatternPiece("A", rectangle(200.0, 150.0), PlacementRules(RotationRules(listOf(0.0, 90.0)))),
-        PatternPiece("B", rectangle(180.0, 120.0), PlacementRules(RotationRules(listOf(0.0, 90.0)))),
-        PatternPiece("C", rectangle(250.0, 200.0), PlacementRules(RotationRules(listOf(0.0, 90.0))))
+        PatternPiece("A", rectangle(100.0, 150.0), PlacementRules(RotationRules(listOf(0.0, 90.0)))),
+        PatternPiece("B", rectangle(150.0, 120.0), PlacementRules(RotationRules(listOf(0.0, 90.0)))),
+        PatternPiece("C", rectangle(400.0, 300.0), PlacementRules(RotationRules(listOf(0.0, 90.0))))
     )*/
 
     /*val pieces = listOf(
@@ -75,7 +75,11 @@ fun runTestSolver(): Pair<NestingProblem, NestingResult> {
             Point(0.0, 0.0),
             Point(100.0, 0.0),
             Point(50.0, 60.0)
-        ))),PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0))))
+        ))),PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0)))),
+        PatternPiece("G", rectangle(100.0, 150.0), PlacementRules(RotationRules(listOf(0.0, 90.0)))),
+        PatternPiece("H", rectangle(150.0, 120.0), PlacementRules(RotationRules(listOf(0.0, 90.0)))),
+        PatternPiece("K", rectangle(40.0, 300.0), PlacementRules(RotationRules(listOf(0.0, 90.0))))
+
     )
 
     val problem = NestingProblem(

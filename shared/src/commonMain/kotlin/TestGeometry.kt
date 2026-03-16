@@ -34,6 +34,12 @@ fun testGeometry(){
         Point(10.0, 100.0),
         Point(0.0, 100.0)))
 
+    val square5 = Polygon(listOf(
+        Point(50.0, 0.0),
+        Point(150.0, 0.0),
+        Point(150.0, 100.0),
+        Point(50.0, 100.0)))
+
     val tri = Polygon(listOf(
         Point(0.0, 0.0),
         Point(100.0, 0.0),
@@ -58,40 +64,45 @@ fun testGeometry(){
     if (geometry.intersects(square, square2))
         println("Yes, need No")
     else
-        println("No, need No")
+        println("+No, need No")
 
     if (geometry.intersects(square2, square3))
         println("Yes, need No")
     else
-        println("No, need No")
+        println("+No, need No")
 
     if (geometry.intersects(square, square3))
         println("Yes, need No")
     else
-        println("No, need No")
+        println("+No, need No")
 
     if (geometry.intersects(square, square0))
-        println("Yes, need Yes")
+        println("+Yes, need Yes")
     else
         println("No, need Yes")
 
     if (geometry.intersects(square, square4))
-        println("Yes, need Yes")
+        println("+Yes, need Yes")
+    else
+        println("No, need Yes")
+
+    if (geometry.intersects(square, square5))
+        println("+Yes, need Yes")
     else
         println("No, need Yes")
 
     if (geometry.intersects(tri, tri2))
         println("Yes, need No")
     else
-        println("No, need No")
+        println("+No, need No")
 
     if (geometry.intersects(tri, tri3))
         println("Yes, need No")
     else
-        println("No, need No")
+        println("+No, need No")
 
     if (geometry.intersects(tri, tri4))
-        println("Yes, need Yes")
+        println("+Yes, need Yes")
     else
         println("No, need Yes")
 }

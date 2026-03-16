@@ -11,9 +11,11 @@ import domain.layout.GeometryKernel
 import domain.pattern.PatternPiece
 import domain.geometry.boundingBox
 import domain.geometry.contains
+import domain.geometry.edges
 import domain.geometry.intersects
 import domain.geometry.isOnTheBorderOf
 import domain.geometry.movedBy
+import domain.geometry.setSeamAllowance
 import domain.layout.LayoutScore
 import domain.layout.LayoutState
 import domain.layout.Placement
@@ -26,11 +28,18 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
         val start = TimeSource.Monotonic.markNow()
         require (problem.fabrics.isNotEmpty()){"No fabric pieces"}
 
-        //FOR ONE FABRIC PIECE ONLY
+        //TODO - now FOR ONE FABRIC PIECE ONLY
         val fabricShape = problem.fabrics.first().contour
         val fabricBoundingBox = problem.fabrics.first().contour.boundingBox()
 
-        val orderedPatternPieces = orderPatternPieces(problem.pieces)
+        // TODO integrate seam allowance
+        val orderedPatternPieces = orderPatternPieces(
+            problem.pieces.map { piece ->
+                piece.copy(
+                    shape = piece.shape.setSeamAllowance(0.0)
+                )
+            }
+        )
         val placedShapes = mutableListOf<Shape>()
         val placedBoundingBoxes = mutableListOf<BoundingBox>()
         val placedPlacements = mutableListOf<Placement>()
@@ -148,11 +157,22 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
         val result = mutableListOf<Point>()
 
         result += fabricShape.contour.points
-        val fabricBoundingBox = fabricShape.contour.boundingBox()
-        result += Point(fabricBoundingBox.minX, fabricBoundingBox.minY)
-        result += Point(fabricBoundingBox.minX, fabricBoundingBox.maxY)
-        result += Point(fabricBoundingBox.maxX, fabricBoundingBox.minY)
-        result += Point(fabricBoundingBox.maxX, fabricBoundingBox.maxY)
+        result += fabricShape.contour.edges().flatMap { (a, b) ->
+            listOf(
+                Point(
+                    x = a.x + (b.x - a.x) * 0.25,
+                    y = a.y + (b.y - a.y) * 0.25
+                ),
+                Point(
+                    x = a.x + (b.x - a.x) * 0.5,
+                    y = a.y + (b.y - a.y) * 0.5
+                ),
+                Point(
+                    x = a.x + (b.x - a.x) * 0.75,
+                    y = a.y + (b.y - a.y) * 0.75
+                )
+            )
+        }
 
         for (shape in placedShapes)
             result += shape.contour.points

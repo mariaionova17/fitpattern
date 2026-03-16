@@ -10,7 +10,6 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-//TODO fix approximation
 class SimpleGeometryKernel (private val eps: Double = 1e-2) : GeometryKernel {
     override fun intersects(a: Polygon, b: Polygon): Boolean = polygonsOverlapAllowTouch(a, b)
     override fun intersects(a: Shape, b: Shape): Boolean = shapesOverlapAllowTouch(a, b)
@@ -32,6 +31,19 @@ class SimpleGeometryKernel (private val eps: Double = 1e-2) : GeometryKernel {
             return true
         }
         if (a.points.all { pointInPolygon(it, b, borderCountsAsInside = true) }) {
+            return true
+        }
+
+        // Check if any edge midpoint is inside the other polygon
+        if (b.edges().any { (p1, p2) ->
+                pointInPolygon(midpoint(p1, p2), a, borderCountsAsInside = false)
+            }) {
+            return true
+        }
+
+        if (a.edges().any { (p1, p2) ->
+                pointInPolygon(midpoint(p1, p2), b, borderCountsAsInside = false)
+            }) {
             return true
         }
 
@@ -85,9 +97,6 @@ class SimpleGeometryKernel (private val eps: Double = 1e-2) : GeometryKernel {
             }
 
             val xIntersection = edgeEnd.x + (point.y - edgeEnd.y) * (edgeStart.x - edgeEnd.x) / (edgeStart.y - edgeEnd.y)
-
-            if (abs(point.x - xIntersection) <= eps)
-                return borderCountsAsInside
 
             val intersectsRay = ((edgeEnd.y > point.y + eps) != (edgeStart.y > point.y + eps)) && (point.x < xIntersection - eps)
 
@@ -226,3 +235,9 @@ class SimpleGeometryKernel (private val eps: Double = 1e-2) : GeometryKernel {
                 point.y >= min(a.y, b.y) - eps
     }
 }
+
+private fun midpoint(a: Point, b: Point): Point =
+    Point(
+        x = (a.x + b.x) / 2.0,
+        y = (a.y + b.y) / 2.0
+    )

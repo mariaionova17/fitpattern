@@ -33,3 +33,14 @@ fun Polygon.area(): Double {  // shoelace theorem
     }
     return abs(sum) / 2.0
 }
+
+fun Polygon.signedArea(): Double {  // shoelace theorem
+    require(points.size >= 3)
+    var sum = 0.0
+    for (i in points.indices) {
+        val a = points[i]
+        val b = points[(i + 1) % points.size]
+        sum += a.x * b.y - b.x * a.y
+    }
+    return sum / 2.0
+}

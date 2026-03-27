@@ -1,16 +1,14 @@
 package cz.cvut.fit.bp.imageRecognition
 
 import android.graphics.Bitmap
+import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
-fun drawPolygonOverlay(
-    bitmap: Bitmap,
-    polygon: List<CvPoint>
-): Bitmap {
+fun drawPolygonOverlay(bitmap: Bitmap, polygon: List<CvPoint>): Bitmap {
     val src = Mat()
     Utils.bitmapToMat(bitmap, src)
 

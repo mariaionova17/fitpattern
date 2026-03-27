@@ -1,4 +1,4 @@
-package cz.cvut.fit.bp.imageRecognition.markerDetection
+package cz.cvut.fit.bp.imageRecognition
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio
@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
 import domain.geometry.Polygon
 import domain.geometry.Point
 
@@ -44,7 +43,6 @@ fun ResultPolygonPreview(
         fun mapPoint(point: Point): Offset {
             val x = padding + ((point.x - minX) * scale).toFloat()
 
-            // flip Y for nicer mathematical view: bottom-left origin visually
             val y = size.height - padding - ((point.y - minY) * scale).toFloat()
 
             return Offset(x, y)

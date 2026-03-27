@@ -1,4 +1,4 @@
-package cz.cvut.fit.bp.imageRecognition
+package cz.cvut.fit.bp.imageRecognition.polygonDetection
 
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
@@ -15,7 +15,8 @@ fun extractLargestPolygon(mask: Mat, imageWidth: Int, imageHeight: Int): List<Cv
         Imgproc.CHAIN_APPROX_SIMPLE
     )
 
-    if (contours.isEmpty()) return null
+    if (contours.isEmpty())
+        return null
 
     val imageArea = imageWidth * imageHeight.toDouble()
 
@@ -24,14 +25,15 @@ fun extractLargestPolygon(mask: Mat, imageWidth: Int, imageHeight: Int): List<Cv
 
     for (contour in contours) {
         val area = Imgproc.contourArea(contour)
-        if (area <= imageArea * 0.01) continue
+        if (area <= imageArea * 0.01)   // ignore noise
+            continue
 
-        val rect = Imgproc.boundingRect(contour)
+        val imageContour = Imgproc.boundingRect(contour)
 
-        val touchesLeft = rect.x <= 3
-        val touchesTop = rect.y <= 3
-        val touchesRight = rect.x + rect.width >= imageWidth - 3
-        val touchesBottom = rect.y + rect.height >= imageHeight - 3
+        val touchesLeft = imageContour.x <= 3
+        val touchesTop = imageContour.y <= 3
+        val touchesRight = imageContour.x + imageContour.width >= imageWidth - 3
+        val touchesBottom = imageContour.y + imageContour.height >= imageHeight - 3
 
         val touchedSides = listOf(
             touchesLeft,
@@ -40,31 +42,33 @@ fun extractLargestPolygon(mask: Mat, imageWidth: Int, imageHeight: Int): List<Cv
             touchesBottom
         ).count { it }
 
-        // Reject contours that behave like image frame/background border
-        if (touchedSides >= 2) continue
+        // Reject contours that behave like image border or background
+        if (touchedSides >= 2)
+            continue
 
         val originalContour = contour.toArray().map { CvPoint(it.x, it.y) }
 
         val contour2f = MatOfPoint2f(*contour.toArray())
         val perimeter = Imgproc.arcLength(contour2f, true)
 
+        // simplify contour
         val approx = MatOfPoint2f()
         Imgproc.approxPolyDP(contour2f, approx, 0.015 * perimeter, true)
 
         val initialPolygon = approx.toArray().map { CvPoint(it.x, it.y) }
 
-        val refinedPolygon = refinePolygonAdaptively(
+        val smoothedPolygon = smoothPolygon(
             originalContour = originalContour,
             initialPolygon = initialPolygon,
             maxErrorPx = 10.0,
-            maxVertices = 22
+            maxVertices = 22   //TODO decide how many
         )
 
-        val score = scorePolygon(refinedPolygon, imageWidth, imageHeight)
+        val score = scorePolygon(smoothedPolygon, imageWidth, imageHeight)
 
         if (score > bestScore) {
             bestScore = score
-            bestPolygon = refinedPolygon
+            bestPolygon = smoothedPolygon
         }
     }
 

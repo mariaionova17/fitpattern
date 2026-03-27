@@ -1,13 +1,14 @@
 package cz.cvut.fit.bp.imageRecognition.markerDetection
 
-import cz.cvut.fit.bp.imageRecognition.CvPoint
-import cz.cvut.fit.bp.imageRecognition.distance
+import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
+import cz.cvut.fit.bp.imageRecognition.polygonDetection.distance
 import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 
+//TODO add grain direction
 fun computeA4Homography(marker: Marker): Mat {
     val topWidth = distance(marker.topLeft, marker.topRight)
     val rightHeight = distance(marker.topRight, marker.bottomRight)

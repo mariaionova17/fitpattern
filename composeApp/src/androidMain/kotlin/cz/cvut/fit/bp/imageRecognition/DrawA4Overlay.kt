@@ -1,6 +1,7 @@
-package cz.cvut.fit.bp.imageRecognition.markerDetection
+package cz.cvut.fit.bp.imageRecognition
 
 import android.graphics.Bitmap
+import cz.cvut.fit.bp.imageRecognition.markerDetection.Marker
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.Point

@@ -1,8 +1,8 @@
-package cz.cvut.fit.bp.imageRecognition
+package cz.cvut.fit.bp.imageRecognition.polygonDetection
 
 import android.graphics.Bitmap
 
-data class DualPolarityResult(
+data class BestMaskResult(
     val darkCandidate: MaskCandidate?,
     val lightCandidate: MaskCandidate?,
     val bestCandidate: MaskCandidate?
@@ -14,7 +14,7 @@ data class MaskCandidate(
     val score: Double
 )
 
-fun detectBestPolygon(bitmap: Bitmap): DualPolarityResult {
+fun detectBestPolygon(bitmap: Bitmap): BestMaskResult {
     val masks = generateDarkAndLightMasks(bitmap)
 
     val darkPolygon = extractLargestPolygon(
@@ -48,7 +48,7 @@ fun detectBestPolygon(bitmap: Bitmap): DualPolarityResult {
     val best = listOfNotNull(darkCandidate, lightCandidate)
         .maxByOrNull { it.score }
 
-    return DualPolarityResult(
+    return BestMaskResult(
         darkCandidate = darkCandidate,
         lightCandidate = lightCandidate,
         bestCandidate = best

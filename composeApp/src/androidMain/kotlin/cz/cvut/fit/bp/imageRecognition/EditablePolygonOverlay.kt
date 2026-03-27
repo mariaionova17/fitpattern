@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
+import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import kotlin.math.hypot
 
 @Composable

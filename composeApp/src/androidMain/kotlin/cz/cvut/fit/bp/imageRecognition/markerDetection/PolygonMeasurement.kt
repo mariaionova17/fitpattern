@@ -1,6 +1,6 @@
 package cz.cvut.fit.bp.imageRecognition.markerDetection
 
-import cz.cvut.fit.bp.imageRecognition.CvPoint
+import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import kotlin.math.abs
 
 data class PolygonMeasurement(
@@ -9,6 +9,8 @@ data class PolygonMeasurement(
     val areaMm2: Double
 )
 
+//test function
+//TODO delete it
 fun measurePolygonInMm(rectifiedPolygon: List<CvPoint>): PolygonMeasurement {
     if (rectifiedPolygon.isEmpty()) {
         return PolygonMeasurement(0.0, 0.0, 0.0)

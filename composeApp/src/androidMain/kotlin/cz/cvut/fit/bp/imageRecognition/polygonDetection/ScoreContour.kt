@@ -1,10 +1,11 @@
-package cz.cvut.fit.bp.imageRecognition
+package cz.cvut.fit.bp.imageRecognition.polygonDetection
 
 import kotlin.math.abs
-import kotlin.math.sqrt
 
+// function scores polygon approximation of a shape
 fun scorePolygon(points: List<CvPoint>, imageWidth: Int, imageHeight: Int): Double {
-    if (points.size < 3) return Double.NEGATIVE_INFINITY
+    if (points.size < 3)
+        return Double.NEGATIVE_INFINITY
 
     val area = polygonArea(points)
     val perimeter = polygonPerimeter(points)
@@ -17,6 +18,7 @@ fun scorePolygon(points: List<CvPoint>, imageWidth: Int, imageHeight: Int): Doub
     val bboxWidth = maxX - minX
     val bboxHeight = maxY - minY
 
+    // if the polygon is closer than 8 pixels to the border, penalty is added for each side near the border
     val touchesBorderPenalty =
         listOf(minX, minY, imageWidth - maxX, imageHeight - maxY)
             .count { it < 8.0 } * 50000.0
@@ -24,6 +26,7 @@ fun scorePolygon(points: List<CvPoint>, imageWidth: Int, imageHeight: Int): Doub
     val tooManyPointsPenalty = if (points.size > 24) 10000.0 else 0.0
     val tooFewPointsPenalty = if (points.size < 4) 15000.0 else 0.0
 
+    // to avoid messy shapes with small area
     val compactnessPenalty =
         if (area > 0.0) (perimeter * perimeter / area) * 40.0 else 100000.0
 
@@ -53,9 +56,7 @@ private fun polygonPerimeter(points: List<CvPoint>): Double {
     for (i in points.indices) {
         val p1 = points[i]
         val p2 = points[(i + 1) % points.size]
-        val dx = p1.x - p2.x
-        val dy = p1.y - p2.y
-        sum += sqrt(dx * dx + dy * dy)
+        sum += distance(p1, p2)
     }
     return sum
 }

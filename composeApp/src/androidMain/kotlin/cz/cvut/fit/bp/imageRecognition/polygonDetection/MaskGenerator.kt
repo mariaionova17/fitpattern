@@ -1,4 +1,4 @@
-package cz.cvut.fit.bp.imageRecognition
+package cz.cvut.fit.bp.imageRecognition.polygonDetection
 
 import android.graphics.Bitmap
 import org.opencv.android.Utils

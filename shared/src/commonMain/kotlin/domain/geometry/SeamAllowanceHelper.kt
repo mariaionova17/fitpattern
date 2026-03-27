@@ -1,7 +1,7 @@
 package domain.geometry
 
 import kotlin.math.abs
-import kotlin.math.hypot
+import kotlin.math.sqrt
 
 fun Shape.setSeamAllowance(distance: Double): Shape{
     if (distance == 0.0)
@@ -12,7 +12,7 @@ fun Shape.setSeamAllowance(distance: Double): Shape{
 private fun shiftEdge(a: Point, b: Point, distance: Double, clockWisePolygon: Boolean): Pair<Point, Point> {
     val directionX = b.x - a.x
     val directionY = b.y - a.y
-    val length = hypot(directionX, directionY)  // sqrt(x^2 + y^2)
+    val length = sqrt(directionX * directionX + directionY * directionY)
 
     val normalizedX = directionX / length
     val normalizedY = directionY / length

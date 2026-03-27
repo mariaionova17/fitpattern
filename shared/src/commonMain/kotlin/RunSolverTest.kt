@@ -2,6 +2,7 @@ import domain.fabric.Fabric
 import domain.geometry.Point
 import domain.geometry.Polygon
 import domain.geometry.Shape
+import domain.geometry.setSeamAllowance
 import domain.layout.GeometryKernel
 import domain.layout.SimpleGeometryKernel
 import domain.pattern.PatternPiece
@@ -12,16 +13,21 @@ import domain.solver.NestingProblem
 import domain.solver.NestingResult
 
 fun runTestSolver(): Pair<NestingProblem, NestingResult> {
+
+
     val geometry: GeometryKernel = SimpleGeometryKernel()
 
     val fabric = Fabric(
         contour = Shape(
             contour = Polygon(
                 listOf(
-                    Point(0.0, 0.0),
-                    Point(1000.0, 0.0),
-                    Point(500.0, 600.0)
-                )
+                    Point(20.0, 50.0),
+                    Point(600.0, 0.0),
+                    Point(500.0, 600.0),
+                    Point(700.0, 800.0),
+                    Point(200.0, 500.0),
+
+                    )
             )
         )
     )
@@ -81,6 +87,11 @@ fun runTestSolver(): Pair<NestingProblem, NestingResult> {
         PatternPiece("K", rectangle(40.0, 300.0), PlacementRules(RotationRules(listOf(0.0, 90.0))))
 
     )
+    println("Original:")
+    pieces.first().shape.contour.points.forEach { println(it) }
+
+    println("Seam:")
+    pieces.first().shape.setSeamAllowance(10.0).contour.points.forEach { println(it) }
 
     val problem = NestingProblem(
         fabrics = listOf(fabric),

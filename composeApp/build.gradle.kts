@@ -96,6 +96,9 @@ android {
 dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
+dependencies {
+    implementation("org.opencv:opencv:4.9.0")
+}
 
 compose.desktop {
     application {

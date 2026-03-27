@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import domain.geometry.Shape
 import domain.geometry.apply
 import domain.geometry.boundingBox
+import domain.geometry.setSeamAllowance
 import domain.pattern.PatternPiece
 
 
@@ -23,8 +24,10 @@ import domain.pattern.PatternPiece
 fun LayoutPreview(
     fabric: Shape,
     piecesById: Map<String, PatternPiece>,
+    piecesByIdSeamAllowance: Map<String, PatternPiece>,
     placements: List<Placement>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    seamAllowance: Double = 10.0
 ) {
     Canvas(modifier = modifier) {
         val fabricBox = fabric.contour.boundingBox()
@@ -66,11 +69,20 @@ fun LayoutPreview(
 
         // draw placed pieces
         placements.forEach { placement ->
-            val piece = piecesById[placement.pieceId] ?: return@forEach
-            val placedShape = piece.shape.apply(placement.transformation)
+            val originalPiece = piecesById[placement.pieceId] ?: return@forEach
+            val seamPiece = piecesByIdSeamAllowance[placement.pieceId] ?: return@forEach
+
+            val placedOriginal = originalPiece.shape.apply(placement.transformation)
+            val placedSeam = seamPiece.shape.apply(placement.transformation)
 
             drawPath(
-                path = polygonPath(placedShape.contour),
+                path = polygonPath(placedSeam.contour),
+                color = Color.Red,
+                style = Stroke(width = 1.5f)
+            )
+
+            drawPath(
+                path = polygonPath(placedOriginal.contour),
                 color = Color.Blue,
                 style = Stroke(width = 2f)
             )

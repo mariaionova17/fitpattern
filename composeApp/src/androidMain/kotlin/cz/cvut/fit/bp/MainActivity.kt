@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import cz.cvut.fit.bp.imageRecognition.OpenCvTestScreen
+import domain.geometry.setSeamAllowance
 import runTestSolver
 import testGeometry
 
@@ -17,10 +19,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        testGeometry()
+        System.loadLibrary("opencv_java4")
+
+        //testGeometry()
 
         setContent {
-            SolverPreviewScreen()
+            OpenCvTestScreen()
+            //SolverPreviewScreen()
         }
     }
 }
@@ -30,9 +35,18 @@ fun SolverPreviewScreen() {
     val (problem, result) = runTestSolver()
     val piecesById = problem.pieces.associateBy { it.id }
 
+    val seamAllowance = 10.0
+
+    val piecesByIdSeamAllowance = problem.pieces
+        .map { piece ->
+            piece.copy(shape = piece.shape.setSeamAllowance(seamAllowance))
+        }
+        .associateBy { it.id }
+
     LayoutPreview(
         fabric = problem.fabrics.first().contour,
         piecesById = piecesById,
+        piecesByIdSeamAllowance = piecesByIdSeamAllowance,
         placements = result.bestLayout.placed,
         modifier = Modifier
             .fillMaxWidth()

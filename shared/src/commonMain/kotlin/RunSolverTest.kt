@@ -8,6 +8,7 @@ import domain.layout.SimpleGeometryKernel
 import domain.pattern.PatternPiece
 import domain.pattern.PlacementRules
 import domain.pattern.RotationRules
+import domain.project.Project
 import domain.solver.InitialSolver
 import domain.solver.NestingProblem
 import domain.solver.NestingResult
@@ -17,7 +18,7 @@ fun runTestSolver(): Pair<NestingProblem, NestingResult> {
 
     val geometry: GeometryKernel = SimpleGeometryKernel()
 
-    val fabric = Fabric(
+    val fabric = Fabric("1",
         contour = Shape(
             contour = Polygon(
                 listOf(
@@ -61,30 +62,30 @@ fun runTestSolver(): Pair<NestingProblem, NestingResult> {
             Point(0.0, 0.0),
             Point(500.0, 0.0),
             Point(250.0, 200.0)
-        ))),PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0)))),
+        )))),
         PatternPiece("B", Shape(contour = Polygon(listOf(
             Point(0.0, 0.0),
             Point(100.0, 0.0),
             Point(50.0, 60.0)
-        ))),PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0)))),
+        )))),
         PatternPiece("C", Shape(contour = Polygon(listOf(
             Point(0.0, 0.0),
             Point(100.0, 0.0),
             Point(50.0, 60.0)
-        ))),PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0)))),
+        )))),
         PatternPiece("D", Shape(contour = Polygon(listOf(
             Point(0.0, 0.0),
             Point(100.0, 0.0),
             Point(50.0, 60.0)
-        ))),PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0)))),
+        )))),
         PatternPiece("E", Shape(contour = Polygon(listOf(
             Point(0.0, 0.0),
             Point(100.0, 0.0),
             Point(50.0, 60.0)
-        ))),PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0)))),
-        PatternPiece("G", rectangle(100.0, 150.0), PlacementRules(RotationRules(listOf(0.0, 90.0)))),
-        PatternPiece("H", rectangle(150.0, 120.0), PlacementRules(RotationRules(listOf(0.0, 90.0)))),
-        PatternPiece("K", rectangle(40.0, 300.0), PlacementRules(RotationRules(listOf(0.0, 90.0))))
+        )))),
+        PatternPiece("G", rectangle(100.0, 150.0)),
+        PatternPiece("H", rectangle(150.0, 120.0)),
+        PatternPiece("K", rectangle(40.0, 300.0))
 
     )
     println("Original:")
@@ -94,7 +95,7 @@ fun runTestSolver(): Pair<NestingProblem, NestingResult> {
     pieces.first().shape.setSeamAllowance(10.0).contour.points.forEach { println(it) }
 
     val problem = NestingProblem(
-        fabrics = listOf(fabric),
+        Project(name = "Project", fabrics = listOf(fabric), PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0))), seamAllowance = 5.0),
         pieces = pieces
     )
 

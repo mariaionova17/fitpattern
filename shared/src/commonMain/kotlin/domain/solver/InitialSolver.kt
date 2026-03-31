@@ -1,5 +1,6 @@
 package domain.solver
 
+import domain.fabric.Fabric
 import domain.geometry.BoundingBox
 import domain.geometry.Point
 import domain.geometry.Polygon
@@ -19,6 +20,7 @@ import domain.geometry.setSeamAllowance
 import domain.layout.LayoutScore
 import domain.layout.LayoutState
 import domain.layout.Placement
+import domain.pattern.PlacementRules
 import kotlin.math.max
 import kotlin.time.TimeSource
 
@@ -26,17 +28,17 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
 
     override fun solve(problem: NestingProblem): NestingResult{
         val start = TimeSource.Monotonic.markNow()
-        require (problem.fabrics.isNotEmpty()){"No fabric pieces"}
+        require (problem.project.fabrics.isNotEmpty()){"No fabric pieces"}
 
         //TODO - now FOR ONE FABRIC PIECE ONLY
-        val fabricShape = problem.fabrics.first().contour
-        val fabricBoundingBox = problem.fabrics.first().contour.boundingBox()
+        val fabric = problem.project.fabrics.first()
+        val fabricBoundingBox = problem.project.fabrics.first().contour.boundingBox()
 
         // TODO integrate seam allowance
         val orderedPatternPieces = orderPatternPieces(
             problem.pieces.map { piece ->
                 piece.copy(
-                    shape = piece.shape.setSeamAllowance(0.0)
+                    shape = piece.shape.setSeamAllowance(problem.project.seamAllowance)
                 )
             }
         )
@@ -46,7 +48,7 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
         val notPlaced = mutableListOf<String>()
 
         for (piece in orderedPatternPieces){
-            val candidatePlacement = findBestPlacement(piece, fabricShape, fabricBoundingBox, placedShapes, placedBoundingBoxes)
+            val candidatePlacement = findBestPlacement(piece, fabric, problem.project.rules, fabricBoundingBox, placedShapes, placedBoundingBoxes)
 
             if (candidatePlacement != null){
                 placedPlacements += Placement(piece.id, candidatePlacement.transformation)
@@ -68,12 +70,12 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
     }
 
     //NO MIRROR, JUST DEGREES DIFFERENCE
-    private fun findBestPlacement(piece: PatternPiece, fabricShape: Shape, fabricBoundingBox: BoundingBox, placedShapes: List<Shape>, placedBoundingBoxes: List<BoundingBox>): CandidatePlacement?{
+    private fun findBestPlacement(piece: PatternPiece, fabric: Fabric, rules: PlacementRules, fabricBoundingBox: BoundingBox, placedShapes: List<Shape>, placedBoundingBoxes: List<BoundingBox>): CandidatePlacement?{
 
-        val targetPoints = getTargetPoints(fabricShape, placedShapes)
+        val targetPoints = getTargetPoints(fabric.contour, placedShapes)
         var bestPlacement: CandidatePlacement? = null
 
-        for (orientation in  piece.rules.rotation.allowedAnglesDeg){
+        for (orientation in  rules.rotation.allowedAnglesDeg){
             val orientedShape = piece.shape.apply(
                 Transformation(
                     move = Point(0.0, 0.0),
@@ -102,7 +104,7 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
 
                     val placedBoundingBox = placedShape.contour.boundingBox()
 
-                    if (!geometry.contains(fabricShape, placedShape)) {
+                    if (!geometry.contains(fabric.contour, placedShape)) {
                         continue
                     }
 

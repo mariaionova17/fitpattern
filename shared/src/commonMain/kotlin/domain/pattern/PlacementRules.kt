@@ -12,7 +12,5 @@ enum class GrainConstraint {
 
 data class PlacementRules(
     val rotation: RotationRules = RotationRules(),
-    val allowMirror: Boolean = false,
-    val grainConstraint: GrainConstraint = GrainConstraint.ANY,
-    val spacing: Double = 0.0
+    val allowMirror: Boolean = false
 )

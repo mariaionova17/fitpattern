@@ -1,0 +1,59 @@
+package cz.cvut.fit.bp.projectCreation
+
+import domain.fabric.Fabric
+import domain.geometry.Point
+import domain.geometry.Polygon
+import domain.geometry.Shape
+import domain.pattern.PlacementRules
+import domain.pattern.RotationRules
+import domain.project.Project
+import java.util.UUID
+
+fun UiRotationOption.toRotationRules(): RotationRules {
+    val result = when (this){
+        UiRotationOption.NONE -> listOf(0.0)
+        UiRotationOption.BY180 -> listOf(0.0, 180.0)
+        UiRotationOption.BY90 -> listOf(0.0, 90.0, 180.0, 270.0)
+        UiRotationOption.ANY -> listOf(0.0, 90.0, 180.0, 270.0)   //TODO solve this
+    }
+    return RotationRules(result)
+}
+
+fun ProjectCreationUiState.toPlacementRules(): PlacementRules{
+    return PlacementRules(rotationOption.toRotationRules(), allowMirror)
+}
+
+fun FabricDraft.toManualFabric(): Fabric{
+    val width = widthMm.toDoubleOrNull() ?: error("Invalid width")
+    val length = lengthMm.toDoubleOrNull() ?: error("Invalid length")
+
+    require(width > 0) { "Width must be greater than 0" }
+    require(length > 0) { "Length must be greater than 0" }
+
+    val polygon = Polygon(listOf(
+        Point(0.0, 0.0),
+        Point(width, 0.0),
+        Point(width, length),
+        Point(0.0, length)
+    ))
+
+    return Fabric(UUID.randomUUID().toString(), Shape(polygon))
+}
+
+fun FabricDraft.toImageFabric(): Fabric{
+    val contour = editedContour ?: detectedContour ?: error("No contour available for image fabric")
+    return Fabric(UUID.randomUUID().toString(), Shape(Polygon(contour)))
+}
+
+fun ProjectCreationUiState.toProject(): Project{
+    val seamAllowanceValue = when {
+        seamAllowance.isBlank() -> 0.0
+        seamAllowance.toDoubleOrNull() != null -> seamAllowance.toDouble()
+        else -> error("Seam allowance must be a valid number")
+    }
+    return Project(projectName,
+        addedFabrics,
+        toPlacementRules(),
+        seamAllowanceValue)
+}
+

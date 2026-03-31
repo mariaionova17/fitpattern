@@ -10,7 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cz.cvut.fit.bp.imageRecognition.OpenCvTestScreen
+import cz.cvut.fit.bp.projectCreation.ProjectCreationScreen
+import cz.cvut.fit.bp.projectCreation.ProjectCreationViewModel
+import cz.cvut.fit.bp.ui.theme.BpTheme
 import domain.geometry.setSeamAllowance
 import runTestSolver
 import testGeometry
@@ -19,15 +23,39 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        System.loadLibrary("opencv_java4")
+        //TODO enable
+        //System.loadLibrary("opencv_java4")
 
         //testGeometry()
 
         setContent {
-            OpenCvTestScreen()
-            //SolverPreviewScreen()
+            BpTheme {
+                //OpenCvTestScreen()
+                //SolverPreviewScreen()
+                val viewModel: ProjectCreationViewModel = viewModel()
+                val state = viewModel.uiState
+
+                ProjectCreationScreen(
+                    state = state,
+                    onProjectNameChanged = viewModel::onProjectNameChanged,
+                    onSeamAllowanceChanged = viewModel::onSeamAllowanceChanged,
+                    onRotationChanged = viewModel::onRotationChanged,
+                    onAllowMirrorChanged = viewModel::onAllowMirrorChanged,
+                    onFabricModeChanged = viewModel::onFabricModeChanged,
+                    onFabricWidthChanged = viewModel::onFabricWidthChanged,
+                    onFabricLengthChanged = viewModel::onFabricLengthChanged,
+                    onAddFabricClicked = viewModel::addCurrentFabric,
+                    onNextClicked = {
+                        val project = viewModel.buildProject()
+                        if (project != null) {
+                            println(project)
+                        }
+                    }
+                )
+            }
         }
     }
+
 }
 
 @Composable
@@ -44,7 +72,7 @@ fun SolverPreviewScreen() {
         .associateBy { it.id }
 
     LayoutPreview(
-        fabric = problem.fabrics.first().contour,
+        fabric = problem.project.fabrics.first().contour,
         piecesById = piecesById,
         piecesByIdSeamAllowance = piecesByIdSeamAllowance,
         placements = result.bestLayout.placed,

@@ -9,7 +9,8 @@ data class ProjectCreationUiState(
     val allowMirror: Boolean = false,
     val currentFabric: FabricDraft = FabricDraft(),
     val addedFabrics: List<Fabric> = emptyList(),
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isManualDialogOpen: Boolean = false
 )
 
 enum class UiRotationOption{

@@ -18,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -54,7 +55,11 @@ fun ProjectCreationScreen(
     onFabricWidthChanged: (String) -> Unit,
     onFabricLengthChanged: (String) -> Unit,
     onAddFabricClicked: () -> Unit,
-    onNextClicked: () -> Unit
+    onNextClicked: () -> Unit,
+    onManualDialogDismiss: () -> Unit,
+    onManualDialogConfirm: () -> Unit,
+    onOpenManualDialogue: () -> Unit,
+
 ) {
     val scrollState = rememberScrollState()
 
@@ -91,35 +96,8 @@ fun ProjectCreationScreen(
                 .padding(horizontal = 40.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Text(
-                    text = "Name:",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
 
-                OutlinedTextField(
-                    value = state.projectName,
-                    onValueChange = onProjectNameChanged,
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    shape = RoundedCornerShape(15.dp),
-                    placeholder = {
-                        Text(
-                            text = "New project",
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-
-                        )
-
-                )
-            }
+            TextInput("Name:", state.projectName, onProjectNameChanged, "New project")
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -135,7 +113,7 @@ fun ProjectCreationScreen(
                 FabricModeCard(
                     label = "Manually",
                     selected = state.currentFabric.inputMode == FabricInputMode.MANUAL,
-                    onClick = { onFabricModeChanged(FabricInputMode.MANUAL) },
+                    onClick = onOpenManualDialogue,
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(
@@ -161,54 +139,32 @@ fun ProjectCreationScreen(
                 }
             }
 
-            if (state.currentFabric.inputMode == FabricInputMode.MANUAL) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Text(
-                        text = "Fabric width (mm)",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+            if (state.isManualDialogOpen) {
+                AlertDialog(
+                    onDismissRequest = { onManualDialogDismiss() },
+                    text = {
+                        Column(
+                            /*modifier = Modifier
+                                .background(MaterialTheme.colorScheme.background),*/
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ){
+                            TextInput("Fabric width (mm):", state.currentFabric.widthMm, onFabricWidthChanged)
+                            TextInput("Fabric length (mm):", state.currentFabric.lengthMm, onFabricLengthChanged)
 
-                    OutlinedTextField(
-                        value = state.currentFabric.widthMm,
-                        onValueChange = onFabricWidthChanged,
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        shape = RoundedCornerShape(15.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.surface,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-
-                            )
-
-                    )
-                }
-
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Text(
-                        text = "Fabric length (mm)",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-
-                    OutlinedTextField(
-                        value = state.currentFabric.lengthMm,
-                        onValueChange = onFabricLengthChanged,
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        shape = RoundedCornerShape(15.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.surface,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-
-                            )
-
-                    )
-                }
+                        }
+                    },
+                    confirmButton = {
+                        Button(onClick = onManualDialogConfirm) {
+                            Text("Add fabric")
+                        }
+                    },
+                    dismissButton = {
+                        Button(onClick = onManualDialogDismiss) {
+                            Text("Cancel")
+                        }
+                    },
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             }
 
             if (state.currentFabric.inputMode == FabricInputMode.IMAGE) {
@@ -240,7 +196,7 @@ fun ProjectCreationScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text("Are rotations allowed?", color = MaterialTheme.colorScheme.onBackground)
+            Text("Are pattern rotations allowed?", color = MaterialTheme.colorScheme.onBackground)
 
             RotationOption(
                 label = "No",
@@ -267,31 +223,7 @@ fun ProjectCreationScreen(
                 onClick = { onRotationChanged(UiRotationOption.ANY) }
             )
 
-            Text(
-                text = "Seam allowance (mm):",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            OutlinedTextField(
-                value = state.seamAllowance,
-                onValueChange = onSeamAllowanceChanged,
-                singleLine = true,
-                shape = RoundedCornerShape(15.dp),
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = {
-                    Text(
-                        text = "0",
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                    )
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-
-                    )
-            )
+            TextInput("Seam allowance (mm):", state.seamAllowance, onSeamAllowanceChanged, "0")
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -300,7 +232,7 @@ fun ProjectCreationScreen(
                     checked = state.allowMirror,
                     onCheckedChange = onAllowMirrorChanged
                 )
-                Text("Allow mirror", color = MaterialTheme.colorScheme.onBackground)
+                Text("Allow pattern mirroring", color = MaterialTheme.colorScheme.onBackground)
             }
 
             Button(
@@ -374,4 +306,38 @@ private fun FabricModeCard(
             )
         }
     }
+}
+
+@Composable
+private fun TextInput(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String = ""
+) {
+    Text(
+        text = label,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onBackground
+    )
+
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        singleLine = true,
+        shape = RoundedCornerShape(15.dp),
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = {
+            Text(
+                text = placeholder,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            )
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+
+            )
+    )
 }

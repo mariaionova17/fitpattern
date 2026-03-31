@@ -50,7 +50,10 @@ class MainActivity : ComponentActivity() {
                         if (project != null) {
                             println(project)
                         }
-                    }
+                    },
+                    onManualDialogDismiss = viewModel::closeManualDialog,
+                    onManualDialogConfirm = viewModel::confirmManualDialog,
+                    onOpenManualDialogue = viewModel::openManualDialog
                 )
             }
         }

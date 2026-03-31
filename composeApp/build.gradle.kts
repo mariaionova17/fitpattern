@@ -98,6 +98,7 @@ dependencies {
 }
 dependencies {
     implementation("org.opencv:opencv:4.9.0")
+    implementation("androidx.navigation:navigation-compose:2.8.0")
 }
 
 compose.desktop {

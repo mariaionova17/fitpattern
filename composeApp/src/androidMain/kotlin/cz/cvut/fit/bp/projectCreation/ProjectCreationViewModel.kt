@@ -44,6 +44,34 @@ class ProjectCreationViewModel : ViewModel() {
         )
     }
 
+    fun openManualDialog() {
+        uiState = uiState.copy(
+            isManualDialogOpen = true,
+            currentFabric = uiState.currentFabric.copy(inputMode = FabricInputMode.MANUAL)
+        )
+    }
+
+    fun closeManualDialog() {
+        uiState = uiState.copy(isManualDialogOpen = false)
+    }
+
+    fun confirmManualDialog() {
+        try {
+            val fabric = uiState.currentFabric.toManualFabric()
+
+            uiState = uiState.copy(
+                addedFabrics = uiState.addedFabrics + fabric,
+                currentFabric = FabricDraft(),
+                isManualDialogOpen = false,
+                errorMessage = null
+            )
+        } catch (e: Exception) {
+            uiState = uiState.copy(
+                errorMessage = e.message
+            )
+        }
+    }
+
     fun addCurrentFabric() {
         try {
             val fabric = when (uiState.currentFabric.inputMode) {

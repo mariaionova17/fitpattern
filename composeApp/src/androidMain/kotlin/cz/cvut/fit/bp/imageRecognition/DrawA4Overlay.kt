@@ -1,3 +1,4 @@
+
 package cz.cvut.fit.bp.imageRecognition
 
 import android.graphics.Bitmap

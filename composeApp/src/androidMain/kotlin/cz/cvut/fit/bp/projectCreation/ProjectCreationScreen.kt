@@ -54,12 +54,13 @@ fun ProjectCreationScreen(
     onFabricModeChanged: (FabricInputMode) -> Unit,
     onFabricWidthChanged: (String) -> Unit,
     onFabricLengthChanged: (String) -> Unit,
+    onWarpChanged: (Boolean) -> Unit,
     onAddFabricClicked: () -> Unit,
     onNextClicked: () -> Unit,
     onManualDialogDismiss: () -> Unit,
     onManualDialogConfirm: () -> Unit,
     onOpenManualDialogue: () -> Unit,
-
+    onOpenImagePick: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
@@ -97,7 +98,7 @@ fun ProjectCreationScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
-            TextInput("Name:", state.projectName, onProjectNameChanged, "New project")
+            TextInput("Name:", state.projectName, onProjectNameChanged, false, "New project")
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -127,7 +128,7 @@ fun ProjectCreationScreen(
                 FabricModeCard(
                     label = "Add an image",
                     selected = state.currentFabric.inputMode == FabricInputMode.IMAGE,
-                    onClick = { onFabricModeChanged(FabricInputMode.IMAGE) },
+                    onClick = onOpenImagePick,
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(
@@ -151,7 +152,17 @@ fun ProjectCreationScreen(
                             TextInput("Fabric width (mm):", state.currentFabric.widthMm, onFabricWidthChanged)
                             TextInput("Fabric length (mm):", state.currentFabric.lengthMm, onFabricLengthChanged)
 
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(
+                                    checked = state.currentFabric.warpAlongWidth,
+                                    onCheckedChange = onWarpChanged
+                                )
+                                Text("Warp is along fabric's width", color = MaterialTheme.colorScheme.onBackground)
+                            }
                         }
+                        //TODO warp is along the width
                     },
                     confirmButton = {
                         Button(onClick = onManualDialogConfirm) {
@@ -165,17 +176,6 @@ fun ProjectCreationScreen(
                     },
                     containerColor = MaterialTheme.colorScheme.background
                 )
-            }
-
-            if (state.currentFabric.inputMode == FabricInputMode.IMAGE) {
-                Text("Image mode selected. Image picking can be added next.")
-            }
-
-            Button(
-                onClick = onAddFabricClicked,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Add fabric")
             }
 
             Text(
@@ -223,7 +223,7 @@ fun ProjectCreationScreen(
                 onClick = { onRotationChanged(UiRotationOption.ANY) }
             )
 
-            TextInput("Seam allowance (mm):", state.seamAllowance, onSeamAllowanceChanged, "0")
+            TextInput("Seam allowance (mm):", state.seamAllowance, onSeamAllowanceChanged, true, "0")
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -313,6 +313,7 @@ private fun TextInput(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
+    onlyNumbers: Boolean = true,
     placeholder: String = ""
 ) {
     Text(
@@ -333,7 +334,7 @@ private fun TextInput(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
             )
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        keyboardOptions = if (onlyNumbers) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions.Default,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = MaterialTheme.colorScheme.surface,
             unfocusedContainerColor = MaterialTheme.colorScheme.surface,

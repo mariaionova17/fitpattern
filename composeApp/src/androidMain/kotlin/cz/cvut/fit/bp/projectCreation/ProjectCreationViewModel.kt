@@ -4,7 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import domain.project.Project
+import kotlin.plus
 
 class ProjectCreationViewModel : ViewModel() {
     var uiState by mutableStateOf(ProjectCreationUiState())
@@ -41,6 +43,12 @@ class ProjectCreationViewModel : ViewModel() {
     fun onFabricLengthChanged(value: String) {
         uiState = uiState.copy(
             currentFabric = uiState.currentFabric.copy(lengthMm = value)
+        )
+    }
+
+    fun onWarpChanged(value: Boolean) {
+        uiState = uiState.copy(
+            currentFabric = uiState.currentFabric.copy(warpAlongWidth = value)
         )
     }
 
@@ -103,4 +111,114 @@ class ProjectCreationViewModel : ViewModel() {
             null
         }
     }
+
+    fun startImageMode() {
+        uiState = uiState.copy(
+            currentFabric = FabricDraft(inputMode = FabricInputMode.IMAGE),
+            errorMessage = null
+        )
+    }
+
+    fun setImageUri(uri: String) {
+        uiState = uiState.copy(
+            currentFabric = uiState.currentFabric.copy(
+                inputMode = FabricInputMode.IMAGE,
+                imageUri = uri,
+                detectedContour = null,
+                editedContour = null,
+                errorMessage = null
+            )
+        )
+    }
+
+    fun runContourDetection() {
+        val uri = uiState.currentFabric.imageUri ?: return
+
+        uiState = uiState.copy(
+            currentFabric = uiState.currentFabric.copy(isDetectingContour = true),
+            errorMessage = null
+        )
+
+        try {
+            // TODO: replace with real recognition result
+            val fakeContour = listOf(
+                domain.geometry.Point(0.0, 0.0),
+                domain.geometry.Point(100.0, 0.0),
+                domain.geometry.Point(100.0, 80.0),
+                domain.geometry.Point(0.0, 80.0)
+            )
+
+            uiState = uiState.copy(
+                currentFabric = uiState.currentFabric.copy(
+                    isDetectingContour = false,
+                    detectedContour = fakeContour
+                )
+            )
+        } catch (e: Exception) {
+            uiState = uiState.copy(
+                currentFabric = uiState.currentFabric.copy(isDetectingContour = false),
+                errorMessage = e.message
+            )
+        }
+    }
+
+    fun confirmImageFabric() {
+        try {
+            val fabric = uiState.currentFabric.toImageFabric()
+
+            uiState = uiState.copy(
+                addedFabrics = uiState.addedFabrics + fabric,
+                currentFabric = FabricDraft(),
+                errorMessage = null
+            )
+        } catch (e: Exception) {
+            uiState = uiState.copy(
+                errorMessage = e.message
+            )
+        }
+    }
+
+
+
+    fun setResourceImage(name: String) {
+        uiState = uiState.copy(
+            currentFabric = uiState.currentFabric.copy(
+                inputMode = FabricInputMode.IMAGE,
+                imageUri = null,
+                resourceImageName = name,
+                detectedContour = null,
+                editedContour = null,
+                errorMessage = null
+            )
+        )
+    }
+
+    fun clearImageDraft() {
+        uiState = uiState.copy(
+            currentFabric = FabricDraft(),
+            errorMessage = null
+        )
+    }
+
+    fun addImageFabricFromCvContour(contour: List<CvPoint>) {
+        try {
+            val domainContour = contour.toDomainPoints()
+
+            val fabric = FabricDraft(
+                inputMode = FabricInputMode.IMAGE,
+                editedContour = domainContour
+            ).toImageFabric()
+
+            uiState = uiState.copy(
+                addedFabrics = uiState.addedFabrics + fabric,
+                currentFabric = FabricDraft(),
+                errorMessage = null
+            )
+        } catch (e: Exception) {
+            uiState = uiState.copy(
+                errorMessage = e.message
+            )
+        }
+    }
 }
+

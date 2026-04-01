@@ -11,7 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import cz.cvut.fit.bp.imageRecognition.OpenCvTestScreen
+import cz.cvut.fit.bp.navigation.AppRoutes
+import cz.cvut.fit.bp.projectCreation.ImageFabricScreen
+import cz.cvut.fit.bp.projectCreation.ImagePickScreen
 import cz.cvut.fit.bp.projectCreation.ProjectCreationScreen
 import cz.cvut.fit.bp.projectCreation.ProjectCreationViewModel
 import cz.cvut.fit.bp.ui.theme.BpTheme
@@ -24,7 +30,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         //TODO enable
-        //System.loadLibrary("opencv_java4")
+        System.loadLibrary("opencv_java4")
 
         //testGeometry()
 
@@ -32,29 +38,7 @@ class MainActivity : ComponentActivity() {
             BpTheme {
                 //OpenCvTestScreen()
                 //SolverPreviewScreen()
-                val viewModel: ProjectCreationViewModel = viewModel()
-                val state = viewModel.uiState
-
-                ProjectCreationScreen(
-                    state = state,
-                    onProjectNameChanged = viewModel::onProjectNameChanged,
-                    onSeamAllowanceChanged = viewModel::onSeamAllowanceChanged,
-                    onRotationChanged = viewModel::onRotationChanged,
-                    onAllowMirrorChanged = viewModel::onAllowMirrorChanged,
-                    onFabricModeChanged = viewModel::onFabricModeChanged,
-                    onFabricWidthChanged = viewModel::onFabricWidthChanged,
-                    onFabricLengthChanged = viewModel::onFabricLengthChanged,
-                    onAddFabricClicked = viewModel::addCurrentFabric,
-                    onNextClicked = {
-                        val project = viewModel.buildProject()
-                        if (project != null) {
-                            println(project)
-                        }
-                    },
-                    onManualDialogDismiss = viewModel::closeManualDialog,
-                    onManualDialogConfirm = viewModel::confirmManualDialog,
-                    onOpenManualDialogue = viewModel::openManualDialog
-                )
+                AppNav()
             }
         }
     }
@@ -89,4 +73,67 @@ fun SolverPreviewScreen() {
 @Composable
 fun AppAndroidPreview() {
     SolverPreviewScreen()
+}
+
+@Composable
+fun AppNav() {
+    val navController = rememberNavController()
+    val viewModel: ProjectCreationViewModel = viewModel()
+
+    NavHost(
+        navController = navController,
+        startDestination = AppRoutes.ProjectCreation
+    ) {
+        composable(AppRoutes.ProjectCreation) {
+            val state = viewModel.uiState
+
+            ProjectCreationScreen(
+                state = state,
+                onProjectNameChanged = viewModel::onProjectNameChanged,
+                onSeamAllowanceChanged = viewModel::onSeamAllowanceChanged,
+                onRotationChanged = viewModel::onRotationChanged,
+                onAllowMirrorChanged = viewModel::onAllowMirrorChanged,
+                onFabricModeChanged = viewModel::onFabricModeChanged,
+                onFabricWidthChanged = viewModel::onFabricWidthChanged,
+                onWarpChanged = viewModel::onWarpChanged,
+                onFabricLengthChanged = viewModel::onFabricLengthChanged,
+                onAddFabricClicked = viewModel::addCurrentFabric,
+                onNextClicked = {
+                    val project = viewModel.buildProject()
+                    if (project != null) {
+                        println(project)
+                    }
+                },
+                onManualDialogDismiss = viewModel::closeManualDialog,
+                onManualDialogConfirm = viewModel::confirmManualDialog,
+                onOpenManualDialogue = viewModel::openManualDialog,
+                onOpenImagePick = {
+                    viewModel.startImageMode()
+                    navController.navigate(AppRoutes.ImagePick)
+                }
+            )
+        }
+
+        composable(AppRoutes.ImagePick) {
+            ImagePickScreen(
+                onBack = { navController.popBackStack() },
+                onPickTestImage = { imageName ->
+                    viewModel.setResourceImage(imageName)
+                    navController.navigate(AppRoutes.ImageFabric)
+                }
+            )
+        }
+
+        composable(AppRoutes.ImageFabric) {
+            val state = viewModel.uiState
+
+            ImageFabricScreen(
+                state = state,
+                onBack = { navController.popBackStack() },
+                onConfirmContour = { contour ->
+                    viewModel.addImageFabricFromCvContour(contour)
+                }
+            )
+        }
+    }
 }

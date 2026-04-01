@@ -1,5 +1,6 @@
 package cz.cvut.fit.bp.projectCreation
 
+import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import domain.fabric.Fabric
 import domain.geometry.Point
 import domain.geometry.Polygon
@@ -24,11 +25,17 @@ fun ProjectCreationUiState.toPlacementRules(): PlacementRules{
 }
 
 fun FabricDraft.toManualFabric(): Fabric{
-    val width = widthMm.toDoubleOrNull() ?: error("Invalid width")
-    val length = lengthMm.toDoubleOrNull() ?: error("Invalid length")
+    var width = widthMm.toDoubleOrNull() ?: error("Invalid width")
+    var length = lengthMm.toDoubleOrNull() ?: error("Invalid length")
 
     require(width > 0) { "Width must be greater than 0" }
     require(length > 0) { "Length must be greater than 0" }
+
+    if (warpAlongWidth) {  // so warp is always along y
+        val i = length
+        length = width
+        width = i
+    }
 
     val polygon = Polygon(listOf(
         Point(0.0, 0.0),
@@ -57,3 +64,8 @@ fun ProjectCreationUiState.toProject(): Project{
         seamAllowanceValue)
 }
 
+fun List<CvPoint>.toDomainPoints(): List<Point> {
+    return map { cvPoint ->
+        Point(cvPoint.x, cvPoint.y)
+    }
+}

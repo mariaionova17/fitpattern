@@ -2,6 +2,7 @@ package cz.cvut.fit.bp.imageRecognition.markerDetection
 import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import domain.geometry.Point
 import domain.geometry.Polygon
+import domain.geometry.rotate
 import org.opencv.core.Mat
 
 // convert polygon from image coordinates to mm coordinates
@@ -36,4 +37,10 @@ fun normalizePolygonToBottomLeft(polygon: Polygon): Polygon {
             )
         }
     )
+}
+
+fun alignPolygonWarpToVertical(polygon: Polygon, warpAngleFromVertical: Double): Polygon {
+    val rotated = polygon.rotate(warpAngleFromVertical)
+
+    return normalizePolygonToBottomLeft(rotated)
 }

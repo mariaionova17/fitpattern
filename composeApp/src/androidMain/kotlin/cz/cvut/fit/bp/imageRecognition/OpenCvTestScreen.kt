@@ -1,8 +1,11 @@
 package cz.cvut.fit.bp.imageRecognition
 
 import android.graphics.Bitmap
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +16,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -181,6 +186,76 @@ fun OpenCvTestScreen() {
                 polygon = resultPolygon!!,
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+    }
+}
+
+@Composable
+fun FinalPolygonPreview(
+    polygon: Polygon,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.background(Color.White)
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            if (polygon.points.isEmpty()) return@Canvas
+
+            val minX = polygon.points.minOf { it.x }
+            val maxX = polygon.points.maxOf { it.x }
+            val minY = polygon.points.minOf { it.y }
+            val maxY = polygon.points.maxOf { it.y }
+
+            val polygonWidth = (maxX - minX).coerceAtLeast(1.0)
+            val polygonHeight = (maxY - minY).coerceAtLeast(1.0)
+
+            val padding = 32f
+
+            val availableWidth = size.width - 2 * padding
+            val availableHeight = size.height - 2 * padding
+
+            val scale = minOf(
+                availableWidth / polygonWidth.toFloat(),
+                availableHeight / polygonHeight.toFloat()
+            )
+
+            val drawnWidth = polygonWidth.toFloat() * scale
+            val drawnHeight = polygonHeight.toFloat() * scale
+
+            val offsetX = (size.width - drawnWidth) / 2f
+            val offsetY = (size.height - drawnHeight) / 2f
+
+            fun toCanvas(pointX: Double, pointY: Double): Offset {
+                val localX = (pointX - minX).toFloat() * scale
+                val localY = (pointY - minY).toFloat() * scale
+
+                return Offset(
+                    x = offsetX + localX,
+                    y = offsetY + localY
+                )
+            }
+
+            val screenPoints = polygon.points.map { toCanvas(it.x, it.y) }
+
+            for (i in screenPoints.indices) {
+                val p1 = screenPoints[i]
+                val p2 = screenPoints[(i + 1) % screenPoints.size]
+
+                drawLine(
+                    color = Color.Blue,
+                    start = p1,
+                    end = p2,
+                    strokeWidth = 4f
+                )
+            }
+
+            screenPoints.forEachIndexed { index, point ->
+                drawCircle(
+                    color = if (index == 0) Color.Magenta else Color.Red,
+                    radius = 8f,
+                    center = point
+                )
+            }
         }
     }
 }

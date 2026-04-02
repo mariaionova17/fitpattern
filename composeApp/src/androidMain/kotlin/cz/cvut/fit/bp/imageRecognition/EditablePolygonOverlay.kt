@@ -17,7 +17,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
-import kotlin.math.hypot
 
 @Composable
 fun EditablePolygonOverlay(
@@ -29,6 +28,8 @@ fun EditablePolygonOverlay(
     var containerSize by remember { mutableStateOf(IntSize.Zero) }
     var activePointIndex by remember { mutableStateOf<Int?>(null) }
 
+    val currentPolygon by rememberUpdatedState(polygon)
+
     val imageWidth = bitmap.width.toFloat()
     val imageHeight = bitmap.height.toFloat()
     val aspectRatio = imageWidth / imageHeight
@@ -38,17 +39,17 @@ fun EditablePolygonOverlay(
             .fillMaxWidth()
             .aspectRatio(aspectRatio)
             .onSizeChanged { containerSize = it }
-            .pointerInput(polygon, containerSize) {
+            .pointerInput(containerSize) {
                 detectDragGestures(
                     onDragStart = { touchOffset ->
                         activePointIndex = findNearestVertexOnScreen(
                             touch = touchOffset,
-                            polygon = polygon,
+                            polygon = currentPolygon,
                             imageWidth = imageWidth,
                             imageHeight = imageHeight,
                             containerWidth = containerSize.width.toFloat(),
                             containerHeight = containerSize.height.toFloat(),
-                            maxDistancePx = 40f
+                            maxDistancePx = 60f
                         )
                     },
                     onDragEnd = {
@@ -58,6 +59,8 @@ fun EditablePolygonOverlay(
                         activePointIndex = null
                     },
                     onDrag = { change, _ ->
+                        change.consume()
+
                         val index = activePointIndex ?: return@detectDragGestures
 
                         val imagePoint = screenToImage(
@@ -68,11 +71,12 @@ fun EditablePolygonOverlay(
                             containerHeight = containerSize.height.toFloat()
                         )
 
-                        val updated = polygon.toMutableList()
+                        val updated = currentPolygon.toMutableList()
                         updated[index] = CvPoint(
                             x = imagePoint.x.toDouble(),
                             y = imagePoint.y.toDouble()
                         )
+
                         onPolygonChange(updated)
                     }
                 )
@@ -112,83 +116,10 @@ fun EditablePolygonOverlay(
             screenPoints.forEachIndexed { index, point ->
                 drawCircle(
                     color = if (index == activePointIndex) Color.Yellow else Color.Red,
-                    radius = 10f,
+                    radius = 12f,
                     center = point
                 )
             }
         }
     }
-}
-
-private fun imageToScreen(
-    image: Offset,
-    imageWidth: Float,
-    imageHeight: Float,
-    containerWidth: Float,
-    containerHeight: Float
-): Offset {
-    val scale = minOf(containerWidth / imageWidth, containerHeight / imageHeight)
-    val drawnWidth = imageWidth * scale
-    val drawnHeight = imageHeight * scale
-    val offsetX = (containerWidth - drawnWidth) / 2f
-    val offsetY = (containerHeight - drawnHeight) / 2f
-
-    return Offset(
-        x = offsetX + image.x * scale,
-        y = offsetY + image.y * scale
-    )
-}
-
-private fun screenToImage(
-    screen: Offset,
-    imageWidth: Float,
-    imageHeight: Float,
-    containerWidth: Float,
-    containerHeight: Float
-): Offset {
-    val scale = minOf(containerWidth / imageWidth, containerHeight / imageHeight)
-    val drawnWidth = imageWidth * scale
-    val drawnHeight = imageHeight * scale
-    val offsetX = (containerWidth - drawnWidth) / 2f
-    val offsetY = (containerHeight - drawnHeight) / 2f
-
-    val x = ((screen.x - offsetX) / scale).coerceIn(0f, imageWidth)
-    val y = ((screen.y - offsetY) / scale).coerceIn(0f, imageHeight)
-
-    return Offset(x, y)
-}
-
-private fun findNearestVertexOnScreen(
-    touch: Offset,
-    polygon: List<CvPoint>,
-    imageWidth: Float,
-    imageHeight: Float,
-    containerWidth: Float,
-    containerHeight: Float,
-    maxDistancePx: Float
-): Int? {
-    var bestIndex: Int? = null
-    var bestDistance = Float.MAX_VALUE
-
-    polygon.forEachIndexed { index, point ->
-        val screenPoint = imageToScreen(
-            image = Offset(point.x.toFloat(), point.y.toFloat()),
-            imageWidth = imageWidth,
-            imageHeight = imageHeight,
-            containerWidth = containerWidth,
-            containerHeight = containerHeight
-        )
-
-        val d = hypot(
-            touch.x - screenPoint.x,
-            touch.y - screenPoint.y
-        )
-
-        if (d < bestDistance && d <= maxDistancePx) {
-            bestDistance = d
-            bestIndex = index
-        }
-    }
-
-    return bestIndex
 }

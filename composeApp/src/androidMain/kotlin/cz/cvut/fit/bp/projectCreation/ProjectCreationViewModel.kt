@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import cz.cvut.fit.bp.imageRecognition.markerDetection.Marker
 import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import domain.project.Project
 import kotlin.plus
@@ -111,7 +112,6 @@ class ProjectCreationViewModel : ViewModel() {
             null
         }
     }
-
     fun startImageMode() {
         uiState = uiState.copy(
             currentFabric = FabricDraft(inputMode = FabricInputMode.IMAGE),
@@ -127,42 +127,13 @@ class ProjectCreationViewModel : ViewModel() {
                 detectedContour = null,
                 editedContour = null,
                 errorMessage = null
-            )
-        )
-    }
-
-    fun runContourDetection() {
-        val uri = uiState.currentFabric.imageUri ?: return
-
-        uiState = uiState.copy(
-            currentFabric = uiState.currentFabric.copy(isDetectingContour = true),
+            ),
+            currentImageStep = FabricImageStep.EDIT_CONTOUR,
             errorMessage = null
         )
-
-        try {
-            // TODO: replace with real recognition result
-            val fakeContour = listOf(
-                domain.geometry.Point(0.0, 0.0),
-                domain.geometry.Point(100.0, 0.0),
-                domain.geometry.Point(100.0, 80.0),
-                domain.geometry.Point(0.0, 80.0)
-            )
-
-            uiState = uiState.copy(
-                currentFabric = uiState.currentFabric.copy(
-                    isDetectingContour = false,
-                    detectedContour = fakeContour
-                )
-            )
-        } catch (e: Exception) {
-            uiState = uiState.copy(
-                currentFabric = uiState.currentFabric.copy(isDetectingContour = false),
-                errorMessage = e.message
-            )
-        }
     }
 
-    fun confirmImageFabric() {
+    fun confirmImageFabric() {   // TODO so it would calculate tilt and other things
         try {
             val fabric = uiState.currentFabric.toImageFabric()
 
@@ -188,8 +159,10 @@ class ProjectCreationViewModel : ViewModel() {
                 resourceImageName = name,
                 detectedContour = null,
                 editedContour = null,
-                errorMessage = null
-            )
+                errorMessage = null,
+            ),
+            currentImageStep = FabricImageStep.EDIT_CONTOUR,
+            errorMessage = null
         )
     }
 
@@ -200,25 +173,36 @@ class ProjectCreationViewModel : ViewModel() {
         )
     }
 
-    fun addImageFabricFromCvContour(contour: List<CvPoint>) {
-        try {
-            val domainContour = contour.toDomainPoints()
-
-            val fabric = FabricDraft(
-                inputMode = FabricInputMode.IMAGE,
-                editedContour = domainContour
-            ).toImageFabric()
-
-            uiState = uiState.copy(
-                addedFabrics = uiState.addedFabrics + fabric,
-                currentFabric = FabricDraft(),
+    fun confirmEditedContour(contour: List<CvPoint>) {
+        uiState = uiState.copy(
+            currentFabric = uiState.currentFabric.copy(
+                editedContour = contour,
                 errorMessage = null
-            )
-        } catch (e: Exception) {
-            uiState = uiState.copy(
-                errorMessage = e.message
-            )
-        }
+            ),
+            currentImageStep = FabricImageStep.EDIT_A4,
+            errorMessage = null
+        )
+    }
+
+    fun confirmEditedA4(marker: Marker) {
+        uiState = uiState.copy(
+            currentFabric = uiState.currentFabric.copy(
+                editedA4Marker = marker,
+                errorMessage = null
+            ),
+            currentImageStep = FabricImageStep.EDIT_WARP,
+            errorMessage = null
+        )
+    }
+
+    fun confirmWarpTilt(degrees: Double) {
+        uiState = uiState.copy(
+            currentFabric = uiState.currentFabric.copy(
+                warpAngleDegreesFromVertical = degrees,
+                errorMessage = null
+            ),
+            errorMessage = null
+        )
     }
 }
 

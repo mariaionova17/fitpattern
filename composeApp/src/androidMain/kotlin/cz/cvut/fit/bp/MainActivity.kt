@@ -14,16 +14,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import cz.cvut.fit.bp.imageRecognition.OpenCvTestScreen
 import cz.cvut.fit.bp.navigation.AppRoutes
-import cz.cvut.fit.bp.projectCreation.ImageFabricScreen
+import cz.cvut.fit.bp.projectCreation.FabricImageScreen
 import cz.cvut.fit.bp.projectCreation.ImagePickScreen
 import cz.cvut.fit.bp.projectCreation.ProjectCreationScreen
 import cz.cvut.fit.bp.projectCreation.ProjectCreationViewModel
 import cz.cvut.fit.bp.ui.theme.BpTheme
 import domain.geometry.setSeamAllowance
 import runTestSolver
-import testGeometry
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,21 +117,33 @@ fun AppNav() {
                 onBack = { navController.popBackStack() },
                 onPickTestImage = { imageName ->
                     viewModel.setResourceImage(imageName)
-                    navController.navigate(AppRoutes.ImageFabric)
+                    navController.navigate(AppRoutes.FabricImage)
                 }
             )
         }
 
-        composable(AppRoutes.ImageFabric) {
+        composable(AppRoutes.FabricImage) {
             val state = viewModel.uiState
 
-            ImageFabricScreen(
+            FabricImageScreen(
                 state = state,
                 onBack = { navController.popBackStack() },
                 onConfirmContour = { contour ->
-                    viewModel.addImageFabricFromCvContour(contour)
+                    viewModel.confirmEditedContour(contour)
+                },
+                onConfirmA4 = { marker ->
+                    viewModel.confirmEditedA4(marker)
+                },
+                onConfirmWarpTilt = { tiltDegrees ->
+                    viewModel.confirmWarpTilt(tiltDegrees)
+                },
+                onFinishImageFabric = {
+                    viewModel.confirmImageFabric()
+                    navController.popBackStack(AppRoutes.ProjectCreation, false)
                 }
             )
         }
+
+
     }
 }

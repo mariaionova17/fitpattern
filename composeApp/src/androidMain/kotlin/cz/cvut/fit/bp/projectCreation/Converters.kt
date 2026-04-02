@@ -1,5 +1,7 @@
 package cz.cvut.fit.bp.projectCreation
 
+import cz.cvut.fit.bp.imageRecognition.markerDetection.alignPolygonWarpToVertical
+import cz.cvut.fit.bp.imageRecognition.markerDetection.editablePolygonToMmPolygon
 import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import domain.fabric.Fabric
 import domain.geometry.Point
@@ -49,7 +51,10 @@ fun FabricDraft.toManualFabric(): Fabric{
 
 fun FabricDraft.toImageFabric(): Fabric{
     val contour = editedContour ?: detectedContour ?: error("No contour available for image fabric")
-    return Fabric(UUID.randomUUID().toString(), Shape(Polygon(contour)))
+    val marker = editedA4Marker ?: detectedA4Marker ?: error("No marker available for image fabric")
+    val normalizedContour = editablePolygonToMmPolygon(contour, marker)
+    val contourWithWarpVertically = alignPolygonWarpToVertical(normalizedContour, warpAngleDegreesFromVertical)
+    return Fabric(UUID.randomUUID().toString(), Shape(contourWithWarpVertically))
 }
 
 fun ProjectCreationUiState.toProject(): Project{

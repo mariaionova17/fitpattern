@@ -10,7 +10,8 @@ data class ProjectCreationUiState(
     val currentFabric: FabricDraft = FabricDraft(),
     val addedFabrics: List<Fabric> = emptyList(),
     val errorMessage: String? = null,
-    val isManualDialogOpen: Boolean = false
+    val isManualDialogOpen: Boolean = false,
+    val currentImageStep: FabricImageStep = FabricImageStep.NONE
 )
 
 enum class UiRotationOption{
@@ -18,4 +19,11 @@ enum class UiRotationOption{
     BY180,
     BY90,
     ANY
+}
+
+enum class FabricImageStep {
+    NONE,
+    EDIT_CONTOUR,
+    EDIT_A4,
+    EDIT_WARP
 }

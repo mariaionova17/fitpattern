@@ -1,7 +1,5 @@
-import domain.fabric.Fabric
 import domain.geometry.Point
 import domain.geometry.Polygon
-import domain.geometry.Shape
 import domain.layout.GeometryKernel
 import domain.layout.SimpleGeometryKernel
 

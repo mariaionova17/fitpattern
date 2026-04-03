@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import cz.cvut.fit.bp.imageRecognition.markerDetection.Marker
 import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import domain.project.Project
-import kotlin.plus
 
 class ProjectCreationViewModel : ViewModel() {
     var uiState by mutableStateOf(ProjectCreationUiState())
@@ -69,7 +68,7 @@ class ProjectCreationViewModel : ViewModel() {
             val fabric = uiState.currentFabric.toManualFabric()
 
             uiState = uiState.copy(
-                addedFabrics = uiState.addedFabrics + fabric,
+                addedFabricPieces = uiState.addedFabricPieces + fabric,
                 currentFabric = FabricDraft(),
                 isManualDialogOpen = false,
                 errorMessage = null
@@ -90,7 +89,7 @@ class ProjectCreationViewModel : ViewModel() {
             }
 
             uiState = uiState.copy(
-                addedFabrics = uiState.addedFabrics + fabric,
+                addedFabricPieces = uiState.addedFabricPieces + fabric,
                 currentFabric = FabricDraft(),
                 errorMessage = null
             )
@@ -104,7 +103,7 @@ class ProjectCreationViewModel : ViewModel() {
     fun buildProject(): Project? {
         return try {
             if (uiState.projectName.isBlank()) error("Project name is required")
-            if (uiState.addedFabrics.isEmpty()) error("Add at least one fabric")
+            if (uiState.addedFabricPieces.isEmpty()) error("Add at least one fabric")
 
             uiState.toProject()
         } catch (e: Exception) {
@@ -138,7 +137,7 @@ class ProjectCreationViewModel : ViewModel() {
             val fabric = uiState.currentFabric.toImageFabric()
 
             uiState = uiState.copy(
-                addedFabrics = uiState.addedFabrics + fabric,
+                addedFabricPieces = uiState.addedFabricPieces + fabric,
                 currentFabric = FabricDraft(),
                 errorMessage = null
             )

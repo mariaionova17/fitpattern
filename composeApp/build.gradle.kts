@@ -44,6 +44,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(project(":sharedDB"))
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -62,6 +63,7 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            implementation(project(":sharedDB"))
         }
     }
 }

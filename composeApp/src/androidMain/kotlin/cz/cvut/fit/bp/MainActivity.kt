@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,17 +20,26 @@ import cz.cvut.fit.bp.projectCreation.FabricImageScreen
 import cz.cvut.fit.bp.projectCreation.ImagePickScreen
 import cz.cvut.fit.bp.projectCreation.ProjectCreationScreen
 import cz.cvut.fit.bp.projectCreation.ProjectCreationViewModel
+import cz.cvut.fit.bp.shareddb.data.db.createDatabase
+import cz.cvut.fit.bp.shareddb.data.repository.ProjectRepositoryImpl
 import cz.cvut.fit.bp.ui.theme.BpTheme
 import domain.geometry.setSeamAllowance
+import domain.pattern.PlacementRules
+import domain.pattern.RotationRules
+import domain.project.Project
+import kotlinx.coroutines.launch
 import runTestSolver
 
 class MainActivity : ComponentActivity() {
+    lateinit var appContainer: AppContainer
+        private set
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        //TODO enable
         System.loadLibrary("opencv_java4")
+        appContainer = AppContainer(this)
 
+        testDatabase()
         //testGeometry()
 
         setContent {
@@ -38,6 +48,30 @@ class MainActivity : ComponentActivity() {
                 //SolverPreviewScreen()
                 AppNav()
             }
+        }
+    }
+
+    private fun testDatabase() {
+        val db = createDatabase(this)
+        val projectRepository = ProjectRepositoryImpl(db)
+
+        lifecycleScope.launch {
+            val project = Project(
+                id = "project_1",
+                name = "Test project",
+                fabricPieces = emptyList(),
+                rules = PlacementRules(
+                    rotation = RotationRules(listOf(0.0, 90.0)),
+                    allowMirror = true
+                ),
+                seamAllowance = 1.5
+            )
+
+            projectRepository.saveProject(project)
+
+            val loadedProject = projectRepository.getProjectById("project_1")
+
+            println("Loaded project: $loadedProject")
         }
     }
 
@@ -57,7 +91,7 @@ fun SolverPreviewScreen() {
         .associateBy { it.id }
 
     LayoutPreview(
-        fabric = problem.project.fabrics.first().contour,
+        fabric = problem.project.fabricPieces.first().contour,
         piecesById = piecesById,
         piecesByIdSeamAllowance = piecesByIdSeamAllowance,
         placements = result.bestLayout.placed,

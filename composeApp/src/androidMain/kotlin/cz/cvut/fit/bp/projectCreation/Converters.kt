@@ -3,7 +3,7 @@ package cz.cvut.fit.bp.projectCreation
 import cz.cvut.fit.bp.imageRecognition.markerDetection.alignPolygonWarpToVertical
 import cz.cvut.fit.bp.imageRecognition.markerDetection.editablePolygonToMmPolygon
 import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
-import domain.fabric.Fabric
+import domain.fabric.FabricPiece
 import domain.geometry.Point
 import domain.geometry.Polygon
 import domain.geometry.Shape
@@ -26,7 +26,7 @@ fun ProjectCreationUiState.toPlacementRules(): PlacementRules{
     return PlacementRules(rotationOption.toRotationRules(), allowMirror)
 }
 
-fun FabricDraft.toManualFabric(): Fabric{
+fun FabricDraft.toManualFabric(): FabricPiece{
     var width = widthMm.toDoubleOrNull() ?: error("Invalid width")
     var length = lengthMm.toDoubleOrNull() ?: error("Invalid length")
 
@@ -46,15 +46,15 @@ fun FabricDraft.toManualFabric(): Fabric{
         Point(0.0, length)
     ))
 
-    return Fabric(UUID.randomUUID().toString(), Shape(polygon))
+    return FabricPiece(UUID.randomUUID().toString(), Shape(polygon))
 }
 
-fun FabricDraft.toImageFabric(): Fabric{
+fun FabricDraft.toImageFabric(): FabricPiece{
     val contour = editedContour ?: detectedContour ?: error("No contour available for image fabric")
     val marker = editedA4Marker ?: detectedA4Marker ?: error("No marker available for image fabric")
     val normalizedContour = editablePolygonToMmPolygon(contour, marker)
     val contourWithWarpVertically = alignPolygonWarpToVertical(normalizedContour, warpAngleDegreesFromVertical)
-    return Fabric(UUID.randomUUID().toString(), Shape(contourWithWarpVertically))
+    return FabricPiece(UUID.randomUUID().toString(), Shape(contourWithWarpVertically))
 }
 
 fun ProjectCreationUiState.toProject(): Project{
@@ -63,10 +63,9 @@ fun ProjectCreationUiState.toProject(): Project{
         seamAllowance.toDoubleOrNull() != null -> seamAllowance.toDouble()
         else -> error("Seam allowance must be a valid number")
     }
-    return Project(projectName,
-        addedFabrics,
+    return Project(id = "1", projectName, addedFabricPieces,
         toPlacementRules(),
-        seamAllowanceValue)
+        seamAllowanceValue)  //TODO fix id
 }
 
 fun List<CvPoint>.toDomainPoints(): List<Point> {

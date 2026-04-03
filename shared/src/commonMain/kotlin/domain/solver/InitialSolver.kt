@@ -1,9 +1,8 @@
 package domain.solver
 
-import domain.fabric.Fabric
+import domain.fabric.FabricPiece
 import domain.geometry.BoundingBox
 import domain.geometry.Point
-import domain.geometry.Polygon
 import domain.geometry.Shape
 import domain.geometry.Transformation
 import domain.geometry.apply
@@ -28,11 +27,11 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
 
     override fun solve(problem: NestingProblem): NestingResult{
         val start = TimeSource.Monotonic.markNow()
-        require (problem.project.fabrics.isNotEmpty()){"No fabric pieces"}
+        require (problem.project.fabricPieces.isNotEmpty()){"No fabric pieces"}
 
         //TODO - now FOR ONE FABRIC PIECE ONLY
-        val fabric = problem.project.fabrics.first()
-        val fabricBoundingBox = problem.project.fabrics.first().contour.boundingBox()
+        val fabric = problem.project.fabricPieces.first()
+        val fabricBoundingBox = problem.project.fabricPieces.first().contour.boundingBox()
 
         // TODO integrate seam allowance
         val orderedPatternPieces = orderPatternPieces(
@@ -70,9 +69,9 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
     }
 
     //NO MIRROR, JUST DEGREES DIFFERENCE
-    private fun findBestPlacement(piece: PatternPiece, fabric: Fabric, rules: PlacementRules, fabricBoundingBox: BoundingBox, placedShapes: List<Shape>, placedBoundingBoxes: List<BoundingBox>): CandidatePlacement?{
+    private fun findBestPlacement(piece: PatternPiece, fabricPiece: FabricPiece, rules: PlacementRules, fabricBoundingBox: BoundingBox, placedShapes: List<Shape>, placedBoundingBoxes: List<BoundingBox>): CandidatePlacement?{
 
-        val targetPoints = getTargetPoints(fabric.contour, placedShapes)
+        val targetPoints = getTargetPoints(fabricPiece.contour, placedShapes)
         var bestPlacement: CandidatePlacement? = null
 
         for (orientation in  rules.rotation.allowedAnglesDeg){
@@ -104,7 +103,7 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
 
                     val placedBoundingBox = placedShape.contour.boundingBox()
 
-                    if (!geometry.contains(fabric.contour, placedShape)) {
+                    if (!geometry.contains(fabricPiece.contour, placedShape)) {
                         continue
                     }
 

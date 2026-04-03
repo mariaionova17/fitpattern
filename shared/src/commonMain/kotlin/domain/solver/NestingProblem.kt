@@ -1,6 +1,5 @@
 package domain.solver
 
-import domain.fabric.Fabric
 import domain.pattern.PatternPiece
 import domain.project.Project
 

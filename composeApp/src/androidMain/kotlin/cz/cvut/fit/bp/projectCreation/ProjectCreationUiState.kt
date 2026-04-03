@@ -1,6 +1,6 @@
 package cz.cvut.fit.bp.projectCreation
 
-import domain.fabric.Fabric
+import domain.fabric.FabricPiece
 
 data class ProjectCreationUiState(
     val projectName: String = "",
@@ -8,7 +8,7 @@ data class ProjectCreationUiState(
     val rotationOption: UiRotationOption = UiRotationOption.NONE,
     val allowMirror: Boolean = false,
     val currentFabric: FabricDraft = FabricDraft(),
-    val addedFabrics: List<Fabric> = emptyList(),
+    val addedFabricPieces: List<FabricPiece> = emptyList(),
     val errorMessage: String? = null,
     val isManualDialogOpen: Boolean = false,
     val currentImageStep: FabricImageStep = FabricImageStep.NONE

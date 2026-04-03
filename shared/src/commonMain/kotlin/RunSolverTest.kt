@@ -1,4 +1,4 @@
-import domain.fabric.Fabric
+import domain.fabric.FabricPiece
 import domain.geometry.Point
 import domain.geometry.Polygon
 import domain.geometry.Shape
@@ -18,7 +18,7 @@ fun runTestSolver(): Pair<NestingProblem, NestingResult> {
 
     val geometry: GeometryKernel = SimpleGeometryKernel()
 
-    val fabric = Fabric("1",
+    val fabricPiece = FabricPiece("1",
         contour = Shape(
             contour = Polygon(
                 listOf(
@@ -95,7 +95,7 @@ fun runTestSolver(): Pair<NestingProblem, NestingResult> {
     pieces.first().shape.setSeamAllowance(10.0).contour.points.forEach { println(it) }
 
     val problem = NestingProblem(
-        Project(name = "Project", fabrics = listOf(fabric), PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0))), seamAllowance = 5.0),
+        Project(id = "11", name = "Project", fabricPieces = listOf(fabricPiece), PlacementRules(RotationRules(listOf(0.0, 90.0, 180.0))), seamAllowance = 5.0),
         pieces = pieces
     )
 

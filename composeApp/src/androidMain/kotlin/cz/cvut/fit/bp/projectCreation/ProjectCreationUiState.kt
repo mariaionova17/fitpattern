@@ -3,6 +3,7 @@ package cz.cvut.fit.bp.projectCreation
 import domain.fabric.FabricPiece
 
 data class ProjectCreationUiState(
+    val id: String = "",
     val projectName: String = "",
     val seamAllowance: String = "",
     val rotationOption: UiRotationOption = UiRotationOption.NONE,

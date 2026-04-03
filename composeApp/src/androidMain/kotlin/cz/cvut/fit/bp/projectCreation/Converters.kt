@@ -57,13 +57,13 @@ fun FabricDraft.toImageFabric(): FabricPiece{
     return FabricPiece(UUID.randomUUID().toString(), Shape(contourWithWarpVertically))
 }
 
-fun ProjectCreationUiState.toProject(): Project{
+fun ProjectCreationUiState.toProject(projectId: String): Project{
     val seamAllowanceValue = when {
         seamAllowance.isBlank() -> 0.0
         seamAllowance.toDoubleOrNull() != null -> seamAllowance.toDouble()
         else -> error("Seam allowance must be a valid number")
     }
-    return Project(id = "1", projectName, addedFabricPieces,
+    return Project(projectId, projectName, addedFabricPieces,
         toPlacementRules(),
         seamAllowanceValue)  //TODO fix id
 }

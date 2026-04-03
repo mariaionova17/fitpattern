@@ -20,6 +20,7 @@ import cz.cvut.fit.bp.projectCreation.FabricImageScreen
 import cz.cvut.fit.bp.projectCreation.ImagePickScreen
 import cz.cvut.fit.bp.projectCreation.ProjectCreationScreen
 import cz.cvut.fit.bp.projectCreation.ProjectCreationViewModel
+import cz.cvut.fit.bp.projectCreation.ProjectCreationViewModelFactory
 import cz.cvut.fit.bp.shareddb.data.db.createDatabase
 import cz.cvut.fit.bp.shareddb.data.repository.ProjectRepositoryImpl
 import cz.cvut.fit.bp.ui.theme.BpTheme
@@ -27,26 +28,31 @@ import domain.geometry.setSeamAllowance
 import domain.pattern.PlacementRules
 import domain.pattern.RotationRules
 import domain.project.Project
+import domain.repository.PatternRepository
+import domain.repository.ProjectRepository
 import kotlinx.coroutines.launch
 import runTestSolver
 
 class MainActivity : ComponentActivity() {
-    lateinit var appContainer: AppContainer
-        private set
+    private val appContainer by lazy {
+        (application as MyApplication).appContainer
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         System.loadLibrary("opencv_java4")
-        appContainer = AppContainer(this)
 
-        testDatabase()
+        //testDatabase()
         //testGeometry()
 
         setContent {
             BpTheme {
                 //OpenCvTestScreen()
                 //SolverPreviewScreen()
-                AppNav()
+                AppNav(
+                    projectRepository = appContainer.projectRepository,
+                    patternRepository = appContainer.patternRepository
+                )
             }
         }
     }
@@ -108,9 +114,12 @@ fun AppAndroidPreview() {
 }
 
 @Composable
-fun AppNav() {
+fun AppNav(
+    projectRepository: ProjectRepository,
+    patternRepository: PatternRepository
+) {
     val navController = rememberNavController()
-    val viewModel: ProjectCreationViewModel = viewModel()
+    val viewModel: ProjectCreationViewModel = viewModel(factory = ProjectCreationViewModelFactory(projectRepository))
 
     NavHost(
         navController = navController,
@@ -131,10 +140,7 @@ fun AppNav() {
                 onFabricLengthChanged = viewModel::onFabricLengthChanged,
                 onAddFabricClicked = viewModel::addCurrentFabric,
                 onNextClicked = {
-                    val project = viewModel.buildProject()
-                    if (project != null) {
-                        println(project)
-                    }
+                    viewModel.saveProject()
                 },
                 onManualDialogDismiss = viewModel::closeManualDialog,
                 onManualDialogConfirm = viewModel::confirmManualDialog,

@@ -4,11 +4,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import cz.cvut.fit.bp.imageRecognition.markerDetection.Marker
 import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import domain.project.Project
+import domain.repository.ProjectRepository
+import kotlinx.coroutines.launch
+import java.util.UUID
 
-class ProjectCreationViewModel : ViewModel() {
+class ProjectCreationViewModel(private val projectRepository: ProjectRepository) : ViewModel() {
     var uiState by mutableStateOf(ProjectCreationUiState())
         private set
 
@@ -105,10 +109,28 @@ class ProjectCreationViewModel : ViewModel() {
             if (uiState.projectName.isBlank()) error("Project name is required")
             if (uiState.addedFabricPieces.isEmpty()) error("Add at least one fabric")
 
-            uiState.toProject()
+            val projectId = uiState.id.ifBlank {
+                val newId = UUID.randomUUID().toString()
+                uiState = uiState.copy(id = newId)
+                newId
+            }
+            uiState.toProject(projectId)
         } catch (e: Exception) {
             uiState = uiState.copy(errorMessage = e.message)
             null
+        }
+    }
+
+    fun saveProject() {
+        val project = buildProject() ?: return
+
+        viewModelScope.launch {
+            try {
+                projectRepository.saveProject(project)
+                uiState = uiState.copy(errorMessage = null)
+            } catch (e: Exception) {
+                uiState = uiState.copy(errorMessage = e.message)
+            }
         }
     }
     fun startImageMode() {
@@ -132,7 +154,7 @@ class ProjectCreationViewModel : ViewModel() {
         )
     }
 
-    fun confirmImageFabric() {   // TODO so it would calculate tilt and other things
+    fun confirmImageFabric() {
         try {
             val fabric = uiState.currentFabric.toImageFabric()
 

@@ -1,5 +1,7 @@
 package cz.cvut.fit.bp.projectCreation
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,8 +30,16 @@ import cz.cvut.fit.bp.R
 @Composable
 fun ImagePickScreen(
     onBack: () -> Unit,
-    onPickTestImage: (String) -> Unit
+    onPickTestImage: (String) -> Unit,
+    onPickImageFromGallery: (String) -> Unit
 ) {
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        if (uri != null) {
+            onPickImageFromGallery(uri.toString())
+        }
+    }
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -76,6 +86,14 @@ fun ImagePickScreen(
                     "Please add an A4 paper sheet in the frame as a size reference." +
                     "Place it on a contrast background as well. You can put it on top of the fabric, but be careful not to obstruct the view of the fabric's contour",
                 color = MaterialTheme.colorScheme.onBackground)
+
+            Button(
+                onClick = { galleryLauncher.launch("image/*") },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Pick image from gallery")
+            }
+
         Button(
             onClick = { onPickTestImage("test_image.jpg") },
             modifier = Modifier.fillMaxWidth()

@@ -32,6 +32,12 @@ import domain.repository.PatternRepository
 import domain.repository.ProjectRepository
 import kotlinx.coroutines.launch
 import runTestSolver
+import cz.cvut.fit.bp.projectDetailPage.ProjectDetailScreen
+import cz.cvut.fit.bp.projectDetailPage.ProjectDetailViewModel
+import cz.cvut.fit.bp.projectDetailPage.ProjectDetailViewModelFactory
+import cz.cvut.fit.bp.projectsPage.ProjectsViewModel
+import cz.cvut.fit.bp.projectsPage.ProjectsViewModelFactory
+import cz.cvut.fit.bp.projectsPage.ProjectsScreen
 
 class MainActivity : ComponentActivity() {
     private val appContainer by lazy {
@@ -119,34 +125,53 @@ fun AppNav(
     patternRepository: PatternRepository
 ) {
     val navController = rememberNavController()
-    val viewModel: ProjectCreationViewModel = viewModel(factory = ProjectCreationViewModelFactory(projectRepository))
+    val projectCreationViewModel: ProjectCreationViewModel = viewModel(factory = ProjectCreationViewModelFactory(projectRepository))
+    val projectsViewModel: ProjectsViewModel = viewModel(factory = ProjectsViewModelFactory(projectRepository)
+    )
 
     NavHost(
         navController = navController,
-        startDestination = AppRoutes.ProjectCreation
+        startDestination = AppRoutes.Projects
     ) {
+
+        composable(AppRoutes.Projects) {
+            androidx.compose.runtime.LaunchedEffect(Unit) {
+                projectsViewModel.loadProjects()
+            }
+
+            ProjectsScreen(
+                state = projectsViewModel.uiState,
+                onCreateProjectClick = {
+                    navController.navigate(AppRoutes.ProjectCreation)
+                },
+                onProjectClick = { projectId ->
+                    navController.navigate(AppRoutes.projectDetail(projectId))
+                }
+            )
+        }
+
         composable(AppRoutes.ProjectCreation) {
-            val state = viewModel.uiState
+            val state = projectCreationViewModel.uiState
 
             ProjectCreationScreen(
                 state = state,
-                onProjectNameChanged = viewModel::onProjectNameChanged,
-                onSeamAllowanceChanged = viewModel::onSeamAllowanceChanged,
-                onRotationChanged = viewModel::onRotationChanged,
-                onAllowMirrorChanged = viewModel::onAllowMirrorChanged,
-                onFabricModeChanged = viewModel::onFabricModeChanged,
-                onFabricWidthChanged = viewModel::onFabricWidthChanged,
-                onWarpChanged = viewModel::onWarpChanged,
-                onFabricLengthChanged = viewModel::onFabricLengthChanged,
-                onAddFabricClicked = viewModel::addCurrentFabric,
+                onProjectNameChanged = projectCreationViewModel::onProjectNameChanged,
+                onSeamAllowanceChanged = projectCreationViewModel::onSeamAllowanceChanged,
+                onRotationChanged = projectCreationViewModel::onRotationChanged,
+                onAllowMirrorChanged = projectCreationViewModel::onAllowMirrorChanged,
+                onFabricWidthChanged = projectCreationViewModel::onFabricWidthChanged,
+                onWarpChanged = projectCreationViewModel::onWarpChanged,
+                onFabricLengthChanged = projectCreationViewModel::onFabricLengthChanged,
                 onNextClicked = {
-                    viewModel.saveProject()
+                    projectCreationViewModel.saveProject { projectId ->
+                        navController.navigate(AppRoutes.projectDetail(projectId))
+                    }
                 },
-                onManualDialogDismiss = viewModel::closeManualDialog,
-                onManualDialogConfirm = viewModel::confirmManualDialog,
-                onOpenManualDialogue = viewModel::openManualDialog,
+                onManualDialogDismiss = projectCreationViewModel::closeManualDialog,
+                onManualDialogConfirm = projectCreationViewModel::confirmManualDialog,
+                onOpenManualDialogue = projectCreationViewModel::openManualDialog,
                 onOpenImagePick = {
-                    viewModel.startImageMode()
+                    projectCreationViewModel.startImageMode()
                     navController.navigate(AppRoutes.ImagePick)
                 }
             )
@@ -156,31 +181,53 @@ fun AppNav(
             ImagePickScreen(
                 onBack = { navController.popBackStack() },
                 onPickTestImage = { imageName ->
-                    viewModel.setResourceImage(imageName)
+                    projectCreationViewModel.setResourceImage(imageName)
+                    navController.navigate(AppRoutes.FabricImage)
+                },
+                onPickImageFromGallery = { imageUri ->
+                    projectCreationViewModel.setImageUri(imageUri)
                     navController.navigate(AppRoutes.FabricImage)
                 }
             )
         }
 
         composable(AppRoutes.FabricImage) {
-            val state = viewModel.uiState
+            val state = projectCreationViewModel.uiState
 
             FabricImageScreen(
                 state = state,
                 onBack = { navController.popBackStack() },
                 onConfirmContour = { contour ->
-                    viewModel.confirmEditedContour(contour)
+                    projectCreationViewModel.confirmEditedContour(contour)
                 },
                 onConfirmA4 = { marker ->
-                    viewModel.confirmEditedA4(marker)
+                    projectCreationViewModel.confirmEditedA4(marker)
                 },
                 onConfirmWarpTilt = { tiltDegrees ->
-                    viewModel.confirmWarpTilt(tiltDegrees)
+                    projectCreationViewModel.confirmWarpTilt(tiltDegrees)
                 },
                 onFinishImageFabric = {
-                    viewModel.confirmImageFabric()
+                    projectCreationViewModel.confirmImageFabric()
                     navController.popBackStack(AppRoutes.ProjectCreation, false)
                 }
+            )
+        }
+
+        composable(AppRoutes.ProjectDetailRoute) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getString("projectId")
+
+            val detailViewModel: ProjectDetailViewModel = viewModel(
+                factory = ProjectDetailViewModelFactory(projectRepository)
+            )
+
+            if (projectId != null) {
+                androidx.compose.runtime.LaunchedEffect(projectId) {
+                    detailViewModel.loadProject(projectId)
+                }
+            }
+
+            ProjectDetailScreen(
+                state = detailViewModel.uiState
             )
         }
 

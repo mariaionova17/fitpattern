@@ -1,6 +1,7 @@
 package cz.cvut.fit.bp.projectCreation
 
 import android.graphics.Bitmap
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -27,12 +30,14 @@ import cz.cvut.fit.bp.imageRecognition.EditablePolygonOverlay
 import cz.cvut.fit.bp.imageRecognition.FinalPolygonPreview
 import cz.cvut.fit.bp.imageRecognition.WarpDirectionOverlay
 import cz.cvut.fit.bp.imageRecognition.loadBitmapFromAssets
+import cz.cvut.fit.bp.imageRecognition.loadBitmapFromUri
 import cz.cvut.fit.bp.imageRecognition.markerDetection.Marker
 import cz.cvut.fit.bp.imageRecognition.markerDetection.alignPolygonWarpToVertical
 import cz.cvut.fit.bp.imageRecognition.markerDetection.detectA4
 import cz.cvut.fit.bp.imageRecognition.markerDetection.editablePolygonToMmPolygon
 import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import cz.cvut.fit.bp.imageRecognition.polygonDetection.detectBestPolygon
+import cz.cvut.fit.bp.imageRecognition.prepareBitmapForProcessing
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -55,33 +60,50 @@ fun FabricImageScreen(
     var statusText by remember { mutableStateOf("No image selected") }
     var isProcessing by remember { mutableStateOf(false) }
 
-    LaunchedEffect(state.currentFabric.resourceImageName, state.currentImageStep) {
-        val imageName = state.currentFabric.resourceImageName ?: return@LaunchedEffect
+    LaunchedEffect(state.currentFabric.resourceImageName, state.currentFabric.imageUri,state.currentImageStep) {
+        val imageName = state.currentFabric.resourceImageName
+        val imageUri = state.currentFabric.imageUri
+        if (imageName == null && imageUri == null) return@LaunchedEffect
 
         try {
             isProcessing = true
             statusText = "Loading image..."
 
             val original = withContext(Dispatchers.Default) {
-                loadBitmapFromAssets(context, imageName)
+                val loaded = when {
+                    imageUri != null -> loadBitmapFromUri(context, imageUri)
+                    imageName != null -> loadBitmapFromAssets(context, imageName)
+                    else -> error("No image selected")
+                }
+                prepareBitmapForProcessing(loaded)
             }
 
             originalBitmap = original
-
+            android.util.Log.d(
+                "FabricImageScreen",
+                "Bitmap loaded: width=${original.width}, height=${original.height}, config=${original.config}"
+            )
             when (state.currentImageStep) {
                 FabricImageStep.EDIT_CONTOUR -> {
-                    val result = withContext(Dispatchers.Default) {
-                        detectBestPolygon(original)
-                    }
+                    try {
+                        android.util.Log.d("FabricImageScreen", "Before detectBestPolygon")
+                        val result = withContext(Dispatchers.Default) {
+                            detectBestPolygon(original)
+                        }
+                        android.util.Log.d("FabricImageScreen", "After detectBestPolygon")
 
-                    editablePolygon = state.currentFabric.editedContour?.map {
-                        CvPoint(it.x, it.y)
-                    } ?: result.bestCandidate?.polygon.orEmpty()
+                        editablePolygon = state.currentFabric.editedContour?.map {
+                            CvPoint(it.x, it.y)
+                        } ?: result.bestCandidate?.polygon.orEmpty()
 
-                    statusText = if (editablePolygon.isNotEmpty()) {
-                        "Contour detected. You can edit it now."
-                    } else {
-                        "No contour detected."
+                        statusText = if (editablePolygon.isNotEmpty()) {
+                            "Contour detected. You can edit it now."
+                        } else {
+                            "No contour detected."
+                        }
+                    } catch (e: Throwable) {
+                        android.util.Log.e("FabricImageScreen", "detectBestPolygon failed", e)
+                        statusText = "Error in contour detection: ${e.message}"
                     }
                 }
 
@@ -190,6 +212,13 @@ fun FabricImageScreen(
                                     polygon = editablePolygon,
                                     onPolygonChange = { editablePolygon = it },
                                     modifier = Modifier.fillMaxWidth()
+                                )
+                            } else {
+                                Image(
+                                    bitmap = bitmap.asImageBitmap(),
+                                    contentDescription = "Selected fabric image",
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentScale = ContentScale.Fit
                                 )
                             }
                         }

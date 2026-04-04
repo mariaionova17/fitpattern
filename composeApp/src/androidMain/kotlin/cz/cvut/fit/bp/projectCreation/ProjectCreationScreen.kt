@@ -49,11 +49,9 @@ fun ProjectCreationScreen(
     onSeamAllowanceChanged: (String) -> Unit,
     onRotationChanged: (UiRotationOption) -> Unit,
     onAllowMirrorChanged: (Boolean) -> Unit,
-    onFabricModeChanged: (FabricInputMode) -> Unit,
     onFabricWidthChanged: (String) -> Unit,
     onFabricLengthChanged: (String) -> Unit,
     onWarpChanged: (Boolean) -> Unit,
-    onAddFabricClicked: () -> Unit,
     onNextClicked: () -> Unit,
     onManualDialogDismiss: () -> Unit,
     onManualDialogConfirm: () -> Unit,
@@ -97,7 +95,7 @@ fun ProjectCreationScreen(
         ) {
 
             TextInput("Name:", state.projectName, onProjectNameChanged, false, "New project")
-
+//TODO max 30 chars
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(

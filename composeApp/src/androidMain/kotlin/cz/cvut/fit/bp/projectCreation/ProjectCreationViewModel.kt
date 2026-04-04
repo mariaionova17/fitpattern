@@ -121,13 +121,14 @@ class ProjectCreationViewModel(private val projectRepository: ProjectRepository)
         }
     }
 
-    fun saveProject() {
+    fun saveProject(onSaved: (String) -> Unit) {
         val project = buildProject() ?: return
 
         viewModelScope.launch {
             try {
                 projectRepository.saveProject(project)
                 uiState = uiState.copy(errorMessage = null)
+                onSaved(project.id)
             } catch (e: Exception) {
                 uiState = uiState.copy(errorMessage = e.message)
             }
@@ -145,6 +146,7 @@ class ProjectCreationViewModel(private val projectRepository: ProjectRepository)
             currentFabric = uiState.currentFabric.copy(
                 inputMode = FabricInputMode.IMAGE,
                 imageUri = uri,
+                resourceImageName = null,
                 detectedContour = null,
                 editedContour = null,
                 errorMessage = null

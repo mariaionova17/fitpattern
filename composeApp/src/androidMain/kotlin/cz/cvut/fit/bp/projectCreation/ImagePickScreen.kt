@@ -82,9 +82,12 @@ fun ImagePickScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
-            Text(text = "Add a picture of your piece of fabric laying flat on a contrast background." +
-                    "Please add an A4 paper sheet in the frame as a size reference." +
-                    "Place it on a contrast background as well. You can put it on top of the fabric, but be careful not to obstruct the view of the fabric's contour",
+            Text(text = """ Instructions:
+                Add a picture of a piece of fabric laying flat right side up on a contrast background.
+                    Please add an A4 paper sheet in the frame as a size reference. Place it on a contrast background as well.
+                    You can put A4 on top of the fabric, but be careful not to obstruct the view of the fabric's contour.
+                    Take picture from the top and fit the whole fabric piece inside.
+                    """,
                 color = MaterialTheme.colorScheme.onBackground)
 
             Button(

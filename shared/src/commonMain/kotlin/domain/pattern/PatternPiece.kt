@@ -4,5 +4,6 @@ import domain.geometry.Shape
 
 data class PatternPiece (
     val id: String,
-    val shape: Shape
+    val name: String,
+    val shape: Shape,
 )

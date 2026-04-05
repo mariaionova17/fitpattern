@@ -13,7 +13,7 @@ import domain.solver.InitialSolver
 import domain.solver.NestingProblem
 import domain.solver.NestingResult
 
-fun runTestSolver(): Pair<NestingProblem, NestingResult> {
+/*fun runTestSolver(): Pair<NestingProblem, NestingResult> {
 
 
     val geometry: GeometryKernel = SimpleGeometryKernel()
@@ -116,4 +116,4 @@ fun runTestSolver(): Pair<NestingProblem, NestingResult> {
     }
 
     return problem to result
-}
+}*/

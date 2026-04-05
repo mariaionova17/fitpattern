@@ -8,7 +8,7 @@ import cz.cvut.fit.bp.shareddb.data.dao.ProjectDao
 import cz.cvut.fit.bp.shareddb.data.entity.FabricPieceEntity
 import cz.cvut.fit.bp.shareddb.data.entity.PatternEntity
 import cz.cvut.fit.bp.shareddb.data.entity.PatternPieceEntity
-import cz.cvut.fit.bp.shareddb.data.entity.PatternSizeEntity
+import cz.cvut.fit.bp.shareddb.data.entity.PatternVariantEntity
 import cz.cvut.fit.bp.shareddb.data.entity.PlacementRulesEntity
 import cz.cvut.fit.bp.shareddb.data.entity.ProjectEntity
 
@@ -19,7 +19,7 @@ import cz.cvut.fit.bp.shareddb.data.entity.ProjectEntity
         PlacementRulesEntity::class,
         FabricPieceEntity::class,
         PatternEntity::class,
-        PatternSizeEntity::class,
+        PatternVariantEntity::class,
         PatternPieceEntity::class
     ],
     version = 1,

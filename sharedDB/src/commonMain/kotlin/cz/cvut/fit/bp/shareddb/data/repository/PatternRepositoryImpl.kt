@@ -2,9 +2,10 @@ package cz.cvut.fit.bp.shareddb.data.repository
 
 import cz.cvut.fit.bp.shareddb.data.db.AppDatabase
 import cz.cvut.fit.bp.shareddb.data.entity.PatternEntity
-import cz.cvut.fit.bp.shareddb.data.entity.PatternSizeEntity
-import cz.cvut.fit.bp.shareddb.data.mapper.toPatternPiece
+import cz.cvut.fit.bp.shareddb.data.entity.PatternVariantEntity
+import cz.cvut.fit.bp.shareddb.data.mapper.toPattern
 import cz.cvut.fit.bp.shareddb.data.mapper.toPatternPieceEntity
+import cz.cvut.fit.bp.shareddb.data.mapper.toPatternVariant
 import domain.pattern.Pattern
 import domain.repository.PatternRepository
 
@@ -18,57 +19,57 @@ class PatternRepositoryImpl(
         dao.insertPattern(
             PatternEntity(
                 id = pattern.id,
-                name = pattern.name
+                name = pattern.name,
+                pictureUri = pattern.pictureUri
             )
         )
 
-        dao.deleteSizesByPatternId(pattern.id)
-        dao.deletePiecesByPatternId(pattern.id)
+        val variantEntities = pattern.variants.map { variant ->
+            PatternVariantEntity(
+                variantId = variant.id,
+                patternId = pattern.id,
+                size = variant.size
+            )
+        }
 
-        dao.insertSizes(
-            pattern.sizes.map { size ->
-                PatternSizeEntity(
-                    patternId = pattern.id,
-                    size = size
-                )
+        dao.insertVariants(variantEntities)
+
+        val pieceEntities = pattern.variants.flatMap { variant ->
+            variant.pieces.map { piece ->
+                piece.toPatternPieceEntity(variant.id)
             }
-        )
+        }
 
-        dao.insertPieces(pattern.pieces.map { it.toPatternPieceEntity(pattern.id) })
+        dao.insertPieces(pieceEntities)
     }
 
     override suspend fun getPatternById(id: String): Pattern? {
         val dao = db.patternDao()
-
         val patternEntity = dao.getPatternById(id) ?: return null
-        val sizes = dao.getSizesByPatternId(id).map { it.size }
-        val pieces = dao.getPiecesByPatternId(id).map { it.toPatternPiece() }
 
-        return Pattern(
-            id = patternEntity.id,
-            name = patternEntity.name,
-            sizes = sizes,
-            pieces = pieces
-        )
+        val variants = dao.getVariantsByPatternId(id).map { variantEntity ->
+            val pieces = dao.getPiecesByVariantId(variantEntity.variantId)
+            variantEntity.toPatternVariant(pieces)
+        }
+
+        return patternEntity.toPattern(variants)
     }
 
     override suspend fun getAllPatterns(): List<Pattern> {
         val dao = db.patternDao()
 
         return dao.getAllPatterns().map { patternEntity ->
-            Pattern(
-                id = patternEntity.id,
-                name = patternEntity.name,
-                sizes = dao.getSizesByPatternId(patternEntity.id).map { it.size },
-                pieces = dao.getPiecesByPatternId(patternEntity.id).map { it.toPatternPiece() }
-            )
+            val variants = dao.getVariantsByPatternId(patternEntity.id).map { variantEntity ->
+                val pieces = dao.getPiecesByVariantId(variantEntity.variantId)
+                variantEntity.toPatternVariant(pieces)
+            }
+
+            patternEntity.toPattern(variants)
         }
     }
 
     override suspend fun deletePattern(id: String) {
         val dao = db.patternDao()
-        dao.deleteSizesByPatternId(id)
-        dao.deletePiecesByPatternId(id)
         dao.deletePatternById(id)
     }
 }

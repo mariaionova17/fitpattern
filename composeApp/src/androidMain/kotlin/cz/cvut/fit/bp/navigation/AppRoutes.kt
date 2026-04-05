@@ -5,6 +5,7 @@ object AppRoutes {
     const val ProjectCreation = "project_creation"
     const val FabricImage = "fabric_image"
     const val ImagePick = "image_pick"
+    const val PatternSuggestions = "pattern_suggestions"
 
     const val ProjectDetailRoute = "project_detail/{projectId}"
     fun projectDetail(projectId: String): String {

@@ -16,6 +16,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import cz.cvut.fit.bp.navigation.AppRoutes
+import cz.cvut.fit.bp.patternSuggestionsPage.PatternSuggestionsScreen
+import cz.cvut.fit.bp.patternSuggestionsPage.PatternSuggestionsViewModel
+import cz.cvut.fit.bp.patternSuggestionsPage.PatternSuggestionsViewModelFactory
 import cz.cvut.fit.bp.projectCreation.FabricImageScreen
 import cz.cvut.fit.bp.projectCreation.ImagePickScreen
 import cz.cvut.fit.bp.projectCreation.ProjectCreationScreen
@@ -31,13 +34,13 @@ import domain.project.Project
 import domain.repository.PatternRepository
 import domain.repository.ProjectRepository
 import kotlinx.coroutines.launch
-import runTestSolver
 import cz.cvut.fit.bp.projectDetailPage.ProjectDetailScreen
 import cz.cvut.fit.bp.projectDetailPage.ProjectDetailViewModel
 import cz.cvut.fit.bp.projectDetailPage.ProjectDetailViewModelFactory
 import cz.cvut.fit.bp.projectsPage.ProjectsViewModel
 import cz.cvut.fit.bp.projectsPage.ProjectsViewModelFactory
 import cz.cvut.fit.bp.projectsPage.ProjectsScreen
+import cz.cvut.fit.bp.shareddb.data.PatternSeeder
 
 class MainActivity : ComponentActivity() {
     private val appContainer by lazy {
@@ -50,6 +53,7 @@ class MainActivity : ComponentActivity() {
 
         //testDatabase()
         //testGeometry()
+        seedPatternsIfNeeded()
 
         setContent {
             BpTheme {
@@ -63,6 +67,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun seedPatternsIfNeeded() {
+        lifecycleScope.launch {
+            val dao = createDatabase(this@MainActivity).patternDao()
+
+            if (dao.getAllPatterns().isEmpty()) {
+                PatternSeeder.insertSamplePatterns(dao)
+            }
+        }
+    }
     private fun testDatabase() {
         val db = createDatabase(this)
         val projectRepository = ProjectRepositoryImpl(db)
@@ -89,7 +102,7 @@ class MainActivity : ComponentActivity() {
 
 }
 
-@Composable
+/*@Composable
 fun SolverPreviewScreen() {
     val (problem, result) = runTestSolver()
     val piecesById = problem.pieces.associateBy { it.id }
@@ -111,13 +124,13 @@ fun SolverPreviewScreen() {
             .fillMaxWidth()
             .height(400.dp)
     )
-}
+}*
 
 @Preview
 @Composable
 fun AppAndroidPreview() {
     SolverPreviewScreen()
-}
+}*/
 
 @Composable
 fun AppNav(
@@ -126,8 +139,8 @@ fun AppNav(
 ) {
     val navController = rememberNavController()
     val projectCreationViewModel: ProjectCreationViewModel = viewModel(factory = ProjectCreationViewModelFactory(projectRepository))
-    val projectsViewModel: ProjectsViewModel = viewModel(factory = ProjectsViewModelFactory(projectRepository)
-    )
+    val projectsViewModel: ProjectsViewModel = viewModel(factory = ProjectsViewModelFactory(projectRepository))
+    val patternSuggestionsViewModel: PatternSuggestionsViewModel = viewModel(factory = PatternSuggestionsViewModelFactory(patternRepository))
 
     NavHost(
         navController = navController,
@@ -173,7 +186,8 @@ fun AppNav(
                 onOpenImagePick = {
                     projectCreationViewModel.startImageMode()
                     navController.navigate(AppRoutes.ImagePick)
-                }
+                },
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -227,7 +241,38 @@ fun AppNav(
             }
 
             ProjectDetailScreen(
-                state = detailViewModel.uiState
+                state = detailViewModel.uiState,
+                onViewPatternSuggestionsClick = {navController.navigate(AppRoutes.PatternSuggestions)}
+            )
+        }
+
+        composable(AppRoutes.Projects) {
+            androidx.compose.runtime.LaunchedEffect(Unit) {
+                projectsViewModel.loadProjects()
+            }
+
+            ProjectsScreen(
+                state = projectsViewModel.uiState,
+                onCreateProjectClick = {
+                    navController.navigate(AppRoutes.ProjectCreation)
+                },
+                onProjectClick = { projectId ->
+                    navController.navigate(AppRoutes.projectDetail(projectId))
+                }
+            )
+        }
+
+        composable(AppRoutes.PatternSuggestions) {
+            androidx.compose.runtime.LaunchedEffect(Unit) {
+                patternSuggestionsViewModel.loadPatterns()
+            }
+
+            PatternSuggestionsScreen(
+                state = patternSuggestionsViewModel.uiState,
+                onPatternClick = {navController.navigate(AppRoutes.Projects)}
+                /*onPatternClick = { patternId ->
+                    navController.navigate(AppRoutes.patternDetail(patternId))
+                }*/
             )
         }
 

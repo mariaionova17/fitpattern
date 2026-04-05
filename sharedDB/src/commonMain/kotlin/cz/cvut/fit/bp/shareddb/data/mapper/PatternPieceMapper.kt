@@ -7,6 +7,7 @@ import domain.pattern.PatternPiece
 fun PatternPieceEntity.toPatternPiece(): PatternPiece {
     return PatternPiece(
         id = id,
+        name = name,
         shape = Shape(
             contour = PolygonMapper.polygonFromJson(contourJson),
             holes = PolygonMapper.polygonsFromJson(holesJson)
@@ -14,10 +15,11 @@ fun PatternPieceEntity.toPatternPiece(): PatternPiece {
     )
 }
 
-fun PatternPiece.toPatternPieceEntity(patternId: String): PatternPieceEntity {
+fun PatternPiece.toPatternPieceEntity(patternVariantId: String): PatternPieceEntity {
     return PatternPieceEntity(
         id = id,
-        patternId = patternId,
+        name = name,
+        patternVariantId = patternVariantId,
         contourJson = PolygonMapper.polygonToJson(shape.contour),
         holesJson = PolygonMapper.polygonsToJson(shape.holes)
     )

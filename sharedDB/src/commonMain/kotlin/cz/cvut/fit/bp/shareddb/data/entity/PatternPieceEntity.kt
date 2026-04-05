@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 data class PatternPieceEntity(
     @PrimaryKey
     val id: String,
-    val patternId: String,
+    val name: String,
+    val patternVariantId: String,
     val contourJson: String,
     val holesJson: String
 )

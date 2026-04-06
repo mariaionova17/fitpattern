@@ -15,7 +15,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import cz.cvut.fit.bp.layoutPage.LayoutScreen
+import cz.cvut.fit.bp.layoutPage.LayoutViewModel
+import cz.cvut.fit.bp.layoutPage.LayoutViewModelFactory
 import cz.cvut.fit.bp.navigation.AppRoutes
+import cz.cvut.fit.bp.patternDetailPage.PatternDetailScreen
+import cz.cvut.fit.bp.patternDetailPage.PatternDetailViewModel
+import cz.cvut.fit.bp.patternDetailPage.PatternDetailViewModelFactory
 import cz.cvut.fit.bp.patternSuggestionsPage.PatternSuggestionsScreen
 import cz.cvut.fit.bp.patternSuggestionsPage.PatternSuggestionsViewModel
 import cz.cvut.fit.bp.patternSuggestionsPage.PatternSuggestionsViewModelFactory
@@ -41,6 +47,8 @@ import cz.cvut.fit.bp.projectsPage.ProjectsViewModel
 import cz.cvut.fit.bp.projectsPage.ProjectsViewModelFactory
 import cz.cvut.fit.bp.projectsPage.ProjectsScreen
 import cz.cvut.fit.bp.shareddb.data.PatternSeeder
+import domain.layout.GeometryKernel
+import domain.solver.InitialSolver
 
 class MainActivity : ComponentActivity() {
     private val appContainer by lazy {
@@ -61,7 +69,8 @@ class MainActivity : ComponentActivity() {
                 //SolverPreviewScreen()
                 AppNav(
                     projectRepository = appContainer.projectRepository,
-                    patternRepository = appContainer.patternRepository
+                    patternRepository = appContainer.patternRepository,
+                    solver = appContainer.nestingSolver
                 )
             }
         }
@@ -135,7 +144,8 @@ fun AppAndroidPreview() {
 @Composable
 fun AppNav(
     projectRepository: ProjectRepository,
-    patternRepository: PatternRepository
+    patternRepository: PatternRepository,
+    solver: InitialSolver
 ) {
     val navController = rememberNavController()
     val projectCreationViewModel: ProjectCreationViewModel = viewModel(factory = ProjectCreationViewModelFactory(projectRepository))
@@ -242,7 +252,11 @@ fun AppNav(
 
             ProjectDetailScreen(
                 state = detailViewModel.uiState,
-                onViewPatternSuggestionsClick = {navController.navigate(AppRoutes.PatternSuggestions)}
+                onViewPatternSuggestionsClick = {
+                    if (projectId != null) {
+                        navController.navigate(AppRoutes.patternSuggestions(projectId))
+                    }
+                }
             )
         }
 
@@ -262,20 +276,62 @@ fun AppNav(
             )
         }
 
-        composable(AppRoutes.PatternSuggestions) {
+        composable(AppRoutes.PatternSuggestionsRoute) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getString("projectId") ?: return@composable
             androidx.compose.runtime.LaunchedEffect(Unit) {
                 patternSuggestionsViewModel.loadPatterns()
             }
 
             PatternSuggestionsScreen(
                 state = patternSuggestionsViewModel.uiState,
-                onPatternClick = {navController.navigate(AppRoutes.Projects)}
-                /*onPatternClick = { patternId ->
-                    navController.navigate(AppRoutes.patternDetail(patternId))
-                }*/
+                onPatternClick = { patternId ->
+                    navController.navigate(AppRoutes.patternDetail(projectId, patternId))
+                }
             )
         }
 
+        composable(AppRoutes.PatternDetailRoute) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getString("projectId") ?: return@composable
+            val patternId = backStackEntry.arguments?.getString("patternId") ?: return@composable
+
+
+            val detailViewModel: PatternDetailViewModel = viewModel(
+                factory = PatternDetailViewModelFactory(patternRepository)
+            )
+
+            androidx.compose.runtime.LaunchedEffect(patternId) {
+                detailViewModel.loadPattern(patternId)
+            }
+
+            PatternDetailScreen(
+                state = detailViewModel.uiState,
+                onBack = { navController.popBackStack() },
+                onViewLayoutClick = { variantId ->
+                    navController.navigate(AppRoutes.layout(projectId, variantId))
+                }
+            )
+        }
+
+        composable(AppRoutes.LayoutRoute) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getString("projectId") ?: return@composable
+            val variantId = backStackEntry.arguments?.getString("variantId") ?: return@composable
+
+            val layoutViewModel: LayoutViewModel = viewModel(
+                factory = LayoutViewModelFactory(
+                    projectRepository = projectRepository,
+                    patternRepository = patternRepository,
+                    solver = solver
+                )
+            )
+
+            androidx.compose.runtime.LaunchedEffect(projectId, variantId) {
+                layoutViewModel.generateLayout(projectId, variantId)
+            }
+            LayoutScreen(
+                state = layoutViewModel.uiState,
+                onBack = { navController.popBackStack() }
+            )
+        }
 
     }
 }

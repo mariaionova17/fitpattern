@@ -12,7 +12,7 @@ class PatternDetailViewModel(private val patternRepository: PatternRepository) :
     var uiState by mutableStateOf(PatternDetailUiState())
         private set
 
-    fun loadProject(patternId: String) {
+    fun loadPattern(patternId: String) {
         viewModelScope.launch {
             uiState = uiState.copy(isLoading = true, errorMessage = null)
 
@@ -30,4 +30,11 @@ class PatternDetailViewModel(private val patternRepository: PatternRepository) :
             }
         }
     }
+
+    /*fun onViewLayoutClick(variantId: String){
+        val patternPieces = patternRepository.getPatternByVariantId(variantId)
+
+
+    }*/
+
 }

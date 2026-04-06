@@ -33,7 +33,6 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
         val fabric = problem.project.fabricPieces.first()
         val fabricBoundingBox = problem.project.fabricPieces.first().contour.boundingBox()
 
-        // TODO integrate seam allowance
         val orderedPatternPieces = orderPatternPieces(
             problem.pieces.map { piece ->
                 piece.copy(

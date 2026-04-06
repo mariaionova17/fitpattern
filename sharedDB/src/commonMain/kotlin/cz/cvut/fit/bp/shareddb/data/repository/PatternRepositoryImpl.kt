@@ -2,11 +2,14 @@ package cz.cvut.fit.bp.shareddb.data.repository
 
 import cz.cvut.fit.bp.shareddb.data.db.AppDatabase
 import cz.cvut.fit.bp.shareddb.data.entity.PatternEntity
+import cz.cvut.fit.bp.shareddb.data.entity.PatternPieceEntity
 import cz.cvut.fit.bp.shareddb.data.entity.PatternVariantEntity
 import cz.cvut.fit.bp.shareddb.data.mapper.toPattern
 import cz.cvut.fit.bp.shareddb.data.mapper.toPatternPieceEntity
+import cz.cvut.fit.bp.shareddb.data.mapper.toPatternPiece
 import cz.cvut.fit.bp.shareddb.data.mapper.toPatternVariant
 import domain.pattern.Pattern
+import domain.pattern.PatternPiece
 import domain.repository.PatternRepository
 
 class PatternRepositoryImpl(
@@ -54,6 +57,15 @@ class PatternRepositoryImpl(
 
         return patternEntity.toPattern(variants)
     }
+
+    override suspend fun getPatternByVariantId(variantId: String): List<PatternPiece>{
+        val dao = db.patternDao()
+
+        return dao.getPiecesByVariantId(variantId).map { patternEntity ->
+            patternEntity.toPatternPiece()
+        }
+    }
+
 
     override suspend fun getAllPatterns(): List<Pattern> {
         val dao = db.patternDao()

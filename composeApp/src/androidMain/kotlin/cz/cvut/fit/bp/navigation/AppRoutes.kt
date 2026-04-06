@@ -5,10 +5,16 @@ object AppRoutes {
     const val ProjectCreation = "project_creation"
     const val FabricImage = "fabric_image"
     const val ImagePick = "image_pick"
-    const val PatternSuggestions = "pattern_suggestions"
+
+    const val PatternSuggestionsRoute = "pattern_suggestions/{projectId}"
+    fun patternSuggestions(projectId: String) = "pattern_suggestions/$projectId"
 
     const val ProjectDetailRoute = "project_detail/{projectId}"
-    fun projectDetail(projectId: String): String {
-        return "project_detail/$projectId"
-    }
+    fun projectDetail(projectId: String) = "project_detail/$projectId"
+
+    const val PatternDetailRoute = "pattern_detail/{projectId}/{patternId}"
+    fun patternDetail(projectId: String, patternId: String) = "pattern_detail/$projectId/$patternId"
+
+    const val LayoutRoute = "layout/{projectId}/{variantId}"
+    fun layout(projectId: String, variantId: String) = "layout/$projectId/$variantId"
 }

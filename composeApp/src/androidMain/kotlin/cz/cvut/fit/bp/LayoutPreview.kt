@@ -6,19 +6,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import domain.geometry.Point
 import domain.geometry.Polygon
 import domain.layout.Placement
-import kotlin.collections.forEach
-import androidx.compose.ui.graphics.drawscope.Stroke
-
-
 import domain.geometry.Shape
 import domain.geometry.apply
 import domain.geometry.boundingBox
-import domain.geometry.setSeamAllowance
 import domain.pattern.PatternPiece
-
 
 @Composable
 fun LayoutPreview(
@@ -38,7 +33,7 @@ fun LayoutPreview(
 
         fun toCanvas(point: Point): Offset {
             return Offset(
-                x = ((point.x - fabricBox.minX) * scale).toFloat(),
+                x = size.width - ((point.x - fabricBox.minX) * scale).toFloat(),
                 y = size.height - ((point.y - fabricBox.minY) * scale).toFloat()
             )
         }
@@ -60,14 +55,12 @@ fun LayoutPreview(
             return path
         }
 
-        // draw fabric
         drawPath(
             path = polygonPath(fabric.contour),
             color = Color.LightGray,
             style = Stroke(width = 3f)
         )
 
-        // draw placed pieces
         placements.forEach { placement ->
             val originalPiece = piecesById[placement.pieceId] ?: return@forEach
             val seamPiece = piecesByIdSeamAllowance[placement.pieceId] ?: return@forEach

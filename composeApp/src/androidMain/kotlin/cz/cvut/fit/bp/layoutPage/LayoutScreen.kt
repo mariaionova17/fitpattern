@@ -152,11 +152,7 @@ fun LayoutScreen(
                                 )
 
                                 Text(
-                                    text = if (index == 0) {
-                                        "Showing generated placement"
-                                    } else {
-                                        "Contour only — current solver places pieces only on the first fabric"
-                                    },
+                                    text = "Showing generated placement",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
@@ -165,10 +161,11 @@ fun LayoutScreen(
                                     fabric = fabricPiece.contour,
                                     piecesById = piecesById,
                                     piecesByIdSeamAllowance = piecesByIdSeamAllowance,
-                                    placements = if (index == 0) result.bestLayout.placed else emptyList(),
+                                    placements = result.bestLayout.placed,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(320.dp),
+                                    fabricIndex = index,
                                     seamAllowance = project.seamAllowance
                                 )
                             }

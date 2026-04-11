@@ -49,7 +49,7 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
             val candidatePlacement = findBestPlacement(piece, fabric, problem.project.rules, fabricBoundingBox, placedShapes, placedBoundingBoxes)
 
             if (candidatePlacement != null){
-                placedPlacements += Placement(piece.id, candidatePlacement.transformation)
+                placedPlacements += Placement(piece.id, 0, candidatePlacement.transformation)
                 placedShapes += candidatePlacement.shape
                 placedBoundingBoxes += candidatePlacement.boundingBox
             } else {
@@ -60,6 +60,9 @@ class InitialSolver(private val geometry: GeometryKernel, private val maxContour
         val timeMs = start.elapsedNow().inWholeMilliseconds
         return NestingResult(LayoutState(placedPlacements, notPlaced, finalScore), triedLayouts = 1, timeMs = timeMs)
     }
+
+
+
 
     fun orderPatternPieces (pieces: List<PatternPiece>): List<PatternPiece>{
         return pieces.sortedWith(

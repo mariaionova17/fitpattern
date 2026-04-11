@@ -5,12 +5,13 @@ import androidx.lifecycle.ViewModelProvider
 import cz.cvut.fit.bp.patternDetailPage.PatternDetailViewModel
 import domain.repository.PatternRepository
 import domain.repository.ProjectRepository
+import domain.solver.BetterSolver
 import domain.solver.InitialSolver
 
 class LayoutViewModelFactory(
     private val patternRepository: PatternRepository,
     private val projectRepository: ProjectRepository,
-    private val solver: InitialSolver,
+    private val solver: BetterSolver,
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

@@ -48,6 +48,7 @@ import cz.cvut.fit.bp.projectsPage.ProjectsViewModelFactory
 import cz.cvut.fit.bp.projectsPage.ProjectsScreen
 import cz.cvut.fit.bp.shareddb.data.PatternSeeder
 import domain.layout.GeometryKernel
+import domain.solver.BetterSolver
 import domain.solver.InitialSolver
 
 class MainActivity : ComponentActivity() {
@@ -145,7 +146,7 @@ fun AppAndroidPreview() {
 fun AppNav(
     projectRepository: ProjectRepository,
     patternRepository: PatternRepository,
-    solver: InitialSolver
+    solver: BetterSolver
 ) {
     val navController = rememberNavController()
     val projectCreationViewModel: ProjectCreationViewModel = viewModel(factory = ProjectCreationViewModelFactory(projectRepository))

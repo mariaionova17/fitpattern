@@ -8,6 +8,7 @@ import domain.layout.GeometryKernel
 import domain.layout.SimpleGeometryKernel
 import domain.repository.PatternRepository
 import domain.repository.ProjectRepository
+import domain.solver.BetterSolver
 import domain.solver.InitialSolver
 
 class AppContainer(context: Context) {
@@ -17,5 +18,5 @@ class AppContainer(context: Context) {
     val patternRepository: PatternRepository = PatternRepositoryImpl(db)
 
     val geometryKernel: GeometryKernel = SimpleGeometryKernel()
-    val nestingSolver = InitialSolver(geometryKernel)
+    val nestingSolver = BetterSolver(geometryKernel)
 }

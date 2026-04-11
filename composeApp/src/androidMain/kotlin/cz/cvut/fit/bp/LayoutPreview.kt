@@ -22,6 +22,7 @@ fun LayoutPreview(
     piecesByIdSeamAllowance: Map<String, PatternPiece>,
     placements: List<Placement>,
     modifier: Modifier = Modifier,
+    fabricIndex: Int,
     seamAllowance: Double = 10.0
 ) {
     Canvas(modifier = modifier) {
@@ -61,7 +62,8 @@ fun LayoutPreview(
             style = Stroke(width = 3f)
         )
 
-        placements.forEach { placement ->
+        val placementsForThisFabric = placements.filter { it.fabricPieceIndex == fabricIndex }
+        placementsForThisFabric.forEach { placement ->
             val originalPiece = piecesById[placement.pieceId] ?: return@forEach
             val seamPiece = piecesByIdSeamAllowance[placement.pieceId] ?: return@forEach
 

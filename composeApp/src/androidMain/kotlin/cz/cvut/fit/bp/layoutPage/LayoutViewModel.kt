@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import domain.repository.PatternRepository
 import domain.repository.ProjectRepository
+import domain.solver.BetterSolver
 import domain.solver.InitialSolver
 import domain.solver.NestingProblem
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,7 @@ import kotlinx.coroutines.withContext
 class LayoutViewModel(
     private val patternRepository: PatternRepository,
     private val projectRepository: ProjectRepository,
-    private val solver: InitialSolver
+    private val solver: BetterSolver
 ) : ViewModel() {
 
     var uiState by mutableStateOf(LayoutUiState())

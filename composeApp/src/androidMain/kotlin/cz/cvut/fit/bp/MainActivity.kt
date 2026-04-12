@@ -257,7 +257,8 @@ fun AppNav(
                     if (projectId != null) {
                         navController.navigate(AppRoutes.patternSuggestions(projectId))
                     }
-                }
+                },
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -287,7 +288,8 @@ fun AppNav(
                 state = patternSuggestionsViewModel.uiState,
                 onPatternClick = { patternId ->
                     navController.navigate(AppRoutes.patternDetail(projectId, patternId))
-                }
+                },
+                onBack = { navController.popBackStack() }
             )
         }
 

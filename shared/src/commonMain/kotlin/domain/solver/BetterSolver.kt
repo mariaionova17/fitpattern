@@ -42,7 +42,7 @@ private data class OrientedPiece(
     val anchors: List<Point>
 )
 
-class BetterSolver(private val geometry: GeometryKernel, private val maxContourAnchors: Int = 20) : NestingSolver {
+class BetterSolver(private val geometry: GeometryKernel, private val maxContourAnchors: Int = 10, private val candidatesPerFabric: Int = 3) : NestingSolver {
 
     override fun solve(problem: NestingProblem): NestingResult {
         val start = TimeSource.Monotonic.markNow()
@@ -82,40 +82,42 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
                     val fabricBoundingBox = fabricPiece.contour.boundingBox()
                     val fabricState = layout.fabrics[fabricIndex]
 
-                    val candidatePlacement = findBestPlacement(
+                    val candidatePlacements = findBestPlacement(
                         piece = piece,
                         fabricPiece = fabricPiece,
-                        rules = problem.project.rules,
                         fabricBoundingBox = fabricBoundingBox,
                         placedShapes = fabricState.placedShapes,
                         placedBoundingBoxes = fabricState.placedBoundingBoxes,
                         orientedPieces = orientedPiecesById[piece.id] ?: emptyList(),
                     )
 
-                    if (candidatePlacement != null) {
+                    if (candidatePlacements.isNotEmpty()) {
                         placedSomewhere = true
-                        triedLayouts++
 
-                        val updatedFabricState = fabricState.copy(
-                            placedShapes = fabricState.placedShapes + candidatePlacement.shape,
-                            placedBoundingBoxes = fabricState.placedBoundingBoxes + candidatePlacement.boundingBox,
-                            placements = fabricState.placements + Placement(
-                                pieceId = piece.id,
-                                fabricPieceIndex = fabricIndex,
-                                transformation = candidatePlacement.transformation
+                        for (candidatePlacement in candidatePlacements) {
+                            triedLayouts++
+
+                            val updatedFabricState = fabricState.copy(
+                                placedShapes = fabricState.placedShapes + candidatePlacement.shape,
+                                placedBoundingBoxes = fabricState.placedBoundingBoxes + candidatePlacement.boundingBox,
+                                placements = fabricState.placements + Placement(
+                                    pieceId = piece.id,
+                                    fabricPieceIndex = fabricIndex,
+                                    transformation = candidatePlacement.transformation
+                                )
                             )
-                        )
 
-                        val updatedFabrics = layout.fabrics.toMutableList()
-                        updatedFabrics[fabricIndex] = updatedFabricState
+                            val updatedFabrics = layout.fabrics.toMutableList()
+                            updatedFabrics[fabricIndex] = updatedFabricState
 
-                        val newScore = calculateMultiFabricLayoutScore(updatedFabrics)
+                            val newScore = calculateMultiFabricLayoutScore(updatedFabrics)
 
-                        nextBeam += PartialLayout(
-                            fabrics = updatedFabrics,
-                            unplaced = layout.unplaced,
-                            score = newScore
-                        )
+                            nextBeam += PartialLayout(
+                                fabrics = updatedFabrics,
+                                unplaced = layout.unplaced,
+                                score = newScore
+                            )
+                        }
                     }
                 }
 
@@ -128,11 +130,11 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
             }
 
             beam = nextBeam
-                .sortedBy { layoutToScalarScore(it) }
+                .sortedBy { layoutToScalarScore(it, problem.project.fabricPieces) }
                 .take(beamWidth)
         }
 
-        val bestLayout = beam.minByOrNull { layoutToScalarScore(it) } ?: initialPartialLayout
+        val bestLayout = beam.minByOrNull { layoutToScalarScore(it, problem.project.fabricPieces) } ?: initialPartialLayout
 
         val allPlacements = bestLayout.fabrics.flatMap { it.placements }
 
@@ -172,27 +174,48 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
         )
     }
 
-    private fun layoutToScalarScore(layout: PartialLayout): Double {
+    private fun layoutToScalarScore(
+        layout: PartialLayout,
+        fabricPieces: List<FabricPiece>
+    ): Double {
         val usedFabricCount = layout.fabrics.count { it.placements.isNotEmpty() }
 
-        return usedFabricCount * 1_000_000.0 +
-                layout.score.height * 1_000.0 +
-                layout.score.width +
-                layout.unplaced.size * 100_000_000.0
+        var total =
+            usedFabricCount * 1_000_000.0 +
+                    layout.unplaced.size * 100_000_000.0 +
+                    layout.score.height * 1_000.0 +
+                    layout.score.width
+
+        for (i in layout.fabrics.indices) {
+            val fabricState = layout.fabrics[i]
+            if (fabricState.placedBoundingBoxes.isEmpty()) continue
+
+            val fabricBox = fabricPieces[i].contour.boundingBox()
+            val averageCenterY = fabricState.placedBoundingBoxes
+                .map { (it.minY + it.maxY) / 2.0 }
+                .average()
+
+            val bottomGap = averageCenterY - fabricBox.minY
+            total += bottomGap * 5_000.0
+        }
+
+        return total
     }
 
     private fun findBestPlacement(
         piece: PatternPiece,
         fabricPiece: FabricPiece,
-        rules: PlacementRules,
         fabricBoundingBox: BoundingBox,
         placedShapes: List<Shape>,
         placedBoundingBoxes: List<BoundingBox>,
         orientedPieces: List<OrientedPiece>,
-    ): CandidatePlacement? {
+    ): List<CandidatePlacement> {
 
         val targetPoints = getTargetPointsSmart(fabricPiece.contour, placedShapes)
-        var bestPlacement: CandidatePlacement? = null
+        val candidates = mutableListOf<CandidatePlacement>()
+        var bestRawTotalSoFar = Double.POSITIVE_INFINITY
+
+        val rawCandidates = mutableListOf<CandidatePlacement>()
 
         for (oriented in orientedPieces) {
             val orientation = oriented.angle
@@ -214,9 +237,9 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
                         continue
                     }
 
-                    var placedShape = orientedShape.apply(Transformation(move = offset))
+                    val placedShape = orientedShape.apply(Transformation(move = offset))
 
-                    var placedBoundingBox = placedShape.boundingBox()
+                    val placedBoundingBox = placedShape.boundingBox()
 
                     if (!geometry.contains(fabricPiece.contour, placedShape)) {
                         continue
@@ -239,86 +262,59 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
                         continue
                     }
 
-                    placedShape = refinePlacement(
-                        placedShape = placedShape,
-                        fabricPiece = fabricPiece,
-                        placedShapes = placedShapes,
-                        placedBoundingBoxes = placedBoundingBoxes
-                    )
-
-                    placedBoundingBox = placedShape.boundingBox()
-
-
-                    val candidateScore = calculateCandidateScore(
+                    val rawScore = calculateCandidateScore(
                         candidateBoundingBox = placedBoundingBox,
                         placedBoundingBoxes = placedBoundingBoxes,
                         fabricBoundingBox = fabricBoundingBox
                     )
 
-                    if (bestPlacement != null && candidateScore >= bestPlacement.score) {
-                        continue
-                    }
-
-                    val finalBoundingBox = placedBoundingBox
-                    val originalBoundingBox = orientedBoundingBox
-
-                    val finalOffset = Point(
-                        x = finalBoundingBox.minX - originalBoundingBox.minX,
-                        y = finalBoundingBox.minY - originalBoundingBox.minY
+                    rawCandidates += CandidatePlacement(
+                        transformation = Transformation(
+                            move = offset,
+                            rotationDegrees = orientation,
+                            mirrorY = false
+                        ),
+                        shape = placedShape,
+                        boundingBox = placedBoundingBox,
+                        score = rawScore,
+                        orientedBoundingBox = orientedBoundingBox
                     )
-
-                    val candidateTransformation = Transformation(
-                        move = finalOffset,
-                        rotationDegrees = orientation,
-                        mirrorY = false
-                    )
-                    val candidate = CandidatePlacement(
-                        candidateTransformation,
-                        placedShape,
-                        placedBoundingBox,
-                        candidateScore
-                    )
-                    bestPlacement = candidate
-                    /*println("New BEST placement for piece ${piece.id}")
-                    println("Offset: $offset")
-                    println(
-                        "Score: total=${candidateScore.total}, " +
-                                "boundingArea=${candidateScore.boundingArea}, " +
-                                "borderReward=${candidateScore.borderReward}, " +
-                                "pieceContact=${candidateScore.pieceContactReward}, " +
-                                "floatingPenalty=${candidateScore.floatingPenalty}"
-                    )*/
                 }
             }
         }
-        return bestPlacement
-    }
-
-    private fun getTargetPoints(fabricShape: Shape, placedShapes: List<Shape>): List<Point> {
-        val result = mutableListOf<Point>()
-
-        result += fabricShape.contour.points
-        result += fabricShape.contour.edges().flatMap { (a, b) ->
-            listOf(
-                Point(
-                    x = a.x + (b.x - a.x) * 0.25,
-                    y = a.y + (b.y - a.y) * 0.25
-                ),
-                Point(
-                    x = a.x + (b.x - a.x) * 0.5,
-                    y = a.y + (b.y - a.y) * 0.5
-                ),
-                Point(
-                    x = a.x + (b.x - a.x) * 0.75,
-                    y = a.y + (b.y - a.y) * 0.75
+        return rawCandidates
+            .sortedBy { it.score }
+            .distinctBy { candidateKey(it) }
+            .take(5)
+            .map { candidate ->
+                val refinedShape = refinePlacement(
+                    placedShape = candidate.shape,
+                    fabricPiece = fabricPiece,
+                    placedShapes = placedShapes,
+                    placedBoundingBoxes = placedBoundingBoxes
                 )
-            )
-        }
-
-        for (shape in placedShapes)
-            result += shape.contour.points
-
-        return result.distinctBy { shortenNumbers(it) }
+                val refinedBoundingBox = refinedShape.boundingBox()
+                CandidatePlacement(
+                    transformation = Transformation(
+                        move = Point(
+                            x = refinedBoundingBox.minX - candidate.orientedBoundingBox.minX,
+                            y = refinedBoundingBox.minY - candidate.orientedBoundingBox.minY
+                        ),
+                        rotationDegrees = candidate.transformation.rotationDegrees,
+                        mirrorY = false
+                    ),
+                    shape = refinedShape,
+                    boundingBox = refinedBoundingBox,
+                    score = calculateCandidateScore(
+                        candidateBoundingBox = refinedBoundingBox,
+                        placedBoundingBoxes = placedBoundingBoxes,
+                        fabricBoundingBox = fabricBoundingBox
+                    ),
+                    orientedBoundingBox = candidate.orientedBoundingBox
+                )
+            }
+            .sortedBy { it.score }
+            .take(candidatesPerFabric)
     }
 
     //points are considered equal if they have less of a 0.1 difference
@@ -385,9 +381,14 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
 
         val contactBonus = contacts * 350.0
 
+        val averageCenterY = allBoxes.map { (it.minY + it.maxY) / 2.0 }.average()
+        val averageBottomGap = averageCenterY - fabricBoundingBox.minY
+        val bottomBiasPenalty = averageBottomGap * 500.0
+
         val total =
             expansionPenalty +
-                    supportPenalty -
+                    supportPenalty +
+                    bottomBiasPenalty -
                     contactBonus
 
         return CandidateScore(
@@ -403,7 +404,8 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
         val transformation: Transformation,
         val shape: Shape,
         val boundingBox: BoundingBox,
-        val score: CandidateScore
+        val score: CandidateScore,
+        val orientedBoundingBox: BoundingBox
     )
 
     private data class CandidateScore(
@@ -670,6 +672,14 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
         }
 
         return result.distinctBy { shortenNumbers(it) }
+    }
+
+    private fun candidateKey(candidate: CandidatePlacement): Triple<Long, Long, Long> {
+        val cut = 100.0
+        val x = kotlin.math.round(candidate.boundingBox.minX * cut).toLong()
+        val y = kotlin.math.round(candidate.boundingBox.minY * cut).toLong()
+        val a = kotlin.math.round(candidate.transformation.rotationDegrees * 10.0).toLong()
+        return Triple(x, y, a)
     }
 }
 

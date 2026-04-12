@@ -152,8 +152,6 @@ fun ProjectCreationScreen(
                     onDismissRequest = { onManualDialogDismiss() },
                     text = {
                         Column(
-                            /*modifier = Modifier
-                                .background(MaterialTheme.colorScheme.background),*/
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ){
                             TextInput("Fabric width (mm):", state.currentFabric.widthMm, onFabricWidthChanged)
@@ -169,7 +167,6 @@ fun ProjectCreationScreen(
                                 Text("Warp is along fabric's width", color = MaterialTheme.colorScheme.onBackground)
                             }
                         }
-                        //TODO warp is along the width
                     },
                     confirmButton = {
                         Button(onClick = onManualDialogConfirm) {

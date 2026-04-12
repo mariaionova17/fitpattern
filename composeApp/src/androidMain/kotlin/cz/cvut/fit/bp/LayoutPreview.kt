@@ -28,14 +28,23 @@ fun LayoutPreview(
     Canvas(modifier = modifier) {
         val fabricBox = fabric.contour.boundingBox()
 
-        val scaleX = size.width / (fabricBox.maxX - fabricBox.minX).toFloat()
-        val scaleY = size.height / (fabricBox.maxY - fabricBox.minY).toFloat()
+        val fabricWidth = (fabricBox.maxX - fabricBox.minX).toFloat()
+        val fabricHeight = (fabricBox.maxY - fabricBox.minY).toFloat()
+
+        val scaleX = size.width / fabricWidth
+        val scaleY = size.height / fabricHeight
         val scale = minOf(scaleX, scaleY)
+
+        val drawnWidth = fabricWidth * scale
+        val drawnHeight = fabricHeight * scale
+
+        val offsetX = (size.width - drawnWidth) / 2f
+        val offsetY = (size.height - drawnHeight) / 2f
 
         fun toCanvas(point: Point): Offset {
             return Offset(
-                x = size.width - ((point.x - fabricBox.minX) * scale).toFloat(),
-                y = size.height - ((point.y - fabricBox.minY) * scale).toFloat()
+                x = size.width - (((point.x - fabricBox.minX).toFloat() * scale) + offsetX),
+                y = size.height - (((point.y - fabricBox.minY).toFloat() * scale) + offsetY)
             )
         }
 

@@ -1,16 +1,19 @@
 package cz.cvut.fit.bp.projectDetailPage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -18,21 +21,33 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import cz.cvut.fit.bp.R
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import cz.cvut.fit.bp.LayoutPreview
+import domain.geometry.rectangleSize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectDetailScreen(
     state: ProjectDetailUiState,
-    onViewPatternSuggestionsClick: () -> Unit
+    onViewPatternSuggestionsClick: () -> Unit,
+    onBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    var selectedFabricIndex by remember { mutableStateOf<Int?>(null) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -45,6 +60,15 @@ fun ProjectDetailScreen(
                             color = MaterialTheme.colorScheme.onBackground,
                             style = MaterialTheme.typography.headlineLarge
                         )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.back),
+                                contentDescription = "Back",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     },
                     colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.background,
@@ -181,7 +205,8 @@ fun ProjectDetailScreen(
                     } else {
                         project.fabricPieces.forEachIndexed { index, fabric ->
                             Card(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth()
+                                    .clickable { selectedFabricIndex = index },
                                 colors = CardDefaults.cardColors(
                                     containerColor = MaterialTheme.colorScheme.surface
                                 )
@@ -197,22 +222,11 @@ fun ProjectDetailScreen(
                                         style = MaterialTheme.typography.titleMedium,
                                         color = MaterialTheme.colorScheme.onBackground
                                     )
-
-                                    /*DetailRow("Type", fabric::class.simpleName ?: "Unknown")
-
-                                    // Adjust these field names to your actual Fabric model
-                                    val widthText =
-                                        runCatching { fabric.widthMm.toString() }.getOrNull()
-                                    val lengthText =
-                                        runCatching { fabric.lengthMm.toString() }.getOrNull()
-
-                                    if (widthText != null) {
-                                        DetailRow("Width", "$widthText mm")
-                                    }
-
-                                    if (lengthText != null) {
-                                        DetailRow("Length", "$lengthText mm")
-                                    }*/
+                                    Text(
+                                        text = "Tap to view shape",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    )
                                 }
                             }
                         }
@@ -223,6 +237,50 @@ fun ProjectDetailScreen(
                     ) {
                         Text("Choose a pattern")
                     }
+                }
+                val selectedFabric =
+                    selectedFabricIndex?.let { index -> project.fabricPieces.getOrNull(index) }
+
+                if (selectedFabric != null) {
+                    AlertDialog(
+                        onDismissRequest = { selectedFabricIndex = null },
+                        title = {
+                            Text(
+                                text = "Fabric ${selectedFabricIndex!! + 1} shape",
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        },
+                        text = {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                val rectangleSize = selectedFabric.contour.rectangleSize()
+                                if (rectangleSize != null){
+                                    Text(
+                                        text = "${rectangleSize.first} x ${rectangleSize.second} mm",
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    )
+                                }
+                                LayoutPreview(
+                                    fabric = selectedFabric.contour,
+                                    piecesById = emptyMap(),
+                                    piecesByIdSeamAllowance = emptyMap(),
+                                    placements = emptyList(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(320.dp),
+                                    fabricIndex = selectedFabricIndex ?: 0,
+                                    seamAllowance = project.seamAllowance
+                                )
+                            }
+                        },
+                        confirmButton = {
+                            Button(onClick = { selectedFabricIndex = null }) {
+                                Text("Close")
+                            }
+                        },
+                        containerColor = MaterialTheme.colorScheme.surface
+                    )
                 }
             }
         }

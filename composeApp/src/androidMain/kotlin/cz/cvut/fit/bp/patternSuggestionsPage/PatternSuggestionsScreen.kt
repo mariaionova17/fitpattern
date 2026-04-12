@@ -15,6 +15,8 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,7 +24,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import cz.cvut.fit.bp.R
 import cz.cvut.fit.bp.projectsPage.ProjectsUiState
 import domain.pattern.Pattern
 import domain.project.Project
@@ -32,7 +36,8 @@ import domain.project.Project
 @Composable
 fun PatternSuggestionsScreen(
     state: PatternSuggestionsUiState,
-    onPatternClick: (String) -> Unit
+    onPatternClick: (String) -> Unit,
+    onBack: () -> Unit
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -45,6 +50,15 @@ fun PatternSuggestionsScreen(
                             color = MaterialTheme.colorScheme.onBackground,
                             style = MaterialTheme.typography.headlineLarge
                         )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.back),
+                                contentDescription = "Back",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.background,

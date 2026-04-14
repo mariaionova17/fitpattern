@@ -10,5 +10,6 @@ data class LayoutUiState(
     val project: Project? = null,
     val patternPieces: List<PatternPiece> = listOf(),
     val result: NestingResult? = null,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val hasSavedLayout: Boolean = false
 )

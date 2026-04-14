@@ -65,6 +65,10 @@ class PatternRepositoryImpl(
             patternEntity.toPatternPiece()
         }
     }
+    override suspend fun getSizeByVariantId(variantId: String): String?{
+        val dao = db.patternDao()
+        return dao.getSizeByVariantId(variantId)
+    }
 
 
     override suspend fun getAllPatterns(): List<Pattern> {

@@ -101,6 +101,7 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
                                 placedShapes = fabricState.placedShapes + candidatePlacement.shape,
                                 placedBoundingBoxes = fabricState.placedBoundingBoxes + candidatePlacement.boundingBox,
                                 placements = fabricState.placements + Placement(
+                                    id ="",
                                     pieceId = piece.id,
                                     fabricPieceIndex = fabricIndex,
                                     transformation = candidatePlacement.transformation
@@ -141,6 +142,7 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
         val timeMs = start.elapsedNow().inWholeMilliseconds
 
         return NestingResult(
+            id ="",
             bestLayout = LayoutState(
                 placed = allPlacements,
                 unplaced = bestLayout.unplaced,

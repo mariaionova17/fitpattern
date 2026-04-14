@@ -114,6 +114,7 @@ class NotBetterSolver(
                             placedShapes = fabricState.placedShapes + candidatePlacement.shape,
                             placedBoundingBoxes = fabricState.placedBoundingBoxes + bb,
                             placements = fabricState.placements + Placement(
+                                id = "",
                                 pieceId = piece.id,
                                 fabricPieceIndex = fabricIndex,
                                 transformation = candidatePlacement.transformation
@@ -153,6 +154,7 @@ class NotBetterSolver(
             ?: PartialLayout(fabrics = problem.project.fabricPieces.map { FabricLayoutState() })
 
         return NestingResult(
+            id = "",
             bestLayout = LayoutState(
                 placed = bestLayout.fabrics.flatMap { it.placements },
                 unplaced = bestLayout.unplaced,

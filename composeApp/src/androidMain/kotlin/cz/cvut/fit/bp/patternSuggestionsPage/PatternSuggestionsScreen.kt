@@ -145,7 +145,7 @@ private fun PatternItem(
             )
 
             Text(
-                text = "Pattern variants: ${pattern.variants.size}",
+                text = "Pattern sizes: " + pattern.variants.joinToString { it.size },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )

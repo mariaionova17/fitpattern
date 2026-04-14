@@ -44,6 +44,7 @@ import domain.geometry.rectangleSize
 fun ProjectDetailScreen(
     state: ProjectDetailUiState,
     onViewPatternSuggestionsClick: () -> Unit,
+    onGeneratedLayoutClick: (String, String) -> Unit,
     onBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -224,6 +225,56 @@ fun ProjectDetailScreen(
                                     )
                                     Text(
                                         text = "Tap to view shape",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Text(
+                        text = "Generated layouts",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+
+                    if (state.generatedLayouts.isEmpty()) {
+                        Text(
+                            text = "No generated layouts yet",
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    } else {
+                        state.generatedLayouts.forEachIndexed { index, layout ->
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onGeneratedLayoutClick(state.project.id, layout.variantId) },
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surface
+                                )
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Text(
+                                        text = "Layout ${index + 1}",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    )
+
+                                    Text(
+                                        text = "Pattern: ${layout.patternName}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    )
+
+                                    Text(
+                                        text = "Size: ${layout.patternSize}",
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onBackground
                                     )

@@ -1,7 +1,9 @@
 package domain.geometry
+import kotlinx.serialization.Serializable
 import kotlin.math.*
 
 
+@Serializable
 data class Transformation(
     val move: Point = Point(0.0, 0.0),
     val rotationDegrees: Double = 0.0,

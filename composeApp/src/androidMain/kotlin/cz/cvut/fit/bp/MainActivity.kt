@@ -48,6 +48,7 @@ import cz.cvut.fit.bp.projectsPage.ProjectsViewModelFactory
 import cz.cvut.fit.bp.projectsPage.ProjectsScreen
 import cz.cvut.fit.bp.shareddb.data.PatternSeeder
 import domain.layout.GeometryKernel
+import domain.repository.NestingResultRepository
 import domain.solver.BetterSolver
 import domain.solver.InitialSolver
 
@@ -71,6 +72,7 @@ class MainActivity : ComponentActivity() {
                 AppNav(
                     projectRepository = appContainer.projectRepository,
                     patternRepository = appContainer.patternRepository,
+                    nestingResultRepository = appContainer.nestingResultRepository,
                     solver = appContainer.nestingSolver
                 )
             }
@@ -146,6 +148,7 @@ fun AppAndroidPreview() {
 fun AppNav(
     projectRepository: ProjectRepository,
     patternRepository: PatternRepository,
+    nestingResultRepository: NestingResultRepository,
     solver: BetterSolver
 ) {
     val navController = rememberNavController()
@@ -242,7 +245,7 @@ fun AppNav(
             val projectId = backStackEntry.arguments?.getString("projectId")
 
             val detailViewModel: ProjectDetailViewModel = viewModel(
-                factory = ProjectDetailViewModelFactory(projectRepository)
+                factory = ProjectDetailViewModelFactory(projectRepository, patternRepository, nestingResultRepository)
             )
 
             if (projectId != null) {
@@ -258,6 +261,8 @@ fun AppNav(
                         navController.navigate(AppRoutes.patternSuggestions(projectId))
                     }
                 },
+                onGeneratedLayoutClick = { projectId, variantId ->
+                    navController.navigate(AppRoutes.layout(projectId, variantId))},
                 onBack = { navController.popBackStack() }
             )
         }
@@ -323,12 +328,13 @@ fun AppNav(
                 factory = LayoutViewModelFactory(
                     projectRepository = projectRepository,
                     patternRepository = patternRepository,
+                    nestingResultRepository = nestingResultRepository,
                     solver = solver
                 )
             )
 
             androidx.compose.runtime.LaunchedEffect(projectId, variantId) {
-                layoutViewModel.generateLayout(projectId, variantId)
+                layoutViewModel.openOrGenerateLayout(projectId, variantId)
             }
             LayoutScreen(
                 state = layoutViewModel.uiState,

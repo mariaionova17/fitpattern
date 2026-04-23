@@ -15,4 +15,6 @@ interface NestingResultRepository {
     suspend fun getPatternNameAndVariantIdFromNestingResult(
         nestingResultId: String
     ): Pair<String, String>
+
+    suspend fun deleteNestingResultsByProject(projectId: String)
 }

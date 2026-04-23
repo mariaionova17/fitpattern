@@ -60,4 +60,28 @@ class ProjectDetailViewModel(private val projectRepository: ProjectRepository, p
             }
         }
     }
+
+    fun deleteProject(onDeleted: () -> Unit) {
+        val projectId = uiState.project?.id ?: return
+
+        viewModelScope.launch {
+            try {
+                uiState = uiState.copy(
+                    isLoading = true,
+                    errorMessage = null
+                )
+
+                nestingResultRepository.deleteNestingResultsByProject(projectId)
+                projectRepository.deleteProject(projectId)
+
+                uiState = uiState.copy(isLoading = false)
+                onDeleted()
+            } catch (e: Exception) {
+                uiState = uiState.copy(
+                    isLoading = false,
+                    errorMessage = e.message
+                )
+            }
+        }
+    }
 }

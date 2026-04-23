@@ -7,7 +7,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import cz.cvut.fit.bp.shareddb.data.entity.LayoutPlacedPieceEntity
 import cz.cvut.fit.bp.shareddb.data.entity.NestingResultEntity
-import cz.cvut.fit.bp.shareddb.data.entity.PatternVariantEntity
 import cz.cvut.fit.bp.shareddb.data.relation.NestingResultWithPieces
 
 @Dao
@@ -85,4 +84,16 @@ interface NestingResultDao {
     // nestingResultId -> nesting_res -> patternVariantId -> pattern_variants -> size
     // nestingResultId -> nesting_res -> patternVariantId -> pattern_variants -> pattern_id -> patterns -> name
 
+    @Query(
+        """
+    DELETE FROM layout_placements
+    WHERE nestingResultId IN (
+        SELECT id FROM nesting_results WHERE projectId = :projectId
+    )
+    """
+    )
+    suspend fun deletePlacedPiecesByProjectId(projectId: String)
+
+    @Query("DELETE FROM nesting_results WHERE projectId = :projectId")
+    suspend fun deleteNestingResultsByProjectId(projectId: String)
 }

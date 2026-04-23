@@ -61,4 +61,9 @@ class NestingResultRepositoryImpl(
         return if (name != null && size != null) Pair(name, size) else Pair("","")
     }
 
+    override suspend fun deleteNestingResultsByProject(projectId: String) {
+        dao.deletePlacedPiecesByProjectId(projectId)
+        dao.deleteNestingResultsByProjectId(projectId)
+    }
+
 }

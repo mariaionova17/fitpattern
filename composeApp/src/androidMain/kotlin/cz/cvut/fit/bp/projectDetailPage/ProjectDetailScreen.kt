@@ -45,10 +45,12 @@ fun ProjectDetailScreen(
     state: ProjectDetailUiState,
     onViewPatternSuggestionsClick: () -> Unit,
     onGeneratedLayoutClick: (String, String) -> Unit,
+    onDeleteProjectClick: () -> Unit,
     onBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     var selectedFabricIndex by remember { mutableStateOf<Int?>(null) }
+    var showDeleteProjectDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -68,6 +70,15 @@ fun ProjectDetailScreen(
                                 painter = painterResource(id = R.drawable.back),
                                 contentDescription = "Back",
                                 tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { showDeleteProjectDialog = true }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.delete),
+                                contentDescription = "Delete project",
+                                tint = MaterialTheme.colorScheme.error
                             )
                         }
                     },
@@ -328,6 +339,40 @@ fun ProjectDetailScreen(
                         confirmButton = {
                             Button(onClick = { selectedFabricIndex = null }) {
                                 Text("Close")
+                            }
+                        },
+                        containerColor = MaterialTheme.colorScheme.surface
+                    )
+                }
+
+                if (showDeleteProjectDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDeleteProjectDialog = false },
+                        title = {
+                            Text(
+                                text = "Delete project?",
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        },
+                        text = {
+                            Text(
+                                text = "This will permanently delete the project and all generated layouts connected to it.",
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    showDeleteProjectDialog = false
+                                    onDeleteProjectClick()
+                                }
+                            ) {
+                                Text("Delete")
+                            }
+                        },
+                        dismissButton = {
+                            Button(onClick = { showDeleteProjectDialog = false }) {
+                                Text("Cancel")
                             }
                         },
                         containerColor = MaterialTheme.colorScheme.surface

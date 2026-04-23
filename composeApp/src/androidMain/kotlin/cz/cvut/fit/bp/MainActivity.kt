@@ -263,6 +263,11 @@ fun AppNav(
                 },
                 onGeneratedLayoutClick = { projectId, variantId ->
                     navController.navigate(AppRoutes.layout(projectId, variantId))},
+                onDeleteProjectClick = {
+                    detailViewModel.deleteProject {
+                        navController.popBackStack()
+                    }
+                },
                 onBack = { navController.popBackStack() }
             )
         }

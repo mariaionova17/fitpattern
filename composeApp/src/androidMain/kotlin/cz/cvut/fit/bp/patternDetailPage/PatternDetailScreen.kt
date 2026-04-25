@@ -42,6 +42,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cz.cvut.fit.bp.R
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.foundation.layout.size
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -141,6 +143,7 @@ fun PatternDetailScreen(
 
             else -> {
                 val pattern = state.pattern
+                val uriHandler = LocalUriHandler.current
                 var selectedVariantId by remember(pattern.id) {
                     mutableStateOf(pattern.variants.firstOrNull()?.id)
                 }
@@ -214,6 +217,23 @@ fun PatternDetailScreen(
                             )
                         }
                     }
+                    Icon(
+                        painter = painterResource(id = R.drawable.download),
+                        contentDescription = "Download pattern",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clickable {
+                                if (!pattern.downloadLink.isNullOrBlank()) {
+                                    uriHandler.openUri(pattern.downloadLink)
+                                }
+                            }
+                    )
+                    Text(
+                        text = "Download pattern",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
             }
         }
@@ -270,16 +290,13 @@ private fun PatternPreviewImage(
         if (pictureUri.isNullOrBlank()) {
             null
         } else {
-            runCatching {
-                when {
-                    pictureUri.startsWith("content://") -> {
-                        context.contentResolver.openInputStream(Uri.parse(pictureUri))?.use { input ->
-                            BitmapFactory.decodeStream(input)
-                        }
-                    }
-                    else -> BitmapFactory.decodeFile(pictureUri)
+            try {
+                context.assets.open(pictureUri).use { inputStream ->
+                    BitmapFactory.decodeStream(inputStream)
                 }
-            }.getOrNull()
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 

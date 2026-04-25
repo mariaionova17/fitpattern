@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6123042345e510144ceae86e89b768f2",
+    "identityHash": "7ed4ac960b32cea9d9568fe9d3e13c1b",
     "entities": [
       {
         "tableName": "projects",
@@ -102,7 +102,7 @@
       },
       {
         "tableName": "patterns",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `pictureUri` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `pictureUri` TEXT NOT NULL, `downloadLink` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -119,6 +119,12 @@
           {
             "fieldPath": "pictureUri",
             "columnName": "pictureUri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "downloadLink",
+            "columnName": "downloadLink",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -283,7 +289,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6123042345e510144ceae86e89b768f2')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7ed4ac960b32cea9d9568fe9d3e13c1b')"
     ]
   }
 }

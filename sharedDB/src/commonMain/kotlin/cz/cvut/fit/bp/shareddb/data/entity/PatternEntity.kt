@@ -8,5 +8,6 @@ data class PatternEntity (
     @PrimaryKey
     val id: String,
     val name: String,
-    val pictureUri: String
+    val pictureUri: String,
+    val downloadLink: String
 )

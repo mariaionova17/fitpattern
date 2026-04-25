@@ -3,6 +3,7 @@ package cz.cvut.fit.bp.shareddb.data.mapper
 import cz.cvut.fit.bp.shareddb.data.entity.PatternEntity
 import domain.pattern.Pattern
 import domain.pattern.PatternVariant
+import kotlin.String
 
 fun PatternEntity.toPattern(
     variants: List<PatternVariant>
@@ -11,6 +12,7 @@ fun PatternEntity.toPattern(
         id = id,
         name = name,
         variants = variants,
-        pictureUri = pictureUri
+        pictureUri = pictureUri,
+        downloadLink = downloadLink
     )
 }

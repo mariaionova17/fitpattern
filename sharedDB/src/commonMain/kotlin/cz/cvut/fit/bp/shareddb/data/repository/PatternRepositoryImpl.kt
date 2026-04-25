@@ -23,7 +23,8 @@ class PatternRepositoryImpl(
             PatternEntity(
                 id = pattern.id,
                 name = pattern.name,
-                pictureUri = pattern.pictureUri
+                pictureUri = pattern.pictureUri,
+                downloadLink = pattern.downloadLink
             )
         )
 

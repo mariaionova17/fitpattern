@@ -4,7 +4,7 @@ object AppRoutes {
     const val Projects = "projects"
     const val ProjectCreation = "project_creation"
     const val FabricImage = "fabric_image"
-    const val ImagePick = "image_pick"
+    const val SelectImage = "select_image"
 
     const val PatternSuggestionsRoute = "pattern_suggestions/{projectId}"
     fun patternSuggestions(projectId: String) = "pattern_suggestions/$projectId"

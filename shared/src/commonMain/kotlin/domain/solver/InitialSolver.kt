@@ -25,7 +25,7 @@ import kotlin.time.TimeSource
 
 class InitialSolver(private val geometry: GeometryKernel, private val maxContourAnchors: Int = 20) : NestingSolver {
 
-    override fun solve(problem: NestingProblem): NestingResult{
+    override fun solve(problem: NestingProblem, onProgress: (Float) -> Unit): NestingResult{
         val start = TimeSource.Monotonic.markNow()
         require (problem.project.fabricPieces.isNotEmpty()){"No fabric pieces"}
 

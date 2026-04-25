@@ -44,7 +44,7 @@ private data class OrientedPiece(
 
 class BetterSolver(private val geometry: GeometryKernel, private val maxContourAnchors: Int = 10, private val candidatesPerFabric: Int = 3) : NestingSolver {
 
-    override fun solve(problem: NestingProblem): NestingResult {
+    override fun solve(problem: NestingProblem, onProgress: (Float) -> Unit): NestingResult {
         val start = TimeSource.Monotonic.markNow()
         require(problem.project.fabricPieces.isNotEmpty()) { "No fabric pieces" }
 
@@ -71,7 +71,10 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
         var triedLayouts = 0
         val beamWidth = 5
 
-        for (piece in orderedPatternPieces) {
+        for ((index, piece) in orderedPatternPieces.withIndex()) {
+            val progress = index.toFloat() / orderedPatternPieces.size.toFloat()
+            onProgress(progress)
+
             val nextBeam = mutableListOf<PartialLayout>()
 
             for (layout in beam) {
@@ -140,6 +143,8 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
         val allPlacements = bestLayout.fabrics.flatMap { it.placements }
 
         val timeMs = start.elapsedNow().inWholeMilliseconds
+
+        onProgress(1f)
 
         return NestingResult(
             id ="",

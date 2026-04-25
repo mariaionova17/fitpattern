@@ -57,7 +57,7 @@ fun ProjectCreationScreen(
     onManualDialogDismiss: () -> Unit,
     onManualDialogConfirm: () -> Unit,
     onOpenManualDialogue: () -> Unit,
-    onOpenImagePick: () -> Unit,
+    onOpenSelectImage: () -> Unit,
     onBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -135,7 +135,7 @@ fun ProjectCreationScreen(
                 FabricModeCard(
                     label = "Add an image",
                     selected = state.currentFabric.inputMode == FabricInputMode.IMAGE,
-                    onClick = onOpenImagePick,
+                    onClick = onOpenSelectImage,
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(

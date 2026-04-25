@@ -48,15 +48,21 @@ fun LayoutScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(innerPadding),
+                        .padding(innerPadding)
+                        .padding(32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(
+                        progress = { state.generationProgress }
+                    )
+
                     Spacer(modifier = Modifier.height(16.dp))
+
                     Text(
-                        text = "Generating layout...",
-                        color = MaterialTheme.colorScheme.onBackground
+                        text = "${(state.generationProgress * 100).toInt()}%",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.titleLarge
                     )
                 }
             }

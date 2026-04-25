@@ -46,7 +46,7 @@ class NotBetterSolver(
     private val nfpCache = mutableMapOf<NfpKey, List<Polygon>>()
     private val ifpCache = mutableMapOf<Pair<String, Double>, List<Point>>()
 
-    override fun solve(problem: NestingProblem): NestingResult {
+    override fun solve(problem: NestingProblem, onProgress: (Float) -> Unit): NestingResult {
         val start = TimeSource.Monotonic.markNow()
         nfpCache.clear()
         ifpCache.clear()

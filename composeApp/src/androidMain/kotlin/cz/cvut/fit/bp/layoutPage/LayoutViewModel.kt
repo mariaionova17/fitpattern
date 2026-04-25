@@ -30,6 +30,7 @@ class LayoutViewModel(
         viewModelScope.launch {
             uiState = uiState.copy(
                 isLoading = true,
+                generationProgress = 0f,
                 errorMessage = null
             )
 
@@ -62,7 +63,11 @@ class LayoutViewModel(
                     )
 
                     val resultWithoutIds = withContext(Dispatchers.Default) {
-                        solver.solve(problem)
+                        solver.solve(problem) { progress ->
+                            uiState = uiState.copy(
+                                generationProgress = progress
+                            )
+                        }
                     }
 
                     val result = resultWithoutIds.copy(

@@ -4,12 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -26,14 +21,13 @@ import cz.cvut.fit.bp.patternSuggestionsPage.PatternSuggestionsScreen
 import cz.cvut.fit.bp.patternSuggestionsPage.PatternSuggestionsViewModel
 import cz.cvut.fit.bp.patternSuggestionsPage.PatternSuggestionsViewModelFactory
 import cz.cvut.fit.bp.projectCreation.FabricImageScreen
-import cz.cvut.fit.bp.projectCreation.ImagePickScreen
+import cz.cvut.fit.bp.projectCreation.SelectImageScreen
 import cz.cvut.fit.bp.projectCreation.ProjectCreationScreen
 import cz.cvut.fit.bp.projectCreation.ProjectCreationViewModel
 import cz.cvut.fit.bp.projectCreation.ProjectCreationViewModelFactory
 import cz.cvut.fit.bp.shareddb.data.db.createDatabase
 import cz.cvut.fit.bp.shareddb.data.repository.ProjectRepositoryImpl
 import cz.cvut.fit.bp.ui.theme.BpTheme
-import domain.geometry.setSeamAllowance
 import domain.pattern.PlacementRules
 import domain.pattern.RotationRules
 import domain.project.Project
@@ -47,10 +41,8 @@ import cz.cvut.fit.bp.projectsPage.ProjectsViewModel
 import cz.cvut.fit.bp.projectsPage.ProjectsViewModelFactory
 import cz.cvut.fit.bp.projectsPage.ProjectsScreen
 import cz.cvut.fit.bp.shareddb.data.PatternSeeder
-import domain.layout.GeometryKernel
 import domain.repository.NestingResultRepository
 import domain.solver.BetterSolver
-import domain.solver.InitialSolver
 
 class MainActivity : ComponentActivity() {
     private val appContainer by lazy {
@@ -197,16 +189,16 @@ fun AppNav(
                 onManualDialogDismiss = projectCreationViewModel::closeManualDialog,
                 onManualDialogConfirm = projectCreationViewModel::confirmManualDialog,
                 onOpenManualDialogue = projectCreationViewModel::openManualDialog,
-                onOpenImagePick = {
+                onOpenSelectImage = {
                     projectCreationViewModel.startImageMode()
-                    navController.navigate(AppRoutes.ImagePick)
+                    navController.navigate(AppRoutes.SelectImage)
                 },
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(AppRoutes.ImagePick) {
-            ImagePickScreen(
+        composable(AppRoutes.SelectImage) {
+            SelectImageScreen(
                 onBack = { navController.popBackStack() },
                 onPickTestImage = { imageName ->
                     projectCreationViewModel.setResourceImage(imageName)

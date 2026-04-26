@@ -180,9 +180,10 @@ fun ProjectDetailScreen(
                         ) {
                             DetailRow("Name", project.name)
 
+                            val displaySeamAllowance = if (project.seamAllowance % 1 == 0.0) project.seamAllowance.toInt() else project.seamAllowance
                             DetailRow(
                                 "Seam allowance",
-                                "${project.seamAllowance} mm"
+                                "${displaySeamAllowance} mm"
                             )
 
                             DetailRow(
@@ -318,8 +319,10 @@ fun ProjectDetailScreen(
                             ) {
                                 val rectangleSize = selectedFabric.contour.rectangleSize()
                                 if (rectangleSize != null){
+                                    val displaySize1 = if (rectangleSize.first % 1 == 0.0) rectangleSize.first.toInt() else rectangleSize.first
+                                    val displaySize2 = if (rectangleSize.second % 1 == 0.0) rectangleSize.second.toInt() else rectangleSize.second
                                     Text(
-                                        text = "${rectangleSize.first} x ${rectangleSize.second} mm",
+                                        text = "$displaySize1 x $displaySize2 mm",
                                         color = MaterialTheme.colorScheme.onBackground
                                     )
                                 }

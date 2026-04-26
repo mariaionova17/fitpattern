@@ -1,5 +1,6 @@
 package cz.cvut.fit.bp
 
+import android.R.attr.textSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,7 +15,9 @@ import domain.geometry.Shape
 import domain.geometry.apply
 import domain.geometry.boundingBox
 import domain.pattern.PatternPiece
-
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
+import android.graphics.Paint
 @Composable
 fun LayoutPreview(
     fabric: Shape,
@@ -72,9 +75,9 @@ fun LayoutPreview(
         )
 
         val placementsForThisFabric = placements.filter { it.fabricPieceIndex == fabricIndex }
-        placementsForThisFabric.forEach { placement ->
-            val originalPiece = piecesById[placement.pieceId] ?: return@forEach
-            val seamPiece = piecesByIdSeamAllowance[placement.pieceId] ?: return@forEach
+        placementsForThisFabric.forEachIndexed { index, placement ->
+            val originalPiece = piecesById[placement.pieceId] ?: return@forEachIndexed
+            val seamPiece = piecesByIdSeamAllowance[placement.pieceId] ?: return@forEachIndexed
 
             val placedOriginal = originalPiece.shape.apply(placement.transformation)
             val placedSeam = seamPiece.shape.apply(placement.transformation)
@@ -89,6 +92,26 @@ fun LayoutPreview(
                 path = polygonPath(placedOriginal.contour),
                 color = Color.Blue,
                 style = Stroke(width = 2f)
+            )
+
+            val box = placedOriginal.contour.boundingBox()
+            val center = toCanvas(
+                Point(
+                    x = (box.minX + box.maxX) / 2.0,
+                    y = (box.minY + box.maxY) / 2.0
+                )
+            )
+
+            drawContext.canvas.nativeCanvas.drawText(
+                "${index + 1}",
+                center.x,
+                center.y,
+                Paint().apply {
+                    color = Color.Black.toArgb()
+                    textSize = 32f
+                    textAlign = Paint.Align.CENTER
+                    isFakeBoldText = true
+                }
             )
         }
     }

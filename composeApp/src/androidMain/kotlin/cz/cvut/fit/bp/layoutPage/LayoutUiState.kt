@@ -12,5 +12,8 @@ data class LayoutUiState(
     val result: NestingResult? = null,
     val errorMessage: String? = null,
     val hasSavedLayout: Boolean = false,
-    val generationProgress: Float = 0f
+    val generationProgress: Float = 0f,
+    val patternName: String? = null,
+    val patternSize: String? = null
+
 )

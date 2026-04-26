@@ -39,6 +39,8 @@ class LayoutViewModel(
                     ?: error("Project not found")
 
                 val pieces = patternRepository.getPatternByVariantId(variantId)
+                val patternSize = patternRepository.getSizeByVariantId(variantId) ?: ""
+
 
                 val savedResults =
                     nestingResultRepository.getNestingResultsByProjectAndVariant(
@@ -47,6 +49,13 @@ class LayoutViewModel(
                     )
 
                 val savedResult = savedResults.lastOrNull()
+                var patternName = ""
+                if (savedResult != null) {
+                    patternName=
+                        nestingResultRepository.getPatternNameAndVariantIdFromNestingResult(
+                            savedResult.id
+                        ).first
+                }
 
                 if (savedResult != null) {
                     uiState = uiState.copy(
@@ -54,7 +63,9 @@ class LayoutViewModel(
                         project = project,
                         patternPieces = pieces,
                         result = savedResult,
-                        hasSavedLayout = true
+                        hasSavedLayout = true,
+                        patternName = patternName,
+                        patternSize = patternSize,
                     )
                 } else {
                     val problem = NestingProblem(
@@ -90,7 +101,9 @@ class LayoutViewModel(
                         project = project,
                         patternPieces = pieces,
                         result = result,
-                        hasSavedLayout = true
+                        hasSavedLayout = true,
+                        patternName = patternName,
+                        patternSize = patternSize,
                     )
                 }
             } catch (e: Exception) {

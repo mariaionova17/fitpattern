@@ -133,6 +133,14 @@ fun LayoutScreen(
 
                     item {
                         Text(
+                            text = "Pattern: ${state.patternName}, size: ${state.patternSize}",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+
+                    item {
+                        Text(
                             text = "Placed pieces: ${result.bestLayout.placed.size}, Not placed: ${result.bestLayout.unplaced.size}",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onBackground
@@ -157,12 +165,6 @@ fun LayoutScreen(
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
 
-                                Text(
-                                    text = "Showing generated placement",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onBackground
-                                )
-
                                 LayoutPreview(
                                     fabric = fabricPiece.contour,
                                     piecesById = piecesById,
@@ -174,6 +176,22 @@ fun LayoutScreen(
                                     fabricIndex = index,
                                     seamAllowance = project.seamAllowance
                                 )
+                                val placementsForThisFabric =
+                                    result.bestLayout.placed.filter { it.fabricPieceIndex == index }
+
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    placementsForThisFabric.forEachIndexed { pieceIndex, placement ->
+                                        val pieceName = piecesById[placement.pieceId]?.name ?: "Unknown piece"
+
+                                        Text(
+                                            text = "${pieceIndex + 1}. $pieceName",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onBackground
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

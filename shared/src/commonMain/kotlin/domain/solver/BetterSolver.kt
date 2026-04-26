@@ -72,9 +72,6 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
         val beamWidth = 5
 
         for ((index, piece) in orderedPatternPieces.withIndex()) {
-            val progress = index.toFloat() / orderedPatternPieces.size.toFloat()
-            onProgress(progress)
-
             val nextBeam = mutableListOf<PartialLayout>()
 
             for (layout in beam) {
@@ -136,6 +133,8 @@ class BetterSolver(private val geometry: GeometryKernel, private val maxContourA
             beam = nextBeam
                 .sortedBy { layoutToScalarScore(it, problem.project.fabricPieces) }
                 .take(beamWidth)
+            val progress = (index + 1).toFloat() / orderedPatternPieces.size.toFloat()
+            onProgress(progress.coerceIn(0f, 1f))
         }
 
         val bestLayout = beam.minByOrNull { layoutToScalarScore(it, problem.project.fabricPieces) } ?: initialPartialLayout

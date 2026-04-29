@@ -15,6 +15,9 @@ interface PatternDao {
     suspend fun insertPattern(pattern: PatternEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPatterns(patterns: List<PatternEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertVariants(variants: List<PatternVariantEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -19,7 +19,7 @@ enum class UiRotationOption{
     NONE,
     BY180,
     BY90,
-    ANY
+    //ANY
 }
 
 enum class FabricImageStep {

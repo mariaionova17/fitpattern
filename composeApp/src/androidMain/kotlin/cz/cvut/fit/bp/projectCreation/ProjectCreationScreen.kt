@@ -221,11 +221,11 @@ fun ProjectCreationScreen(
                 onClick = { onRotationChanged(UiRotationOption.BY90) }
             )
 
-            RotationOption(
+            /*RotationOption(
                 label = "Yes, by any angle",
                 selected = state.rotationOption == UiRotationOption.ANY,
                 onClick = { onRotationChanged(UiRotationOption.ANY) }
-            )
+            )*/
 
             TextInput("Seam allowance (mm):", state.seamAllowance, onSeamAllowanceChanged, true, "0")
 

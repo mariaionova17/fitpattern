@@ -17,7 +17,7 @@ fun UiRotationOption.toRotationRules(): RotationRules {
         UiRotationOption.NONE -> listOf(0.0)
         UiRotationOption.BY180 -> listOf(0.0, 180.0)
         UiRotationOption.BY90 -> listOf(0.0, 90.0, 180.0, 270.0)
-        UiRotationOption.ANY -> listOf(0.0, 90.0, 180.0, 270.0)   //TODO solve this
+        //UiRotationOption.ANY -> listOf(0.0, 90.0, 180.0, 270.0)   //TODO solve this
     }
     return RotationRules(result)
 }

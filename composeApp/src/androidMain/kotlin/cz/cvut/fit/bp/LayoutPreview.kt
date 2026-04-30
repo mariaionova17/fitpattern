@@ -46,7 +46,7 @@ fun LayoutPreview(
 
         fun toCanvas(point: Point): Offset {
             return Offset(
-                x = size.width - (((point.x - fabricBox.minX).toFloat() * scale) + offsetX),
+                x = ((point.x - fabricBox.minX).toFloat() * scale) + offsetX,
                 y = size.height - (((point.y - fabricBox.minY).toFloat() * scale) + offsetY)
             )
         }

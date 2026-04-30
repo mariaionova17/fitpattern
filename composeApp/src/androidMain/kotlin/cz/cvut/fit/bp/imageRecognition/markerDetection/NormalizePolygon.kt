@@ -40,7 +40,6 @@ fun normalizePolygonToBottomLeft(polygon: Polygon): Polygon {
 }
 
 fun alignPolygonWarpToVertical(polygon: Polygon, warpAngleFromVertical: Double): Polygon {
-    val rotated = polygon.rotate(warpAngleFromVertical - 180)
-
-    return normalizePolygonToBottomLeft(rotated)
+    val rotated = polygon.rotate(warpAngleFromVertical)
+    return rotated
 }

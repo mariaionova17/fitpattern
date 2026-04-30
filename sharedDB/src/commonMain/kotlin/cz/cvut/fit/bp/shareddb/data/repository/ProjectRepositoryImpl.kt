@@ -1,5 +1,6 @@
 package cz.cvut.fit.bp.shareddb.data.repository
 
+import cz.cvut.fit.bp.shareddb.data.dao.ProjectDao
 import cz.cvut.fit.bp.shareddb.data.db.AppDatabase
 import cz.cvut.fit.bp.shareddb.data.entity.ProjectEntity
 import cz.cvut.fit.bp.shareddb.data.mapper.toFabricPiece
@@ -10,12 +11,12 @@ import domain.project.Project
 import domain.repository.ProjectRepository
 
 class ProjectRepositoryImpl(
-    private val db: AppDatabase
+    private val dao: ProjectDao
 ) : ProjectRepository {
 
-    override suspend fun saveProject(project: Project) {
-        val dao = db.projectDao()
+    constructor(db: AppDatabase) : this(db.projectDao())
 
+    override suspend fun saveProject(project: Project) {
         dao.insertProject(
             ProjectEntity(
                 id = project.id,
@@ -31,8 +32,6 @@ class ProjectRepositoryImpl(
     }
 
     override suspend fun getProjectById(id: String): Project? {
-        val dao = db.projectDao()
-
         val projectEntity = dao.getProjectById(id) ?: return null
         val rulesEntity = dao.getRulesByProjectId(id) ?: return null
         val fabricEntities = dao.getFabricsByProjectId(id)
@@ -47,8 +46,6 @@ class ProjectRepositoryImpl(
     }
 
     override suspend fun getAllProjects(): List<Project> {
-        val dao = db.projectDao()
-
         return dao.getAllProjects().mapNotNull { projectEntity ->
             val rulesEntity = dao.getRulesByProjectId(projectEntity.id) ?: return@mapNotNull null
             val fabricEntities = dao.getFabricsByProjectId(projectEntity.id)
@@ -64,7 +61,6 @@ class ProjectRepositoryImpl(
     }
 
     override suspend fun deleteProject(id: String) {
-        val dao = db.projectDao()
         dao.deleteFabricsByProjectId(id)
         dao.deleteRulesByProjectId(id)
         dao.deleteProjectById(id)

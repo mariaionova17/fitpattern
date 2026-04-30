@@ -1,24 +1,24 @@
 package cz.cvut.fit.bp.shareddb.data.repository
 
+import cz.cvut.fit.bp.shareddb.data.dao.PatternDao
 import cz.cvut.fit.bp.shareddb.data.db.AppDatabase
 import cz.cvut.fit.bp.shareddb.data.entity.PatternEntity
-import cz.cvut.fit.bp.shareddb.data.entity.PatternPieceEntity
 import cz.cvut.fit.bp.shareddb.data.entity.PatternVariantEntity
 import cz.cvut.fit.bp.shareddb.data.mapper.toPattern
-import cz.cvut.fit.bp.shareddb.data.mapper.toPatternPieceEntity
 import cz.cvut.fit.bp.shareddb.data.mapper.toPatternPiece
+import cz.cvut.fit.bp.shareddb.data.mapper.toPatternPieceEntity
 import cz.cvut.fit.bp.shareddb.data.mapper.toPatternVariant
 import domain.pattern.Pattern
 import domain.pattern.PatternPiece
 import domain.repository.PatternRepository
 
 class PatternRepositoryImpl(
-    private val db: AppDatabase
+    private val dao: PatternDao
 ) : PatternRepository {
 
-    override suspend fun savePattern(pattern: Pattern) {
-        val dao = db.patternDao()
+    constructor(db: AppDatabase) : this(db.patternDao())
 
+    override suspend fun savePattern(pattern: Pattern) {
         dao.insertPattern(
             PatternEntity(
                 id = pattern.id,
@@ -48,7 +48,6 @@ class PatternRepositoryImpl(
     }
 
     override suspend fun getPatternById(id: String): Pattern? {
-        val dao = db.patternDao()
         val patternEntity = dao.getPatternById(id) ?: return null
 
         val variants = dao.getVariantsByPatternId(id).map { variantEntity ->
@@ -59,22 +58,15 @@ class PatternRepositoryImpl(
         return patternEntity.toPattern(variants)
     }
 
-    override suspend fun getPatternByVariantId(variantId: String): List<PatternPiece>{
-        val dao = db.patternDao()
-
-        return dao.getPiecesByVariantId(variantId).map { patternEntity ->
-            patternEntity.toPatternPiece()
-        }
+    override suspend fun getPatternByVariantId(variantId: String): List<PatternPiece> {
+        return dao.getPiecesByVariantId(variantId).map { it.toPatternPiece() }
     }
-    override suspend fun getSizeByVariantId(variantId: String): String?{
-        val dao = db.patternDao()
+
+    override suspend fun getSizeByVariantId(variantId: String): String? {
         return dao.getSizeByVariantId(variantId)
     }
 
-
     override suspend fun getAllPatterns(): List<Pattern> {
-        val dao = db.patternDao()
-
         return dao.getAllPatterns().map { patternEntity ->
             val variants = dao.getVariantsByPatternId(patternEntity.id).map { variantEntity ->
                 val pieces = dao.getPiecesByVariantId(variantEntity.variantId)
@@ -86,7 +78,6 @@ class PatternRepositoryImpl(
     }
 
     override suspend fun deletePattern(id: String) {
-        val dao = db.patternDao()
         dao.deletePatternById(id)
     }
 }

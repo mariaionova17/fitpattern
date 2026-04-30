@@ -141,7 +141,7 @@ fun LayoutScreen(
 
                     item {
                         Text(
-                            text = "Placed pieces: ${result.bestLayout.placed.size}, Not placed: ${result.bestLayout.unplaced.size}",
+                            text = "Placed pieces: ${result.bestLayout.placed.size}, Not placed: ${state.patternPieces.size - result.bestLayout.placed.size}",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onBackground
                         )

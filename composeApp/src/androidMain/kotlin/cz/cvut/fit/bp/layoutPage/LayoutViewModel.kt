@@ -9,8 +9,8 @@ import domain.repository.PatternRepository
 import domain.repository.ProjectRepository
 import domain.repository.NestingResultRepository
 import domain.solver.BetterSolver
-import domain.solver.InitialSolver
 import domain.solver.NestingProblem
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,7 +20,8 @@ class LayoutViewModel(
     private val patternRepository: PatternRepository,
     private val projectRepository: ProjectRepository,
     private val nestingResultRepository: NestingResultRepository,
-    private val solver: BetterSolver
+    private val solver: BetterSolver,
+    private val solverDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : ViewModel() {
 
     var uiState by mutableStateOf(LayoutUiState())
@@ -41,7 +42,6 @@ class LayoutViewModel(
                 val pieces = patternRepository.getPatternByVariantId(variantId)
                 val patternSize = patternRepository.getSizeByVariantId(variantId) ?: ""
 
-
                 val savedResults =
                     nestingResultRepository.getNestingResultsByProjectAndVariant(
                         projectId = projectId,
@@ -50,8 +50,9 @@ class LayoutViewModel(
 
                 val savedResult = savedResults.lastOrNull()
                 var patternName = ""
+
                 if (savedResult != null) {
-                    patternName=
+                    patternName =
                         nestingResultRepository.getPatternNameAndVariantIdFromNestingResult(
                             savedResult.id
                         ).first
@@ -73,7 +74,7 @@ class LayoutViewModel(
                         pieces = pieces
                     )
 
-                    val resultWithoutIds = withContext(Dispatchers.Default) {
+                    val resultWithoutIds = withContext(solverDispatcher) {
                         solver.solve(problem) { progress ->
                             uiState = uiState.copy(
                                 generationProgress = progress

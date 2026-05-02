@@ -31,7 +31,6 @@ import cz.cvut.fit.bp.R
 import domain.geometry.setSeamAllowance
 import domain.pattern.PatternPiece
 
-//TODO result is upside down
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LayoutScreen(

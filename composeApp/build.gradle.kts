@@ -80,6 +80,7 @@ kotlin {
             implementation(libs.androidx.test.runner)
             implementation(libs.androidx.test.rules)
             implementation(libs.mockk.android)
+            implementation("androidx.compose.ui:ui-test-junit4:1.9.3")
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -123,6 +124,7 @@ dependencies {
 dependencies {
     implementation("org.opencv:opencv:4.9.0")
     implementation("androidx.navigation:navigation-compose:2.8.0")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.9.3")
 }
 
 compose.desktop {

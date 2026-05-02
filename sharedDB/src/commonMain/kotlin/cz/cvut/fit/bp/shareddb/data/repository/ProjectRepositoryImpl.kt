@@ -1,5 +1,8 @@
 package cz.cvut.fit.bp.shareddb.data.repository
 
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
+import cz.cvut.fit.bp.shareddb.data.dao.NestingResultDao
 import cz.cvut.fit.bp.shareddb.data.dao.ProjectDao
 import cz.cvut.fit.bp.shareddb.data.db.AppDatabase
 import cz.cvut.fit.bp.shareddb.data.entity.ProjectEntity
@@ -11,10 +14,22 @@ import domain.project.Project
 import domain.repository.ProjectRepository
 
 class ProjectRepositoryImpl(
-    private val dao: ProjectDao
+    private val dao: ProjectDao,
+    private val nestingResultDao: NestingResultDao,
+    private val runInTransaction: suspend (suspend () -> Unit) -> Unit = { block -> block() }
 ) : ProjectRepository {
 
-    constructor(db: AppDatabase) : this(db.projectDao())
+    constructor(db: AppDatabase) : this(
+        dao = db.projectDao(),
+        nestingResultDao = db.nestingResultDao(),
+        runInTransaction = { block ->
+            db.useWriterConnection { transactor ->
+                transactor.immediateTransaction {
+                    block()
+                }
+            }
+        }
+    )
 
     override suspend fun saveProject(project: Project) {
         dao.insertProject(
@@ -61,8 +76,13 @@ class ProjectRepositoryImpl(
     }
 
     override suspend fun deleteProject(id: String) {
-        dao.deleteFabricsByProjectId(id)
-        dao.deleteRulesByProjectId(id)
-        dao.deleteProjectById(id)
+        runInTransaction {
+            nestingResultDao.deletePlacedPiecesByProjectId(id)
+            nestingResultDao.deleteNestingResultsByProjectId(id)
+
+            dao.deleteFabricsByProjectId(id)
+            dao.deleteRulesByProjectId(id)
+            dao.deleteProjectById(id)
+        }
     }
 }

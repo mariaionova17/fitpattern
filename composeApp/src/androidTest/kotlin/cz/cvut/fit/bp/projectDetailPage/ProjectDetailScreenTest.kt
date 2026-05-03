@@ -32,7 +32,8 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -53,7 +54,8 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -70,7 +72,8 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -87,7 +90,8 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -106,7 +110,8 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -129,7 +134,8 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = { choosePatternClicked = true },
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -150,7 +156,8 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -175,7 +182,8 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = { deleteClicked = true },
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -216,7 +224,8 @@ class ProjectDetailScreenTest {
                         receivedVariantId = variantId
                     },
                     onDeleteProjectClick = {},
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }

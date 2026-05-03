@@ -36,7 +36,8 @@ class LayoutScreenTest {
                         isLoading = true,
                         generationProgress = 0.4f
                     ),
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -55,7 +56,8 @@ class LayoutScreenTest {
                     state = LayoutUiState(
                         errorMessage = "Generation failed"
                     ),
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -69,7 +71,8 @@ class LayoutScreenTest {
             MaterialTheme {
                 LayoutScreen(
                     state = LayoutUiState(),
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -119,7 +122,8 @@ class LayoutScreenTest {
                         patternName = "Basic T-Shirt",
                         patternSize = "M"
                     ),
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -139,7 +143,8 @@ class LayoutScreenTest {
             MaterialTheme {
                 LayoutScreen(
                     state = LayoutUiState(),
-                    onBack = { backClicked = true }
+                    onBack = { backClicked = true },
+                    onHome = {}
                 )
             }
         }

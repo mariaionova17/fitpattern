@@ -31,7 +31,8 @@ class PatternSuggestionsScreenTest {
                 PatternSuggestionsScreen(
                     state = PatternSuggestionsUiState(isLoading = true),
                     onPatternClick = {},
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -48,7 +49,8 @@ class PatternSuggestionsScreenTest {
                 PatternSuggestionsScreen(
                     state = PatternSuggestionsUiState(errorMessage = "Failed to load patterns"),
                     onPatternClick = {},
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -63,7 +65,8 @@ class PatternSuggestionsScreenTest {
                 PatternSuggestionsScreen(
                     state = PatternSuggestionsUiState(patterns = emptyList()),
                     onPatternClick = {},
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -81,7 +84,8 @@ class PatternSuggestionsScreenTest {
                 PatternSuggestionsScreen(
                     state = PatternSuggestionsUiState(patterns = listOf(pattern)),
                     onPatternClick = { clickedPatternId = it },
-                    onBack = {}
+                    onBack = {},
+                    onHome = {}
                 )
             }
         }
@@ -100,7 +104,8 @@ class PatternSuggestionsScreenTest {
                 PatternSuggestionsScreen(
                     state = PatternSuggestionsUiState(patterns = emptyList()),
                     onPatternClick = {},
-                    onBack = { backClicked = true }
+                    onBack = { backClicked = true },
+                    onHome = {}
                 )
             }
         }

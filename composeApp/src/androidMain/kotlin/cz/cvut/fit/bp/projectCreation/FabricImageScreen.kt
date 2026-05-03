@@ -223,7 +223,7 @@ fun FabricImageScreen(
                                     bitmap = bitmap,
                                     polygon = editablePolygon,
                                     onPolygonChange = { editablePolygon = it },
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxSize()
                                 )
                             } else {
                                 Image(

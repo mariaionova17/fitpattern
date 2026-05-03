@@ -333,7 +333,8 @@ private fun TestNavHost(startDestination: String) {
                 onViewPatternSuggestionsClick = { navController.navigate("pattern_suggestions") },
                 onGeneratedLayoutClick = { _, _ -> navController.navigate("layout") },
                 onDeleteProjectClick = {},
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onHome = {}
             )
         }
 
@@ -347,7 +348,8 @@ private fun TestNavHost(startDestination: String) {
                     if (!navController.popBackStack()) {
                         navController.navigate("project_detail")
                     }
-                }
+                },
+                onHome = {}
             )
         }
 
@@ -368,7 +370,8 @@ private fun TestNavHost(startDestination: String) {
         composable("layout") {
             LayoutScreen(
                 state = LayoutUiState(),
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onHome = {}
             )
         }
     }

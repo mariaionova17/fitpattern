@@ -39,9 +39,11 @@ fun WarpDirectionOverlay(
     val imageWidth = bitmap.width.toFloat()
     val imageHeight = bitmap.height.toFloat()
 
-    val polygonCenterImage = remember(polygon) {
-        polygonCentroidCv(polygon)
+    val imageCenterImage = remember(imageWidth, imageHeight) {
+        Offset(imageWidth / 2f, imageHeight / 2f)
     }
+
+    val arrowLengthPx = 180f
 
     Box(
         modifier = modifier
@@ -50,7 +52,7 @@ fun WarpDirectionOverlay(
                 detectDragGestures(
                     onDragStart = { touch ->
                         val centerOnScreen = imageToScreen(
-                            image = polygonCenterImage,
+                            image = imageCenterImage,
                             imageWidth = imageWidth,
                             imageHeight = imageHeight,
                             containerWidth = containerSize.width.toFloat(),
@@ -82,7 +84,7 @@ fun WarpDirectionOverlay(
                         if (!isDraggingTip) return@detectDragGestures
 
                         val centerOnScreen = imageToScreen(
-                            image = polygonCenterImage,
+                            image = imageCenterImage,
                             imageWidth = imageWidth,
                             imageHeight = imageHeight,
                             containerWidth = containerSize.width.toFloat(),
@@ -135,7 +137,7 @@ fun WarpDirectionOverlay(
                 }
 
                 val centerOnScreen = imageToScreen(
-                    image = polygonCenterImage,
+                    image = imageCenterImage,
                     imageWidth = imageWidth,
                     imageHeight = imageHeight,
                     containerWidth = size.width,
@@ -149,20 +151,20 @@ fun WarpDirectionOverlay(
                 )
 
                 drawLine(
-                    color = Color.Yellow,
+                    color = Color.Green,
                     start = centerOnScreen,
                     end = tipOnScreen,
                     strokeWidth = 6f
                 )
 
                 drawCircle(
-                    color = Color.Magenta,
+                    color = Color.Red,
                     radius = 10f,
                     center = centerOnScreen
                 )
 
                 drawCircle(
-                    color = if (isDraggingTip) Color.Red else Color.Yellow,
+                    color = if (isDraggingTip) Color.Yellow else Color.Red,
                     radius = 12f,
                     center = tipOnScreen
                 )
@@ -170,7 +172,7 @@ fun WarpDirectionOverlay(
                 drawArrowHead(
                     tip = tipOnScreen,
                     tail = centerOnScreen,
-                    color = Color.Yellow
+                    color = Color.Green
                 )
             }
         }

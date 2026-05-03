@@ -264,6 +264,33 @@ fun AppNav(
                         navController.popBackStack()
                     }
                 },
+                onOpenEditProjectDialog = {
+                    detailViewModel.openEditProjectDialog()
+                },
+                onCloseEditProjectDialog = {
+                    detailViewModel.closeEditProjectDialog()
+                },
+                onEditedProjectNameChanged = {
+                    detailViewModel.onEditedProjectNameChanged(it)
+                },
+                onEditedSeamAllowanceChanged = {
+                    detailViewModel.onEditedSeamAllowanceChanged(it)
+                },
+                onEditedRotationChanged = {
+                    detailViewModel.onEditedRotationChanged(it)
+                },
+                onEditedAllowMirrorChanged = {
+                    detailViewModel.onEditedAllowMirrorChanged(it)
+                },
+                onSaveEditedProject = {
+                    detailViewModel.saveEditedProject()
+                },
+                onCloseDeleteLayoutsAfterEditDialog = {
+                    detailViewModel.closeDeleteLayoutsAfterEditDialog()
+                },
+                onConfirmSaveEditedProjectWithLayoutDeletion = {
+                    detailViewModel.confirmSaveEditedProjectWithLayoutDeletion()
+                },
                 onBack = { navController.popBackStack() },
                 onHome = { navController.navigate(AppRoutes.Projects) }
             )

@@ -162,6 +162,7 @@ fun AppNav(
                 state = projectsViewModel.uiState,
                 onCreateProjectClick = {
                     navController.navigate(AppRoutes.ProjectCreation)
+                    projectCreationViewModel.resetProjectCreationState()
                 },
                 onProjectClick = { projectId ->
                     navController.navigate(AppRoutes.projectDetail(projectId))
@@ -193,7 +194,10 @@ fun AppNav(
                     projectCreationViewModel.startImageMode()
                     navController.navigate(AppRoutes.SelectImage)
                 },
-                onBack = { navController.popBackStack() }
+                onBack = {
+                    navController.popBackStack()
+                    projectCreationViewModel.resetProjectCreationState()
+                }
             )
         }
 

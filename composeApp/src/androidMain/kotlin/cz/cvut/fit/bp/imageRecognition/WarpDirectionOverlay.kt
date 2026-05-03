@@ -158,12 +158,6 @@ fun WarpDirectionOverlay(
                 )
 
                 drawCircle(
-                    color = Color.Red,
-                    radius = 10f,
-                    center = centerOnScreen
-                )
-
-                drawCircle(
                     color = if (isDraggingTip) Color.Yellow else Color.Red,
                     radius = 12f,
                     center = tipOnScreen

@@ -155,85 +155,100 @@ fun PatternDetailScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background)
-                        .verticalScroll(scrollState)
                         .padding(innerPadding)
-                        .padding(horizontal = 24.dp, vertical = 24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                        .padding(horizontal = 24.dp, vertical = 24.dp)
                 ) {
-                    PatternPreviewImage(
-                        pictureUri = pattern.pictureUri,
-                        modifier = Modifier
-                            .fillMaxWidth(0.48f)
-                            .aspectRatio(1f)
-                    )
-
                     Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .verticalScroll(scrollState),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-                        Text(
-                            text = "Choose the size",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onBackground
+                        PatternPreviewImage(
+                            pictureUri = pattern.pictureUri,
+                            modifier = Modifier
+                                .fillMaxWidth(0.48f)
+                                .aspectRatio(1f)
                         )
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            pattern.variants.forEach { variant ->
-                                SizeCard(
-                                    text = variant.size,
-                                    selected = variant.id == selectedVariantId,
-                                    onClick = { selectedVariantId = variant.id }
+                            Text(
+                                text = "Choose the size",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                pattern.variants.forEach { variant ->
+                                    SizeCard(
+                                        text = variant.size,
+                                        selected = variant.id == selectedVariantId,
+                                        onClick = { selectedVariantId = variant.id }
+                                    )
+                                }
+                            }
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Text(
+                                text = "View the layout",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .clickable { onViewLayoutClick(selectedVariant.id) }
+                                    .padding(horizontal = 28.dp, vertical = 14.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Open layout",
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    style = MaterialTheme.typography.titleMedium
                                 )
                             }
                         }
                     }
 
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     Column(
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.download),
+                            contentDescription = "Download pattern",
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clickable {
+                                    if (!pattern.downloadLink.isNullOrBlank()) {
+                                        uriHandler.openUri(pattern.downloadLink)
+                                    }
+                                }
+                        )
+
                         Text(
-                            text = "View the layout",
+                            text = "Download pattern",
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onBackground
                         )
-
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(MaterialTheme.colorScheme.primary)
-                                .clickable { onViewLayoutClick(selectedVariant.id) }
-                                .padding(horizontal = 28.dp, vertical = 14.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Open layout",
-                                color = MaterialTheme.colorScheme.secondary,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
                     }
-                    Icon(
-                        painter = painterResource(id = R.drawable.download),
-                        contentDescription = "Download pattern",
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clickable {
-                                if (!pattern.downloadLink.isNullOrBlank()) {
-                                    uriHandler.openUri(pattern.downloadLink)
-                                }
-                            }
-                    )
-                    Text(
-                        text = "Download pattern",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
                 }
             }
         }

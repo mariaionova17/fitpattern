@@ -33,6 +33,12 @@ import cz.cvut.fit.bp.LayoutPreview
 import cz.cvut.fit.bp.R
 import domain.geometry.setSeamAllowance
 import domain.pattern.PatternPiece
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,6 +115,12 @@ fun LayoutScreen(
                 val project = state.project
                 val result = state.result
 
+                val notPlacedCount = state.patternPieces.size - result.bestLayout.placed.size
+
+                var showNotAllPlacedDialog by remember(result.id) {
+                    mutableStateOf(notPlacedCount > 0)
+                }
+
                 val piecesById: Map<String, PatternPiece> =
                     state.patternPieces.associateBy { it.id }
 
@@ -118,6 +130,32 @@ fun LayoutScreen(
                             piece.copy(shape = piece.shape.setSeamAllowance(project.seamAllowance))
                         }
                         .associateBy { it.id }
+
+                if (showNotAllPlacedDialog) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            showNotAllPlacedDialog = false
+                        },
+                        title = {
+                            Text("Not all pieces were placed")
+                        },
+                        text = {
+                            Text(
+                                "${state.patternPieces.size - result.bestLayout.placed.size} out of ${state.patternPieces.size} pieces could not be placed on the selected fabric."
+                            )
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    showNotAllPlacedDialog = false
+                                }
+                            ) {
+                                Text("OK")
+                            }
+                        },
+                        containerColor = MaterialTheme.colorScheme.background
+                    )
+                }
 
                 LazyColumn(
                     modifier = Modifier

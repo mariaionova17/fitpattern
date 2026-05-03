@@ -127,8 +127,9 @@ class ProjectCreationViewModel(private val projectRepository: ProjectRepository)
         viewModelScope.launch {
             try {
                 projectRepository.saveProject(project)
-                uiState = uiState.copy(errorMessage = null)
-                onSaved(project.id)
+                val savedProjectId = project.id
+                uiState = ProjectCreationUiState()
+                onSaved(savedProjectId)
             } catch (e: Exception) {
                 uiState = uiState.copy(errorMessage = e.message)
             }
@@ -226,6 +227,10 @@ class ProjectCreationViewModel(private val projectRepository: ProjectRepository)
             ),
             errorMessage = null
         )
+    }
+
+    fun resetProjectCreationState() {
+        uiState = ProjectCreationUiState()
     }
 }
 

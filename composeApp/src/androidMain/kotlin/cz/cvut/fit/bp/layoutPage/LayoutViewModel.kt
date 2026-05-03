@@ -96,6 +96,9 @@ class LayoutViewModel(
                         projectId = projectId,
                         patternVariantId = variantId
                     )
+                    patternName = nestingResultRepository.getPatternNameAndVariantIdFromNestingResult(
+                        result.id
+                    ).first
 
                     uiState = uiState.copy(
                         isLoading = false,

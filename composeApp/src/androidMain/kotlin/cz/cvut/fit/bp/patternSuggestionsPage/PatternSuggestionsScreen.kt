@@ -23,6 +23,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -47,7 +49,8 @@ import domain.project.Project
 fun PatternSuggestionsScreen(
     state: PatternSuggestionsUiState,
     onPatternClick: (String) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onHome: () -> Unit
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -79,6 +82,31 @@ fun PatternSuggestionsScreen(
                     color = MaterialTheme.colorScheme.outline,
                     thickness = 1.dp
                 )
+            }
+        },
+        bottomBar = {
+            Column {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outline,
+                    thickness = 1.dp
+                )
+
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.background
+                ) {
+                    NavigationBarItem(
+                        selected = false,
+                        onClick = onHome,
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.home),
+                                contentDescription = "Home",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    )
+                }
             }
         }
     ) { innerPadding ->

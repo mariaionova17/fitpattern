@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -17,6 +18,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,11 +38,13 @@ import domain.pattern.PatternPiece
 @Composable
 fun LayoutScreen(
     state: LayoutUiState,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onHome: () -> Unit
 ) {
     ScaffoldWithTopBar(
         title = "Generated layout",
-        onBack = onBack
+        onBack = onBack,
+        onHome = onHome
     ) { innerPadding ->
         when {
             state.isLoading -> {
@@ -207,6 +212,7 @@ fun LayoutScreen(
 fun ScaffoldWithTopBar(
     title: String,
     onBack: () -> Unit,
+    onHome: () -> Unit,
     content: @Composable (androidx.compose.foundation.layout.PaddingValues) -> Unit
 ) {
     Scaffold(
@@ -241,6 +247,31 @@ fun ScaffoldWithTopBar(
                 )
             }
         },
-        content = content
+        content = content,
+        bottomBar = {
+            Column {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outline,
+                    thickness = 1.dp
+                )
+
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.background
+                ) {
+                    NavigationBarItem(
+                        selected = false,
+                        onClick = onHome,
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.home),
+                                contentDescription = "Home",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    )
+                }
+            }
+        }
     )
 }

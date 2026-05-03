@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -24,6 +25,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,7 +49,8 @@ fun ProjectDetailScreen(
     onViewPatternSuggestionsClick: () -> Unit,
     onGeneratedLayoutClick: (String, String) -> Unit,
     onDeleteProjectClick: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onHome: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     var selectedFabricIndex by remember { mutableStateOf<Int?>(null) }
@@ -91,6 +95,31 @@ fun ProjectDetailScreen(
                     color = MaterialTheme.colorScheme.outline,
                     thickness = 1.dp
                 )
+            }
+        },
+        bottomBar = {
+            Column {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outline,
+                    thickness = 1.dp
+                )
+
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.background
+                ) {
+                    NavigationBarItem(
+                        selected = false,
+                        onClick = onHome,
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.home),
+                                contentDescription = "Home",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    )
+                }
             }
         }
     ) { innerPadding ->

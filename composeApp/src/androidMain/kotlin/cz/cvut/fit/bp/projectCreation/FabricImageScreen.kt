@@ -203,7 +203,8 @@ fun FabricImageScreen(
             androidx.compose.foundation.layout.Box(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
                 if (isProcessing) {
                     Column(
@@ -260,20 +261,6 @@ fun FabricImageScreen(
                                         .fillMaxWidth()
                                         .weight(1f)
                                 )
-
-                                previewPolygon?.let {
-                                    Text(
-                                        text = "Final normalized preview",
-                                        color = MaterialTheme.colorScheme.onBackground
-                                    )
-
-                                    FinalPolygonPreview(
-                                        polygon = it,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1f)
-                                    )
-                                }
                             }
                         }
 

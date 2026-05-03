@@ -260,7 +260,8 @@ fun AppNav(
                         navController.popBackStack()
                     }
                 },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onHome = { navController.navigate(AppRoutes.Projects) }
             )
         }
 
@@ -291,7 +292,8 @@ fun AppNav(
                 onPatternClick = { patternId ->
                     navController.navigate(AppRoutes.patternDetail(projectId, patternId))
                 },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onHome = { navController.navigate(AppRoutes.Projects) }
             )
         }
 
@@ -335,7 +337,8 @@ fun AppNav(
             }
             LayoutScreen(
                 state = layoutViewModel.uiState,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onHome = { navController.navigate(AppRoutes.Projects) }
             )
         }
 

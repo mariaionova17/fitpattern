@@ -20,6 +20,7 @@ import cz.cvut.fit.bp.patternDetailPage.PatternDetailScreen
 import cz.cvut.fit.bp.patternDetailPage.PatternDetailUiState
 import cz.cvut.fit.bp.patternSuggestionsPage.PatternSuggestionsScreen
 import cz.cvut.fit.bp.patternSuggestionsPage.PatternSuggestionsUiState
+import cz.cvut.fit.bp.projectCreation.FabricDraft
 import cz.cvut.fit.bp.projectCreation.FabricImageScreen
 import cz.cvut.fit.bp.projectCreation.FabricImageStep
 import cz.cvut.fit.bp.projectCreation.ProjectCreationScreen
@@ -306,9 +307,8 @@ private fun TestNavHost(startDestination: String) {
 
         composable("fabric_image") {
             FabricImageScreen(
-                state = ProjectCreationUiState(
-                    currentImageStep = FabricImageStep.NONE
-                ),
+                currentFabric = FabricDraft(),
+                currentImageStep = FabricImageStep.NONE,
                 onBack = { navController.popBackStack() },
                 onConfirmContour = {},
                 onConfirmA4 = {},
@@ -336,12 +336,26 @@ private fun TestNavHost(startDestination: String) {
                 onOpenEditProjectDialog = {},
                 onCloseEditProjectDialog = {},
                 onEditedProjectNameChanged = {},
-                onEditedSeamAllowanceChanged ={},
+                onEditedSeamAllowanceChanged = {},
                 onEditedRotationChanged = {},
                 onEditedAllowMirrorChanged = {},
                 onSaveEditedProject = {},
                 onCloseDeleteLayoutsAfterEditDialog = {},
                 onConfirmSaveEditedProjectWithLayoutDeletion = {},
+
+                onOpenFabricOptionsDialog = {},
+                onCloseFabricOptionsDialog = {},
+                onStartManualFabricAdd = {},
+                onStartImageFabricAdd = { navController.navigate("select_image") },
+                onCloseManualFabricDialog = {},
+                onFabricWidthChanged = {},
+                onFabricLengthChanged = {},
+                onFabricWarpChanged = {},
+                onSaveManualFabricDraft = {},
+                onRequestDeleteFabric = {},
+                onCloseDeleteLayoutsAfterFabricChangeDialog = {},
+                onConfirmPendingFabricMutationWithLayoutDeletion = {},
+
                 onBack = { navController.popBackStack() },
                 onHome = {}
             )

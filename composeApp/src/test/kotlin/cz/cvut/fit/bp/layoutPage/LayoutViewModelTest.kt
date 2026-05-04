@@ -134,6 +134,10 @@ class LayoutViewModelTest {
             )
         } returns Unit
 
+        coEvery {
+            nestingResultRepository.getPatternNameAndVariantIdFromNestingResult(any())
+        } returns ("Basic T-Shirt" to "variant-m")
+
         val viewModel = createViewModel()
 
         viewModel.openOrGenerateLayout("project-1", "variant-m")
@@ -145,7 +149,7 @@ class LayoutViewModelTest {
         assertEquals(project, viewModel.uiState.project)
         assertEquals(pieces, viewModel.uiState.patternPieces)
         assertEquals(true, viewModel.uiState.hasSavedLayout)
-        assertEquals("", viewModel.uiState.patternName)
+        assertEquals("Basic T-Shirt", viewModel.uiState.patternName)
         assertEquals("M", viewModel.uiState.patternSize)
         assertEquals(1f, viewModel.uiState.generationProgress)
         assertNull(viewModel.uiState.errorMessage)

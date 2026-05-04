@@ -157,7 +157,7 @@ class LayoutFlowIntegrationTest {
         assertEquals(project.id, viewModel.uiState.project?.id)
         assertEquals(2, viewModel.uiState.patternPieces.size)
         assertEquals(true, viewModel.uiState.hasSavedLayout)
-        assertEquals("", viewModel.uiState.patternName)
+        assertEquals("Basic T-Shirt", viewModel.uiState.patternName)
         assertEquals("M", viewModel.uiState.patternSize)
         assertEquals(1f, viewModel.uiState.generationProgress)
         assertNull(viewModel.uiState.errorMessage)

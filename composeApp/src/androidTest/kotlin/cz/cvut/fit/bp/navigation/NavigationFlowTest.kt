@@ -333,6 +333,15 @@ private fun TestNavHost(startDestination: String) {
                 onViewPatternSuggestionsClick = { navController.navigate("pattern_suggestions") },
                 onGeneratedLayoutClick = { _, _ -> navController.navigate("layout") },
                 onDeleteProjectClick = {},
+                onOpenEditProjectDialog = {},
+                onCloseEditProjectDialog = {},
+                onEditedProjectNameChanged = {},
+                onEditedSeamAllowanceChanged ={},
+                onEditedRotationChanged = {},
+                onEditedAllowMirrorChanged = {},
+                onSaveEditedProject = {},
+                onCloseDeleteLayoutsAfterEditDialog = {},
+                onConfirmSaveEditedProjectWithLayoutDeletion = {},
                 onBack = { navController.popBackStack() },
                 onHome = {}
             )

@@ -64,6 +64,20 @@ fun ProjectDetailScreen(
     onSaveEditedProject: () -> Unit,
     onCloseDeleteLayoutsAfterEditDialog: () -> Unit,
     onConfirmSaveEditedProjectWithLayoutDeletion: () -> Unit,
+
+    onOpenFabricOptionsDialog: () -> Unit,
+    onCloseFabricOptionsDialog: () -> Unit,
+    onStartManualFabricAdd: () -> Unit,
+    onStartImageFabricAdd: () -> Unit,
+    onCloseManualFabricDialog: () -> Unit,
+    onFabricWidthChanged: (String) -> Unit,
+    onFabricLengthChanged: (String) -> Unit,
+    onFabricWarpChanged: (Boolean) -> Unit,
+    onSaveManualFabricDraft: () -> Unit,
+    onRequestDeleteFabric: (Int) -> Unit,
+    onCloseDeleteLayoutsAfterFabricChangeDialog: () -> Unit,
+    onConfirmPendingFabricMutationWithLayoutDeletion: () -> Unit,
+
     onBack: () -> Unit,
     onHome: () -> Unit
 ) {
@@ -219,7 +233,8 @@ fun ProjectDetailScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.edit),
                                 contentDescription = "Edit project",
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(30.dp)
                             )
                         }
                     }
@@ -267,11 +282,25 @@ fun ProjectDetailScreen(
                         }
                     }
 
-                    Text(
-                        text = "Fabrics",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Fabrics",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+
+                        IconButton(onClick = onOpenFabricOptionsDialog) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.plus),
+                                contentDescription = "Add fabric",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
 
                     if (project.fabricPieces.isEmpty()) {
                         Text(
@@ -289,22 +318,28 @@ fun ProjectDetailScreen(
                                     containerColor = MaterialTheme.colorScheme.surface
                                 )
                             ) {
-                                Column(
+                                Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(16.dp),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(
-                                        text = "Fabric ${index + 1}",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onBackground
-                                    )
-                                    Text(
-                                        text = "Tap to view shape",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onBackground
-                                    )
+                                    Column(
+                                        modifier = Modifier.weight(1f),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Text(
+                                            text = "Fabric ${index + 1}",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = MaterialTheme.colorScheme.onBackground
+                                        )
+                                        Text(
+                                            text = "Tap to view shape",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onBackground
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -377,10 +412,31 @@ fun ProjectDetailScreen(
                     AlertDialog(
                         onDismissRequest = { selectedFabricIndex = null },
                         title = {
-                            Text(
-                                text = "Fabric ${selectedFabricIndex!! + 1} shape",
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Fabric ${selectedFabricIndex!! + 1} shape",
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+
+                                if (project.fabricPieces.size > 1) {
+                                    IconButton(
+                                        onClick = {
+                                            onRequestDeleteFabric(selectedFabricIndex!!)
+                                            selectedFabricIndex = null
+                                        }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.delete),
+                                            contentDescription = "Delete fabric",
+                                            tint = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                }
+                            }
                         },
                         text = {
                             Column(
@@ -451,7 +507,7 @@ fun ProjectDetailScreen(
                                 Text("Cancel")
                             }
                         },
-                        containerColor = MaterialTheme.colorScheme.surface
+                        containerColor = MaterialTheme.colorScheme.background
                     )
                 }
 
@@ -538,15 +594,15 @@ fun ProjectDetailScreen(
                 if (state.isDeleteLayoutsAfterEditDialogOpen) {
                     AlertDialog(
                         onDismissRequest = onCloseDeleteLayoutsAfterEditDialog,
-                        title = {
+                        /*title = {
                             Text(
                                 text = "Generated layouts will be deleted",
                                 color = MaterialTheme.colorScheme.onBackground
                             )
-                        },
+                        },*/
                         text = {
                             Text(
-                                text = "Changing seam allowance, rotation, or mirror settings makes existing nesting results invalid. All generated layouts for this project will be deleted after saving.",
+                                text = "Generated layouts will be deleted after saving because they will no longer be valid.",
                                 color = MaterialTheme.colorScheme.onBackground
                             )
                         },
@@ -560,7 +616,133 @@ fun ProjectDetailScreen(
                                 Text("Cancel")
                             }
                         },
-                        containerColor = MaterialTheme.colorScheme.surface
+                        containerColor = MaterialTheme.colorScheme.background
+                    )
+                }
+
+                if (state.isFabricOptionsDialogOpen) {
+                    AlertDialog(
+                        onDismissRequest = onCloseFabricOptionsDialog,
+                        title = {
+                            Text(
+                                text = "Add fabric",
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        },
+                        text = {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                Button(
+                                    onClick = onStartManualFabricAdd,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text("Add manually")
+                                }
+
+                                Button(
+                                    onClick = onStartImageFabricAdd,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text("Add from image")
+                                }
+
+                                Button(
+                                    onClick = onCloseFabricOptionsDialog,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text("Cancel")
+                                }
+                            }
+                        },
+                        confirmButton = {},
+                        dismissButton = {},
+                        containerColor = MaterialTheme.colorScheme.background
+                    )
+                }
+
+                if (state.isManualFabricDialogOpen) {
+                    AlertDialog(
+                        onDismissRequest = onCloseManualFabricDialog,
+                        title = {
+                            Text(
+                                text = "Add fabric manually",
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        },
+                        text = {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                ProjectEditTextInput(
+                                    label = "Fabric width (mm):",
+                                    value = state.fabricDraft.widthMm,
+                                    onValueChange = onFabricWidthChanged,
+                                    onlyNumbers = true,
+                                    placeholder = "0"
+                                )
+
+                                ProjectEditTextInput(
+                                    label = "Fabric length (mm):",
+                                    value = state.fabricDraft.lengthMm,
+                                    onValueChange = onFabricLengthChanged,
+                                    onlyNumbers = true,
+                                    placeholder = "0"
+                                )
+
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Checkbox(
+                                        checked = state.fabricDraft.warpAlongWidth,
+                                        onCheckedChange = onFabricWarpChanged
+                                    )
+                                    Text(
+                                        text = "Warp is along fabric's width",
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    )
+                                }
+                            }
+                        },
+                        confirmButton = {
+                            Button(onClick = onSaveManualFabricDraft) {
+                                Text("Add fabric")
+                            }
+                        },
+                        dismissButton = {
+                            Button(onClick = onCloseManualFabricDialog) {
+                                Text("Cancel")
+                            }
+                        },
+                        containerColor = MaterialTheme.colorScheme.background
+                    )
+                }
+                if (state.isDeleteLayoutsAfterFabricChangeDialogOpen) {
+                    AlertDialog(
+                        onDismissRequest = onCloseDeleteLayoutsAfterFabricChangeDialog,
+                        title = {
+                            Text(
+                                text = "Generated layouts will be deleted",
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        },
+                        text = {
+                            Text(
+                                text = "Generated layouts will be deleted after saving because they will no longer be valid.",
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        },
+                        confirmButton = {
+                            Button(onClick = onConfirmPendingFabricMutationWithLayoutDeletion) {
+                                Text("Continue")
+                            }
+                        },
+                        dismissButton = {
+                            Button(onClick = onCloseDeleteLayoutsAfterFabricChangeDialog) {
+                                Text("Cancel")
+                            }
+                        },
+                        containerColor = MaterialTheme.colorScheme.background
                     )
                 }
             }

@@ -5,8 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cz.cvut.fit.bp.imageRecognition.markerDetection.Marker
+import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
+import cz.cvut.fit.bp.projectCreation.FabricDraft
+import cz.cvut.fit.bp.projectCreation.FabricImageStep
+import cz.cvut.fit.bp.projectCreation.FabricInputMode
 import cz.cvut.fit.bp.projectCreation.ProjectCreationUiState
 import cz.cvut.fit.bp.projectCreation.UiRotationOption
+import cz.cvut.fit.bp.projectCreation.toImageFabric
+import cz.cvut.fit.bp.projectCreation.toManualFabric
 import cz.cvut.fit.bp.projectCreation.toRotationRules
 import domain.repository.NestingResultRepository
 import domain.repository.PatternRepository
@@ -277,6 +284,256 @@ class ProjectDetailViewModel(private val projectRepository: ProjectRepository, p
             }
         }
 
+    }
+    fun openFabricOptionsDialog() {
+        uiState = uiState.copy(
+            isFabricOptionsDialogOpen = true,
+            errorMessage = null
+        )
+    }
+
+    fun closeFabricOptionsDialog() {
+        uiState = uiState.copy(
+            isFabricOptionsDialogOpen = false
+        )
+    }
+
+    fun startManualFabricAdd() {
+        uiState = uiState.copy(
+            isFabricOptionsDialogOpen = false,
+            isManualFabricDialogOpen = true,
+            fabricDraft = FabricDraft(inputMode = FabricInputMode.MANUAL),
+            errorMessage = null
+        )
+    }
+    fun closeManualFabricDialog() {
+        uiState = uiState.copy(
+            isManualFabricDialogOpen = false,
+            fabricDraft = FabricDraft(),
+            currentImageStep = FabricImageStep.NONE,
+            errorMessage = null
+        )
+    }
+
+    fun onFabricWidthChanged(value: String) {
+        uiState = uiState.copy(
+            fabricDraft = uiState.fabricDraft.copy(widthMm = value)
+        )
+    }
+
+    fun onFabricLengthChanged(value: String) {
+        uiState = uiState.copy(
+            fabricDraft = uiState.fabricDraft.copy(lengthMm = value)
+        )
+    }
+
+    fun onFabricWarpChanged(value: Boolean) {
+        uiState = uiState.copy(
+            fabricDraft = uiState.fabricDraft.copy(warpAlongWidth = value)
+        )
+    }
+
+    fun saveManualFabricDraft() {
+        try {
+            val fabric = uiState.fabricDraft.toManualFabric()
+            stageFabricMutation(PendingFabricMutation.Add(fabric))
+        } catch (e: Exception) {
+            uiState = uiState.copy(errorMessage = e.message)
+        }
+    }
+
+    fun requestDeleteFabric(index: Int) {
+        stageFabricMutation(PendingFabricMutation.Delete(index))
+    }
+
+    fun closeDeleteLayoutsAfterFabricChangeDialog() {
+        uiState = uiState.copy(
+            isDeleteLayoutsAfterFabricChangeDialogOpen = false,
+            pendingFabricMutation = null
+        )
+    }
+
+    fun confirmPendingFabricMutationWithLayoutDeletion() {
+        applyPendingFabricMutation(deleteLayouts = true)
+    }
+
+    private fun stageFabricMutation(mutation: PendingFabricMutation) {
+        val shouldWarn = uiState.generatedLayouts.isNotEmpty()
+
+        if (shouldWarn) {
+            uiState = uiState.copy(
+                pendingFabricMutation = mutation,
+                isFabricOptionsDialogOpen = false,
+                isManualFabricDialogOpen = false,
+                isDeleteLayoutsAfterFabricChangeDialogOpen = true,
+                errorMessage = null
+            )
+        } else {
+            uiState = uiState.copy(
+                pendingFabricMutation = mutation,
+                isFabricOptionsDialogOpen = false,
+                isManualFabricDialogOpen = false,
+                errorMessage = null
+            )
+            applyPendingFabricMutation(deleteLayouts = false)
+        }
+    }
+
+    private fun applyPendingFabricMutation(deleteLayouts: Boolean) {
+        val currentProject = uiState.project ?: return
+        val mutation = uiState.pendingFabricMutation ?: return
+
+        val updatedFabrics = when (mutation) {
+            is PendingFabricMutation.Add -> {
+                currentProject.fabricPieces + mutation.fabric
+            }
+
+            is PendingFabricMutation.Delete -> {
+                if (currentProject.fabricPieces.size <= 1) {
+                    uiState = uiState.copy(
+                        isDeleteLayoutsAfterFabricChangeDialogOpen = false,
+                        pendingFabricMutation = null,
+                        errorMessage = "Project must contain at least one fabric"
+                    )
+                    return
+                }
+
+                currentProject.fabricPieces.toMutableList().apply {
+                    removeAt(mutation.index)
+                }
+            }
+        }
+
+        val updatedProject = currentProject.copy(
+            fabricPieces = updatedFabrics
+        )
+
+        viewModelScope.launch {
+            try {
+                uiState = uiState.copy(
+                    isLoading = true,
+                    errorMessage = null
+                )
+
+                projectRepository.saveProject(updatedProject)
+
+                if (deleteLayouts) {
+                    nestingResultRepository.deleteNestingResultsByProject(updatedProject.id)
+                }
+
+                uiState = uiState.copy(
+                    isLoading = false,
+                    project = updatedProject,
+                    generatedLayouts = if (deleteLayouts) emptyList() else uiState.generatedLayouts,
+                    isFabricOptionsDialogOpen = false,
+                    isManualFabricDialogOpen = false,
+                    isDeleteLayoutsAfterFabricChangeDialogOpen = false,
+                    fabricDraft = FabricDraft(),
+                    currentImageStep = FabricImageStep.NONE,
+                    pendingFabricMutation = null,
+                    selectedFabricIndexForAction = null,
+                    errorMessage = null
+                )
+            } catch (e: Exception) {
+                uiState = uiState.copy(
+                    isLoading = false,
+                    errorMessage = e.message
+                )
+            }
+        }
+    }
+
+    fun startImageFabricAdd() {
+        uiState = uiState.copy(
+            isFabricOptionsDialogOpen = false,
+            isManualFabricDialogOpen = false,
+            fabricDraft = FabricDraft(inputMode = FabricInputMode.IMAGE),
+            currentImageStep = FabricImageStep.NONE,
+            errorMessage = null
+        )
+    }
+
+    fun setImageUri(uri: String) {
+        uiState = uiState.copy(
+            fabricDraft = uiState.fabricDraft.copy(
+                inputMode = FabricInputMode.IMAGE,
+                imageUri = uri,
+                resourceImageName = null,
+                detectedContour = null,
+                editedContour = null,
+                detectedA4Marker = null,
+                editedA4Marker = null,
+                errorMessage = null
+            ),
+            currentImageStep = FabricImageStep.EDIT_CONTOUR,
+            errorMessage = null
+        )
+    }
+
+    fun setResourceImage(name: String) {
+        uiState = uiState.copy(
+            fabricDraft = uiState.fabricDraft.copy(
+                inputMode = FabricInputMode.IMAGE,
+                imageUri = null,
+                resourceImageName = name,
+                detectedContour = null,
+                editedContour = null,
+                detectedA4Marker = null,
+                editedA4Marker = null,
+                errorMessage = null
+            ),
+            currentImageStep = FabricImageStep.EDIT_CONTOUR,
+            errorMessage = null
+        )
+    }
+
+    fun confirmEditedContour(contour: List<CvPoint>) {
+        uiState = uiState.copy(
+            fabricDraft = uiState.fabricDraft.copy(
+                editedContour = contour,
+                errorMessage = null
+            ),
+            currentImageStep = FabricImageStep.EDIT_A4,
+            errorMessage = null
+        )
+    }
+
+    fun confirmEditedA4(marker: Marker) {
+        uiState = uiState.copy(
+            fabricDraft = uiState.fabricDraft.copy(
+                editedA4Marker = marker,
+                errorMessage = null
+            ),
+            currentImageStep = FabricImageStep.EDIT_WARP,
+            errorMessage = null
+        )
+    }
+
+    fun confirmWarpTilt(degrees: Double) {
+        uiState = uiState.copy(
+            fabricDraft = uiState.fabricDraft.copy(
+                warpAngleDegreesFromVertical = degrees,
+                errorMessage = null
+            ),
+            errorMessage = null
+        )
+    }
+
+    fun finishImageFabricAdd() {
+        try {
+            val fabric = uiState.fabricDraft.toImageFabric()
+            stageFabricMutation(PendingFabricMutation.Add(fabric))
+        } catch (e: Exception) {
+            uiState = uiState.copy(errorMessage = e.message)
+        }
+    }
+
+    fun clearImageFabricDraft() {
+        uiState = uiState.copy(
+            fabricDraft = FabricDraft(),
+            currentImageStep = FabricImageStep.NONE,
+            errorMessage = null
+        )
     }
 }
 

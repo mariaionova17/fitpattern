@@ -32,6 +32,15 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
+                    onOpenEditProjectDialog = {},
+                    onCloseEditProjectDialog = {},
+                    onEditedProjectNameChanged = {},
+                    onEditedSeamAllowanceChanged ={},
+                    onEditedRotationChanged = {},
+                    onEditedAllowMirrorChanged = {},
+                    onSaveEditedProject = {},
+                    onCloseDeleteLayoutsAfterEditDialog = {},
+                    onConfirmSaveEditedProjectWithLayoutDeletion = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -54,6 +63,15 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
+                    onOpenEditProjectDialog = {},
+                    onCloseEditProjectDialog = {},
+                    onEditedProjectNameChanged = {},
+                    onEditedSeamAllowanceChanged ={},
+                    onEditedRotationChanged = {},
+                    onEditedAllowMirrorChanged = {},
+                    onSaveEditedProject = {},
+                    onCloseDeleteLayoutsAfterEditDialog = {},
+                    onConfirmSaveEditedProjectWithLayoutDeletion = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -72,6 +90,15 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
+                    onOpenEditProjectDialog = {},
+                    onCloseEditProjectDialog = {},
+                    onEditedProjectNameChanged = {},
+                    onEditedSeamAllowanceChanged ={},
+                    onEditedRotationChanged = {},
+                    onEditedAllowMirrorChanged = {},
+                    onSaveEditedProject = {},
+                    onCloseDeleteLayoutsAfterEditDialog = {},
+                    onConfirmSaveEditedProjectWithLayoutDeletion = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -90,6 +117,15 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
+                    onOpenEditProjectDialog = {},
+                    onCloseEditProjectDialog = {},
+                    onEditedProjectNameChanged = {},
+                    onEditedSeamAllowanceChanged ={},
+                    onEditedRotationChanged = {},
+                    onEditedAllowMirrorChanged = {},
+                    onSaveEditedProject = {},
+                    onCloseDeleteLayoutsAfterEditDialog = {},
+                    onConfirmSaveEditedProjectWithLayoutDeletion = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -110,6 +146,15 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
+                    onOpenEditProjectDialog = {},
+                    onCloseEditProjectDialog = {},
+                    onEditedProjectNameChanged = {},
+                    onEditedSeamAllowanceChanged ={},
+                    onEditedRotationChanged = {},
+                    onEditedAllowMirrorChanged = {},
+                    onSaveEditedProject = {},
+                    onCloseDeleteLayoutsAfterEditDialog = {},
+                    onConfirmSaveEditedProjectWithLayoutDeletion = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -134,6 +179,15 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = { choosePatternClicked = true },
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
+                    onOpenEditProjectDialog = {},
+                    onCloseEditProjectDialog = {},
+                    onEditedProjectNameChanged = {},
+                    onEditedSeamAllowanceChanged ={},
+                    onEditedRotationChanged = {},
+                    onEditedAllowMirrorChanged = {},
+                    onSaveEditedProject = {},
+                    onCloseDeleteLayoutsAfterEditDialog = {},
+                    onConfirmSaveEditedProjectWithLayoutDeletion = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -156,6 +210,15 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = {},
+                    onOpenEditProjectDialog = {},
+                    onCloseEditProjectDialog = {},
+                    onEditedProjectNameChanged = {},
+                    onEditedSeamAllowanceChanged ={},
+                    onEditedRotationChanged = {},
+                    onEditedAllowMirrorChanged = {},
+                    onSaveEditedProject = {},
+                    onCloseDeleteLayoutsAfterEditDialog = {},
+                    onConfirmSaveEditedProjectWithLayoutDeletion = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -182,6 +245,15 @@ class ProjectDetailScreenTest {
                     onViewPatternSuggestionsClick = {},
                     onGeneratedLayoutClick = { _, _ -> },
                     onDeleteProjectClick = { deleteClicked = true },
+                    onOpenEditProjectDialog = {},
+                    onCloseEditProjectDialog = {},
+                    onEditedProjectNameChanged = {},
+                    onEditedSeamAllowanceChanged ={},
+                    onEditedRotationChanged = {},
+                    onEditedAllowMirrorChanged = {},
+                    onSaveEditedProject = {},
+                    onCloseDeleteLayoutsAfterEditDialog = {},
+                    onConfirmSaveEditedProjectWithLayoutDeletion = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -224,6 +296,15 @@ class ProjectDetailScreenTest {
                         receivedVariantId = variantId
                     },
                     onDeleteProjectClick = {},
+                    onOpenEditProjectDialog = {},
+                    onCloseEditProjectDialog = {},
+                    onEditedProjectNameChanged = {},
+                    onEditedSeamAllowanceChanged ={},
+                    onEditedRotationChanged = {},
+                    onEditedAllowMirrorChanged = {},
+                    onSaveEditedProject = {},
+                    onCloseDeleteLayoutsAfterEditDialog = {},
+                    onConfirmSaveEditedProjectWithLayoutDeletion = {},
                     onBack = {},
                     onHome = {}
                 )

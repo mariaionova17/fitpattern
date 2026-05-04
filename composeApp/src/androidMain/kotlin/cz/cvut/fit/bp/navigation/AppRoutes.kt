@@ -17,4 +17,10 @@ object AppRoutes {
 
     const val LayoutRoute = "layout/{projectId}/{variantId}"
     fun layout(projectId: String, variantId: String) = "layout/$projectId/$variantId"
+
+    fun projectDetailSelectImage(projectId: String) = "project_detail_select_image/$projectId"
+    const val ProjectDetailSelectImageRoute = "project_detail_select_image/{projectId}"
+
+    fun projectDetailFabricImage(projectId: String) = "project_detail_fabric_image/$projectId"
+    const val ProjectDetailFabricImageRoute = "project_detail_fabric_image/{projectId}"
 }

@@ -18,7 +18,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -29,14 +34,11 @@ import androidx.compose.ui.unit.dp
 import cz.cvut.fit.bp.R
 import cz.cvut.fit.bp.imageRecognition.EditableA4Overlay
 import cz.cvut.fit.bp.imageRecognition.EditablePolygonOverlay
-import cz.cvut.fit.bp.imageRecognition.FinalPolygonPreview
 import cz.cvut.fit.bp.imageRecognition.WarpDirectionOverlay
 import cz.cvut.fit.bp.imageRecognition.loadBitmapFromAssets
 import cz.cvut.fit.bp.imageRecognition.loadBitmapFromUri
 import cz.cvut.fit.bp.imageRecognition.markerDetection.Marker
-import cz.cvut.fit.bp.imageRecognition.markerDetection.alignPolygonWarpToVertical
 import cz.cvut.fit.bp.imageRecognition.markerDetection.detectA4
-import cz.cvut.fit.bp.imageRecognition.markerDetection.editablePolygonToMmPolygon
 import cz.cvut.fit.bp.imageRecognition.polygonDetection.CvPoint
 import cz.cvut.fit.bp.imageRecognition.polygonDetection.detectBestPolygon
 import cz.cvut.fit.bp.imageRecognition.prepareBitmapForProcessing
@@ -46,7 +48,8 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FabricImageScreen(
-    state: ProjectCreationUiState,
+    currentFabric: FabricDraft,
+    currentImageStep: FabricImageStep,
     onBack: () -> Unit,
     onConfirmContour: (List<CvPoint>) -> Unit,
     onConfirmA4: (Marker) -> Unit,
@@ -62,10 +65,21 @@ fun FabricImageScreen(
     var statusText by remember { mutableStateOf("No image selected") }
     var isProcessing by remember { mutableStateOf(false) }
 
-    LaunchedEffect(state.currentFabric.resourceImageName, state.currentFabric.imageUri,state.currentImageStep) {
-        val imageName = state.currentFabric.resourceImageName
-        val imageUri = state.currentFabric.imageUri
-        if (imageName == null && imageUri == null) return@LaunchedEffect
+    LaunchedEffect(
+        currentFabric.resourceImageName,
+        currentFabric.imageUri,
+        currentImageStep
+    ) {
+        val imageName = currentFabric.resourceImageName
+        val imageUri = currentFabric.imageUri
+
+        if (imageName == null && imageUri == null) {
+            originalBitmap = null
+            editablePolygon = emptyList()
+            editableMarker = null
+            warpTiltDegrees = 0.0
+            return@LaunchedEffect
+        }
 
         try {
             isProcessing = true
@@ -85,7 +99,8 @@ fun FabricImageScreen(
                 "FabricImageScreen",
                 "Bitmap loaded: width=${original.width}, height=${original.height}, config=${original.config}"
             )
-            when (state.currentImageStep) {
+
+            when (currentImageStep) {
                 FabricImageStep.EDIT_CONTOUR -> {
                     try {
                         android.util.Log.d("FabricImageScreen", "Before detectBestPolygon")
@@ -94,7 +109,7 @@ fun FabricImageScreen(
                         }
                         android.util.Log.d("FabricImageScreen", "After detectBestPolygon")
 
-                        editablePolygon = state.currentFabric.editedContour?.map {
+                        editablePolygon = currentFabric.editedContour?.map {
                             CvPoint(it.x, it.y)
                         } ?: result.bestCandidate?.polygon.orEmpty()
 
@@ -110,17 +125,16 @@ fun FabricImageScreen(
                 }
 
                 FabricImageStep.EDIT_A4 -> {
-                    editableMarker = state.currentFabric.editedA4Marker ?: detectA4(original)
+                    editableMarker = currentFabric.editedA4Marker ?: detectA4(original)
                     statusText = "Adjust the A4 paper corners."
                 }
 
                 FabricImageStep.EDIT_WARP -> {
-                    editablePolygon = state.currentFabric.editedContour?.map {
+                    editablePolygon = currentFabric.editedContour?.map {
                         CvPoint(it.x, it.y)
                     }.orEmpty()
 
-                    warpTiltDegrees = state.currentFabric.warpAngleDegreesFromVertical
-
+                    warpTiltDegrees = currentFabric.warpAngleDegreesFromVertical
                     statusText = "Rotate the arrow to define warp direction."
                 }
 
@@ -132,15 +146,6 @@ fun FabricImageScreen(
             isProcessing = false
         }
     }
-    val previewPolygon = remember(editablePolygon, editableMarker, warpTiltDegrees) {
-        val marker = editableMarker
-        if (editablePolygon.isEmpty() || marker == null) {
-            null
-        } else {
-            val mmPolygon = editablePolygonToMmPolygon(editablePolygon, marker)
-            alignPolygonWarpToVertical(mmPolygon, warpTiltDegrees)
-        }
-    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -149,7 +154,7 @@ fun FabricImageScreen(
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
-                            text = when (state.currentImageStep) {
+                            text = when (currentImageStep) {
                                 FabricImageStep.EDIT_CONTOUR -> "Drag points to edit fabric contour"
                                 FabricImageStep.EDIT_A4 -> "Drag points to edit A4 contour"
                                 FabricImageStep.EDIT_WARP -> "Position arrow parallel to warp"
@@ -185,21 +190,10 @@ fun FabricImageScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding),
-                //.padding(horizontal = 40.dp, vertical = 24.dp)
-                //.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            /*Text(
-                text = when (state.currentImageStep) {
-                    FabricImageStep.EDIT_CONTOUR -> "Adjust the detected fabric contour."
-                    FabricImageStep.EDIT_A4 -> "Adjust the A4 paper corners for proper scaling."
-                    FabricImageStep.EDIT_WARP -> "Rotate the arrow so warp is defined."
-                    FabricImageStep.NONE -> statusText
-                },
-                color = MaterialTheme.colorScheme.onBackground
-            )*/
-
             val bitmap = originalBitmap
+
             androidx.compose.foundation.layout.Box(
                 modifier = Modifier
                     .weight(1f)
@@ -215,8 +209,9 @@ fun FabricImageScreen(
                         CircularProgressIndicator()
                     }
                 }
+
                 if (bitmap != null) {
-                    when (state.currentImageStep) {
+                    when (currentImageStep) {
                         FabricImageStep.EDIT_CONTOUR -> {
                             if (editablePolygon.isNotEmpty()) {
                                 EditablePolygonOverlay(
@@ -242,7 +237,7 @@ fun FabricImageScreen(
                                     bitmap = bitmap,
                                     marker = marker,
                                     onMarkerChange = { editableMarker = it },
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxSize()
                                 )
                             }
                         }
@@ -264,14 +259,26 @@ fun FabricImageScreen(
                             }
                         }
 
-                        FabricImageStep.NONE -> Unit
+                        FabricImageStep.NONE -> {
+                            Image(
+                                bitmap = bitmap.asImageBitmap(),
+                                contentDescription = "Selected fabric image",
+                                modifier = Modifier.fillMaxWidth(),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
                     }
+                } else if (!isProcessing) {
+                    Text(
+                        text = statusText,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
             }
 
             Button(
                 onClick = {
-                    when (state.currentImageStep) {
+                    when (currentImageStep) {
                         FabricImageStep.EDIT_CONTOUR -> {
                             onConfirmContour(editablePolygon)
                         }
@@ -289,10 +296,12 @@ fun FabricImageScreen(
                     }
                 },
                 enabled = !isProcessing,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 40.dp)
             ) {
                 Text(
-                    when (state.currentImageStep) {
+                    when (currentImageStep) {
                         FabricImageStep.EDIT_CONTOUR -> "Confirm contour"
                         FabricImageStep.EDIT_A4 -> "Confirm A4"
                         FabricImageStep.EDIT_WARP -> "Save fabric"

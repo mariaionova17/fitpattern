@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -219,7 +220,8 @@ fun AppNav(
             val state = projectCreationViewModel.uiState
 
             FabricImageScreen(
-                state = state,
+                currentFabric = state.currentFabric,
+                currentImageStep = state.currentImageStep,
                 onBack = { navController.popBackStack() },
                 onConfirmContour = { contour ->
                     projectCreationViewModel.confirmEditedContour(contour)
@@ -291,24 +293,47 @@ fun AppNav(
                 onConfirmSaveEditedProjectWithLayoutDeletion = {
                     detailViewModel.confirmSaveEditedProjectWithLayoutDeletion()
                 },
+                onOpenFabricOptionsDialog = {
+                    detailViewModel.openFabricOptionsDialog()
+                },
+                onCloseFabricOptionsDialog = {
+                    detailViewModel.closeFabricOptionsDialog()
+                },
+                onStartManualFabricAdd = {
+                    detailViewModel.startManualFabricAdd()
+                },
+                onStartImageFabricAdd = {
+                    if (projectId != null) {
+                        detailViewModel.startImageFabricAdd()
+                        navController.navigate(AppRoutes.projectDetailSelectImage(projectId))
+                    }
+                },
+                onCloseManualFabricDialog = {
+                    detailViewModel.closeManualFabricDialog()
+                },
+                onFabricWidthChanged = {
+                    detailViewModel.onFabricWidthChanged(it)
+                },
+                onFabricLengthChanged = {
+                    detailViewModel.onFabricLengthChanged(it)
+                },
+                onFabricWarpChanged = {
+                    detailViewModel.onFabricWarpChanged(it)
+                },
+                onSaveManualFabricDraft = {
+                    detailViewModel.saveManualFabricDraft()
+                },
+                onRequestDeleteFabric = { index ->
+                    detailViewModel.requestDeleteFabric(index)
+                },
+                onCloseDeleteLayoutsAfterFabricChangeDialog = {
+                    detailViewModel.closeDeleteLayoutsAfterFabricChangeDialog()
+                },
+                onConfirmPendingFabricMutationWithLayoutDeletion = {
+                    detailViewModel.confirmPendingFabricMutationWithLayoutDeletion()
+                },
                 onBack = { navController.popBackStack() },
                 onHome = { navController.navigate(AppRoutes.Projects) }
-            )
-        }
-
-        composable(AppRoutes.Projects) {
-            androidx.compose.runtime.LaunchedEffect(Unit) {
-                projectsViewModel.loadProjects()
-            }
-
-            ProjectsScreen(
-                state = projectsViewModel.uiState,
-                onCreateProjectClick = {
-                    navController.navigate(AppRoutes.ProjectCreation)
-                },
-                onProjectClick = { projectId ->
-                    navController.navigate(AppRoutes.projectDetail(projectId))
-                }
             )
         }
 
@@ -370,6 +395,73 @@ fun AppNav(
                 state = layoutViewModel.uiState,
                 onBack = { navController.popBackStack() },
                 onHome = { navController.navigate(AppRoutes.Projects) }
+            )
+        }
+
+        composable(AppRoutes.ProjectDetailFabricImageRoute) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getString("projectId") ?: return@composable
+
+            val parentEntry = remember(projectId) {
+                navController.getBackStackEntry(AppRoutes.projectDetail(projectId))
+            }
+
+            val detailViewModel: ProjectDetailViewModel = viewModel(
+                viewModelStoreOwner = parentEntry,
+                factory = ProjectDetailViewModelFactory(
+                    projectRepository,
+                    patternRepository,
+                    nestingResultRepository
+                )
+            )
+
+            val state = detailViewModel.uiState
+
+            FabricImageScreen(
+                currentFabric = state.fabricDraft,
+                currentImageStep = state.currentImageStep,
+                onBack = { navController.popBackStack() },
+                onConfirmContour = { contour ->
+                    detailViewModel.confirmEditedContour(contour)
+                },
+                onConfirmA4 = { marker ->
+                    detailViewModel.confirmEditedA4(marker)
+                },
+                onConfirmWarpTilt = { tiltDegrees ->
+                    detailViewModel.confirmWarpTilt(tiltDegrees)
+                },
+                onFinishImageFabric = {
+                    detailViewModel.finishImageFabricAdd()
+                    navController.popBackStack(AppRoutes.projectDetail(projectId), false)
+                }
+            )
+        }
+
+        composable(AppRoutes.ProjectDetailSelectImageRoute) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getString("projectId") ?: return@composable
+
+            val parentEntry = remember(projectId) {
+                navController.getBackStackEntry(AppRoutes.projectDetail(projectId))
+            }
+
+            val detailViewModel: ProjectDetailViewModel = viewModel(
+                viewModelStoreOwner = parentEntry,
+                factory = ProjectDetailViewModelFactory(
+                    projectRepository,
+                    patternRepository,
+                    nestingResultRepository
+                )
+            )
+
+            SelectImageScreen(
+                onBack = { navController.popBackStack() },
+                onPickTestImage = { imageName ->
+                    detailViewModel.setResourceImage(imageName)
+                    navController.navigate(AppRoutes.projectDetailFabricImage(projectId))
+                },
+                onPickImageFromGallery = { imageUri ->
+                    detailViewModel.setImageUri(imageUri)
+                    navController.navigate(AppRoutes.projectDetailFabricImage(projectId))
+                }
             )
         }
 

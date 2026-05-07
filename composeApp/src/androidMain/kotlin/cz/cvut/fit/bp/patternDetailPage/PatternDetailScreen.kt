@@ -44,12 +44,15 @@ import androidx.compose.ui.unit.dp
 import cz.cvut.fit.bp.R
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PatternDetailScreen(
     state: PatternDetailUiState,
     onBack: () -> Unit,
+    onHome: () -> Unit,
     onViewLayoutClick: (variantId: String) -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -84,6 +87,31 @@ fun PatternDetailScreen(
                     color = MaterialTheme.colorScheme.outline,
                     thickness = 1.dp
                 )
+            }
+        },
+        bottomBar = {
+            Column {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outline,
+                    thickness = 1.dp
+                )
+
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.background
+                ) {
+                    NavigationBarItem(
+                        selected = false,
+                        onClick = onHome,
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.home),
+                                contentDescription = "Home",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    )
+                }
             }
         }
     ) { innerPadding ->

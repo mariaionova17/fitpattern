@@ -369,6 +369,7 @@ fun AppNav(
             PatternDetailScreen(
                 state = detailViewModel.uiState,
                 onBack = { navController.popBackStack() },
+                onHome = { navController.navigate(AppRoutes.Projects) },
                 onViewLayoutClick = { variantId ->
                     navController.navigate(AppRoutes.layout(projectId, variantId))
                 }
@@ -401,7 +402,7 @@ fun AppNav(
         composable(AppRoutes.ProjectDetailFabricImageRoute) { backStackEntry ->
             val projectId = backStackEntry.arguments?.getString("projectId") ?: return@composable
 
-            val parentEntry = remember(projectId) {
+            val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(AppRoutes.projectDetail(projectId))
             }
 
@@ -439,7 +440,7 @@ fun AppNav(
         composable(AppRoutes.ProjectDetailSelectImageRoute) { backStackEntry ->
             val projectId = backStackEntry.arguments?.getString("projectId") ?: return@composable
 
-            val parentEntry = remember(projectId) {
+            val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(AppRoutes.projectDetail(projectId))
             }
 

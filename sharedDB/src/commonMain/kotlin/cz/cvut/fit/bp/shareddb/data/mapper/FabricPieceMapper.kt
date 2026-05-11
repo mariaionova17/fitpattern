@@ -7,6 +7,7 @@ import domain.geometry.Shape
 fun FabricPieceEntity.toFabricPiece(): FabricPiece {
     return FabricPiece(
         id = id,
+        name = name,
         contour = Shape(
             contour = PolygonMapper.polygonFromJson(contourJson),
             holes = PolygonMapper.polygonsFromJson(holesJson)
@@ -17,6 +18,7 @@ fun FabricPieceEntity.toFabricPiece(): FabricPiece {
 fun FabricPiece.toFabricPieceEntity(projectId: String): FabricPieceEntity {
     return FabricPieceEntity(
         id = id,
+        name = name,
         projectId = projectId,
         contourJson = PolygonMapper.polygonToJson(contour.contour),
         holesJson = PolygonMapper.polygonsToJson(contour.holes)

@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class FabricPieceEntity(
     @PrimaryKey
     val id: String,
+    val name: String,
     val projectId: String,
     val contourJson: String,
     val holesJson: String

@@ -46,7 +46,7 @@ fun FabricDraft.toManualFabric(): FabricPiece{
         Point(0.0, length)
     ))
 
-    return FabricPiece(UUID.randomUUID().toString(), Shape(polygon))
+    return FabricPiece(UUID.randomUUID().toString(), "",Shape(polygon))
 }
 
 fun FabricDraft.toImageFabric(): FabricPiece{
@@ -54,7 +54,7 @@ fun FabricDraft.toImageFabric(): FabricPiece{
     val marker = editedA4Marker ?: detectedA4Marker ?: error("No marker available for image fabric")
     val normalizedContour = editablePolygonToMmPolygon(contour, marker)
     val contourWithWarpVertically = alignPolygonWarpToVertical(normalizedContour, warpAngleDegreesFromVertical)
-    return FabricPiece(UUID.randomUUID().toString(), Shape(contourWithWarpVertically))
+    return FabricPiece(UUID.randomUUID().toString(), "", Shape(contourWithWarpVertically))
 }
 
 fun ProjectCreationUiState.toProject(projectId: String): Project{

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7ed4ac960b32cea9d9568fe9d3e13c1b",
+    "identityHash": "21e00caa95fb5d73a40c67df221324be",
     "entities": [
       {
         "tableName": "projects",
@@ -66,11 +66,17 @@
       },
       {
         "tableName": "fabric_pieces",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `projectId` TEXT NOT NULL, `contourJson` TEXT NOT NULL, `holesJson` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `projectId` TEXT NOT NULL, `contourJson` TEXT NOT NULL, `holesJson` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -289,7 +295,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7ed4ac960b32cea9d9568fe9d3e13c1b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '21e00caa95fb5d73a40c67df221324be')"
     ]
   }
 }

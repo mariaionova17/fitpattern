@@ -332,6 +332,12 @@ fun AppNav(
                 onConfirmPendingFabricMutationWithLayoutDeletion = {
                     detailViewModel.confirmPendingFabricMutationWithLayoutDeletion()
                 },
+
+                onOpenRenameFabricDialog = { index -> detailViewModel.openRenameFabricDialog(index) },
+                onCloseRenameFabricDialog = { detailViewModel.closeRenameFabricDialog() },
+                onFabricNameChanged = { index -> detailViewModel.onFabricNameChanged(index) },
+                onSaveRenamedFabric = { detailViewModel.saveRenamedFabric() },
+
                 onBack = { navController.popBackStack() },
                 onHome = { navController.navigate(AppRoutes.Projects) }
             )

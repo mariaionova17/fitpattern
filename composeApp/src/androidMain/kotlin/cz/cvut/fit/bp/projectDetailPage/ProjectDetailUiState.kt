@@ -24,7 +24,11 @@ data class ProjectDetailUiState(
     val currentImageStep: FabricImageStep = FabricImageStep.NONE,
 
     val pendingFabricMutation: PendingFabricMutation? = null,
-    val selectedFabricIndexForAction: Int? = null
+    val selectedFabricIndexForAction: Int? = null,
+
+    val isRenameFabricDialogOpen: Boolean = false,
+    val fabricNameDraft: String = "",
+    val renameFabricError: String? = null
 )
 
 data class ProjectEditDraft(
@@ -37,4 +41,6 @@ data class ProjectEditDraft(
 sealed interface PendingFabricMutation {
     data class Add(val fabric: FabricPiece) : PendingFabricMutation
     data class Delete(val index: Int) : PendingFabricMutation
+    data class Rename(val index: Int, val newName: String) : PendingFabricMutation
+
 }

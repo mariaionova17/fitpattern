@@ -358,13 +358,18 @@ class ProjectDetailViewModel(private val projectRepository: ProjectRepository, p
     }
 
     private fun stageFabricMutation(mutation: PendingFabricMutation) {
-        val shouldWarn = uiState.generatedLayouts.isNotEmpty()
+        val shouldWarn = when (mutation) {
+            is PendingFabricMutation.Add -> uiState.generatedLayouts.isNotEmpty()
+            is PendingFabricMutation.Delete -> uiState.generatedLayouts.isNotEmpty()
+            is PendingFabricMutation.Rename -> false
+        }
 
         if (shouldWarn) {
             uiState = uiState.copy(
                 pendingFabricMutation = mutation,
                 isFabricOptionsDialogOpen = false,
                 isManualFabricDialogOpen = false,
+                isRenameFabricDialogOpen = false,
                 isDeleteLayoutsAfterFabricChangeDialogOpen = true,
                 errorMessage = null
             )
@@ -373,6 +378,7 @@ class ProjectDetailViewModel(private val projectRepository: ProjectRepository, p
                 pendingFabricMutation = mutation,
                 isFabricOptionsDialogOpen = false,
                 isManualFabricDialogOpen = false,
+                isRenameFabricDialogOpen = false,
                 errorMessage = null
             )
             applyPendingFabricMutation(deleteLayouts = false)
@@ -402,6 +408,15 @@ class ProjectDetailViewModel(private val projectRepository: ProjectRepository, p
                     removeAt(mutation.index)
                 }
             }
+
+            is PendingFabricMutation.Rename -> {
+                currentProject.fabricPieces.toMutableList().apply {
+                    val oldFabric = getOrNull(mutation.index)
+                        ?: error("Fabric not found")
+
+                    this[mutation.index] = oldFabric.copy(name = mutation.newName)
+                }
+            }
         }
 
         val updatedProject = currentProject.copy(
@@ -427,11 +442,14 @@ class ProjectDetailViewModel(private val projectRepository: ProjectRepository, p
                     generatedLayouts = if (deleteLayouts) emptyList() else uiState.generatedLayouts,
                     isFabricOptionsDialogOpen = false,
                     isManualFabricDialogOpen = false,
+                    isRenameFabricDialogOpen = false,
                     isDeleteLayoutsAfterFabricChangeDialogOpen = false,
                     fabricDraft = FabricDraft(),
                     currentImageStep = FabricImageStep.NONE,
                     pendingFabricMutation = null,
                     selectedFabricIndexForAction = null,
+                    fabricNameDraft = "",
+                    renameFabricError = null,
                     errorMessage = null
                 )
             } catch (e: Exception) {
@@ -533,6 +551,54 @@ class ProjectDetailViewModel(private val projectRepository: ProjectRepository, p
             fabricDraft = FabricDraft(),
             currentImageStep = FabricImageStep.NONE,
             errorMessage = null
+        )
+    }
+
+    fun saveRenamedFabric() {
+        val index = uiState.selectedFabricIndexForAction ?: return
+        val newName = uiState.fabricNameDraft.trim()
+
+        if (newName.isBlank()) {
+            uiState = uiState.copy(
+                renameFabricError = "Fabric name cannot be empty"
+            )
+            return
+        }
+
+        stageFabricMutation(
+            PendingFabricMutation.Rename(
+                index = index,
+                newName = newName
+            )
+        )
+    }
+
+    fun openRenameFabricDialog(index: Int) {
+        val project = uiState.project ?: return
+        val fabric = project.fabricPieces.getOrNull(index) ?: return
+
+        uiState = uiState.copy(
+            isRenameFabricDialogOpen = true,
+            selectedFabricIndexForAction = index,
+            fabricNameDraft = fabric.name,
+            renameFabricError = null,
+            errorMessage = null
+        )
+    }
+
+    fun closeRenameFabricDialog() {
+        uiState = uiState.copy(
+            isRenameFabricDialogOpen = false,
+            selectedFabricIndexForAction = null,
+            fabricNameDraft = "",
+            renameFabricError = null
+        )
+    }
+
+    fun onFabricNameChanged(value: String) {
+        uiState = uiState.copy(
+            fabricNameDraft = value,
+            renameFabricError = null
         )
     }
 }

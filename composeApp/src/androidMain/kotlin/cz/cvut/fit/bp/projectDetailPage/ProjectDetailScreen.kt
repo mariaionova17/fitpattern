@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -77,6 +78,11 @@ fun ProjectDetailScreen(
     onRequestDeleteFabric: (Int) -> Unit,
     onCloseDeleteLayoutsAfterFabricChangeDialog: () -> Unit,
     onConfirmPendingFabricMutationWithLayoutDeletion: () -> Unit,
+
+    onOpenRenameFabricDialog: (Int) -> Unit,
+    onCloseRenameFabricDialog: () -> Unit,
+    onFabricNameChanged: (String) -> Unit,
+    onSaveRenamedFabric: () -> Unit,
 
     onBack: () -> Unit,
     onHome: () -> Unit
@@ -325,21 +331,39 @@ fun ProjectDetailScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Column(
-                                        modifier = Modifier.weight(1f),
-                                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
-                                        Text(
-                                            text = "Fabric ${index + 1}",
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onBackground
-                                        )
-                                        Text(
-                                            text = "Tap to view shape",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onBackground
-                                        )
-                                    }
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ){
+                                            Column(modifier = Modifier.fillMaxHeight().weight(1f),
+                                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                            ) {
+                                                Text(
+                                                    text = if (fabric.name == "") "Fabric ${index + 1}" else fabric.name,
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    color = MaterialTheme.colorScheme.onBackground
+                                                )
+                                                Text(
+                                                    text = "Tap to view shape",
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onBackground
+                                                )
+                                            }
+
+                                            IconButton(
+                                                onClick = {
+                                                    onOpenRenameFabricDialog(index)
+                                                }
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.edit),
+                                                    contentDescription = "Rename fabric",
+                                                    tint = MaterialTheme.colorScheme.primary,
+                                                    modifier = Modifier.size(30.dp)
+                                                )
+                                            }
+                                        }
                                 }
                             }
                         }
@@ -418,24 +442,28 @@ fun ProjectDetailScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Fabric ${selectedFabricIndex!! + 1} shape",
+                                    text = if (selectedFabric.name.isBlank()) {
+                                        "Fabric ${selectedFabricIndex!! + 1} shape"
+                                    } else {
+                                        "${selectedFabric.name} shape"
+                                    },
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
 
-                                if (project.fabricPieces.size > 1) {
-                                    IconButton(
-                                        onClick = {
-                                            onRequestDeleteFabric(selectedFabricIndex!!)
-                                            selectedFabricIndex = null
+                                    if (project.fabricPieces.size > 1) {
+                                        IconButton(
+                                            onClick = {
+                                                onRequestDeleteFabric(selectedFabricIndex!!)
+                                                selectedFabricIndex = null
+                                            }
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.delete),
+                                                contentDescription = "Delete fabric",
+                                                tint = MaterialTheme.colorScheme.error
+                                            )
                                         }
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.delete),
-                                            contentDescription = "Delete fabric",
-                                            tint = MaterialTheme.colorScheme.error
-                                        )
                                     }
-                                }
                             }
                         },
                         text = {
@@ -739,6 +767,50 @@ fun ProjectDetailScreen(
                         },
                         dismissButton = {
                             Button(onClick = onCloseDeleteLayoutsAfterFabricChangeDialog) {
+                                Text("Cancel")
+                            }
+                        },
+                        containerColor = MaterialTheme.colorScheme.background
+                    )
+                }
+
+                if (state.isRenameFabricDialogOpen) {
+                    AlertDialog(
+                        onDismissRequest = onCloseRenameFabricDialog,
+                        title = {
+                            Text(
+                                text = "Rename fabric",
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        },
+                        text = {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                ProjectEditTextInput(
+                                    label = "Fabric name:",
+                                    value = state.fabricNameDraft,
+                                    onValueChange = onFabricNameChanged,
+                                    onlyNumbers = false,
+                                    placeholder = "Enter fabric name"
+                                )
+
+                                state.renameFabricError?.let {
+                                    Text(
+                                        text = it,
+                                        color = MaterialTheme.colorScheme.error,
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                            }
+                        },
+                        confirmButton = {
+                            Button(onClick = onSaveRenamedFabric) {
+                                Text("Save")
+                            }
+                        },
+                        dismissButton = {
+                            Button(onClick = onCloseRenameFabricDialog) {
                                 Text("Cancel")
                             }
                         },

@@ -187,9 +187,9 @@ fun ProjectCreationScreen(
                 style = MaterialTheme.typography.titleMedium
             )
 
-            state.addedFabricPieces.forEachIndexed { index, _ ->
+            /*state.addedFabricPieces.forEachIndexed { index, _ ->
                 Text("Fabric ${index + 1}")
-            }
+            }*/
 
             if (state.errorMessage != null) {
                 Text(

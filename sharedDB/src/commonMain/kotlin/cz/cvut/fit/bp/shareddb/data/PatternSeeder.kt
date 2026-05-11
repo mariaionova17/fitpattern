@@ -13,7 +13,7 @@ object PatternSeeder {
             PatternEntity(
                 id = "tshirt",
                 name = "Men's T-Shirt",
-                pictureUri = "tshirt_men.jpg",
+                pictureUri = "tshirt_men.png",
                 downloadLink = "https://drive.google.com/file/d/1uTFtXWit-M4xArN5v9grpmPD8_rO1W_v/view?usp=sharing"
             ),
             PatternEntity(

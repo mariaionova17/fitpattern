@@ -31,6 +31,7 @@ class PatternDetailScreenTest {
                 PatternDetailScreen(
                     state = PatternDetailUiState(isLoading = true),
                     onBack = {},
+                    onHome = {},
                     onViewLayoutClick = {}
                 )
             }
@@ -49,6 +50,7 @@ class PatternDetailScreenTest {
                 PatternDetailScreen(
                     state = PatternDetailUiState(errorMessage = "Failed to load pattern"),
                     onBack = {},
+                    onHome = {},
                     onViewLayoutClick = {}
                 )
             }
@@ -64,6 +66,7 @@ class PatternDetailScreenTest {
                 PatternDetailScreen(
                     state = PatternDetailUiState(pattern = null),
                     onBack = {},
+                    onHome = {},
                     onViewLayoutClick = {}
                 )
             }
@@ -82,6 +85,7 @@ class PatternDetailScreenTest {
                 PatternDetailScreen(
                     state = PatternDetailUiState(pattern = pattern),
                     onBack = {},
+                    onHome = {},
                     onViewLayoutClick = { selectedVariantId = it }
                 )
             }
@@ -102,6 +106,7 @@ class PatternDetailScreenTest {
                 PatternDetailScreen(
                     state = PatternDetailUiState(pattern = samplePatternForDetail()),
                     onBack = { backClicked = true },
+                    onHome = {},
                     onViewLayoutClick = {}
                 )
             }

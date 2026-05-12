@@ -53,6 +53,10 @@ class ProjectDetailScreenTest {
                     onRequestDeleteFabric = {},
                     onCloseDeleteLayoutsAfterFabricChangeDialog = {},
                     onConfirmPendingFabricMutationWithLayoutDeletion = {},
+                    onOpenRenameFabricDialog = {},
+                    onCloseRenameFabricDialog = {},
+                    onFabricNameChanged = {},
+                    onSaveRenamedFabric = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -96,6 +100,10 @@ class ProjectDetailScreenTest {
                     onRequestDeleteFabric = {},
                     onCloseDeleteLayoutsAfterFabricChangeDialog = {},
                     onConfirmPendingFabricMutationWithLayoutDeletion = {},
+                    onOpenRenameFabricDialog = {},
+                    onCloseRenameFabricDialog = {},
+                    onFabricNameChanged = {},
+                    onSaveRenamedFabric = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -135,6 +143,10 @@ class ProjectDetailScreenTest {
                     onRequestDeleteFabric = {},
                     onCloseDeleteLayoutsAfterFabricChangeDialog = {},
                     onConfirmPendingFabricMutationWithLayoutDeletion = {},
+                    onOpenRenameFabricDialog = {},
+                    onCloseRenameFabricDialog = {},
+                    onFabricNameChanged = {},
+                    onSaveRenamedFabric = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -174,6 +186,10 @@ class ProjectDetailScreenTest {
                     onRequestDeleteFabric = {},
                     onCloseDeleteLayoutsAfterFabricChangeDialog = {},
                     onConfirmPendingFabricMutationWithLayoutDeletion = {},
+                    onOpenRenameFabricDialog = {},
+                    onCloseRenameFabricDialog = {},
+                    onFabricNameChanged = {},
+                    onSaveRenamedFabric = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -215,6 +231,10 @@ class ProjectDetailScreenTest {
                     onRequestDeleteFabric = {},
                     onCloseDeleteLayoutsAfterFabricChangeDialog = {},
                     onConfirmPendingFabricMutationWithLayoutDeletion = {},
+                    onOpenRenameFabricDialog = {},
+                    onCloseRenameFabricDialog = {},
+                    onFabricNameChanged = {},
+                    onSaveRenamedFabric = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -260,6 +280,10 @@ class ProjectDetailScreenTest {
                     onRequestDeleteFabric = {},
                     onCloseDeleteLayoutsAfterFabricChangeDialog = {},
                     onConfirmPendingFabricMutationWithLayoutDeletion = {},
+                    onOpenRenameFabricDialog = {},
+                    onCloseRenameFabricDialog = {},
+                    onFabricNameChanged = {},
+                    onSaveRenamedFabric = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -303,6 +327,10 @@ class ProjectDetailScreenTest {
                     onRequestDeleteFabric = {},
                     onCloseDeleteLayoutsAfterFabricChangeDialog = {},
                     onConfirmPendingFabricMutationWithLayoutDeletion = {},
+                    onOpenRenameFabricDialog = {},
+                    onCloseRenameFabricDialog = {},
+                    onFabricNameChanged = {},
+                    onSaveRenamedFabric = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -350,6 +378,10 @@ class ProjectDetailScreenTest {
                     onRequestDeleteFabric = {},
                     onCloseDeleteLayoutsAfterFabricChangeDialog = {},
                     onConfirmPendingFabricMutationWithLayoutDeletion = {},
+                    onOpenRenameFabricDialog = {},
+                    onCloseRenameFabricDialog = {},
+                    onFabricNameChanged = {},
+                    onSaveRenamedFabric = {},
                     onBack = {},
                     onHome = {}
                 )
@@ -413,6 +445,10 @@ class ProjectDetailScreenTest {
                     onRequestDeleteFabric = {},
                     onCloseDeleteLayoutsAfterFabricChangeDialog = {},
                     onConfirmPendingFabricMutationWithLayoutDeletion = {},
+                    onOpenRenameFabricDialog = {},
+                    onCloseRenameFabricDialog = {},
+                    onFabricNameChanged = {},
+                    onSaveRenamedFabric = {},
                     onBack = {},
                     onHome = {}
                 )

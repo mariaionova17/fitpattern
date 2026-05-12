@@ -356,6 +356,11 @@ private fun TestNavHost(startDestination: String) {
                 onCloseDeleteLayoutsAfterFabricChangeDialog = {},
                 onConfirmPendingFabricMutationWithLayoutDeletion = {},
 
+                onOpenRenameFabricDialog = {},
+                onCloseRenameFabricDialog = {},
+                onFabricNameChanged = {},
+                onSaveRenamedFabric = {},
+
                 onBack = { navController.popBackStack() },
                 onHome = {}
             )
@@ -386,6 +391,7 @@ private fun TestNavHost(startDestination: String) {
                         navController.navigate("pattern_suggestions")
                     }
                 },
+                onHome = {},
                 onViewLayoutClick = { navController.navigate("layout") }
             )
         }
@@ -407,6 +413,7 @@ private fun sampleProject(name: String): Project {
         fabricPieces = listOf(
             FabricPiece(
                 id = "fabric-1",
+                name = "Fabric 1",
                 contour = Shape(
                     contour = Polygon(
                         points = listOf(

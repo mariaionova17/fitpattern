@@ -24,9 +24,15 @@ object PatternSeeder {
             ),
             PatternEntity(
                 id = "cargo_shorts",
-                name = "Cargo shorts",
+                name = "Cargo Shorts",
                 pictureUri = "cargo_shorts.png",
                 downloadLink = "https://drive.google.com/file/d/18kHRUKZ8rarYBLK-IN9_Dazx32FGI64D/view?usp=sharing"
+            ),
+            PatternEntity(
+                id = "peplum_top",
+                name = "Peplum Top",
+                pictureUri = "peplum_top.png",
+                downloadLink = "https://drive.google.com/file/d/1smY1tCQiGQsOP3IICDj0kdaQ2FsyYP9Z/view?usp=sharing"
             )
         )
 
@@ -74,6 +80,21 @@ object PatternSeeder {
             PatternVariantEntity(
                 variantId = "cargo_shorts_l",
                 patternId = "cargo_shorts",
+                size = "L"
+            ),
+            PatternVariantEntity(
+                variantId = "peplum_top_s",
+                patternId = "peplum_top",
+                size = "S"
+            ),
+            PatternVariantEntity(
+                variantId = "peplum_top_m",
+                patternId = "peplum_top",
+                size = "M"
+            ),
+            PatternVariantEntity(
+                variantId = "peplum_top_l",
+                patternId = "peplum_top",
                 size = "L"
             )
         )
@@ -2087,7 +2108,817 @@ object PatternSeeder {
             }
         """.trimIndent(),
                 holesJson = "[]"
+            ),
+
+            /////////////////////// PEPLUM TOP S/////////////////////////////
+            PatternPieceEntity(
+                id = "peplum_top_s_peplum_1",
+                name = "Peplum 1",
+                patternVariantId = "peplum_top_s",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 804.0, "y": 0.0},
+                  {"x": 804.0, "y": 265.0},
+                  {"x": 0.0, "y": 265.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_s_peplum_2",
+                name = "Peplum 2",
+                patternVariantId = "peplum_top_s",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 804.0, "y": 0.0},
+                  {"x": 804.0, "y": 265.0},
+                  {"x": 0.0, "y": 265.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_s_sleeve_1",
+                name = "Sleeve 1",
+                patternVariantId = "peplum_top_s",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 15.0, "y": 0.0},
+                  {"x": 431.0, "y": 0.0},
+                  {"x": 447.0, "y": 187.0},
+                  {"x": 395.0, "y": 214.0},
+                  {"x": 315.0, "y": 273.0},
+                  {"x": 276.0, "y": 294.0},
+                  {"x": 221.0, "y": 302.0},
+                  {"x": 173.0, "y": 294.0},
+                  {"x": 132.0, "y": 273.0},
+                  {"x": 63.0, "y": 222.0},
+                  {"x": 0.0, "y": 188.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_s_sleeve_2",
+                name = "Sleeve 2",
+                patternVariantId = "peplum_top_s",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 15.0, "y": 0.0},
+                  {"x": 431.0, "y": 0.0},
+                  {"x": 447.0, "y": 187.0},
+                  {"x": 395.0, "y": 214.0},
+                  {"x": 315.0, "y": 273.0},
+                  {"x": 276.0, "y": 294.0},
+                  {"x": 221.0, "y": 302.0},
+                  {"x": 173.0, "y": 294.0},
+                  {"x": 132.0, "y": 273.0},
+                  {"x": 63.0, "y": 222.0},
+                  {"x": 0.0, "y": 188.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_s_back",
+                name = "Back",
+                patternVariantId = "peplum_top_s",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 8.0},
+                  {"x": 259.0, "y": 0.0},
+                  {"x": 270.0, "y": 123.0},
+                  {"x": 245.0, "y": 140.0},
+                  {"x": 240.0, "y": 210.0},
+                  {"x": 267.0, "y": 348.0},
+                  {"x": 130.0, "y": 396.0},
+                  {"x": 115.0, "y": 378.0},
+                  {"x": 80.0, "y": 345.0},
+                  {"x": 0.0, "y": 334.0},
+                  {"x": -80.0, "y": 345.0},
+                  {"x": -115.0, "y": 378.0},
+                  {"x": -130.0, "y": 396.0},
+                  {"x": -267.0, "y": 348.0},
+                  {"x": -240.0, "y": 210.0},
+                  {"x": -245.0, "y": 140.0},
+                  {"x": -270.0, "y": 123.0},
+                  {"x": -259.0, "y": 0.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_s_front",
+                name = "Front",
+                patternVariantId = "peplum_top_s",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 7.0},
+                  {"x": 259.0, "y": 0.0},
+                  {"x": 270.0, "y": 123.0},
+                  {"x": 248.0, "y": 134.0},
+                  {"x": 238.0, "y": 160.0},
+                  {"x": 267.0, "y": 347.0},
+                  {"x": 131.0, "y": 394.0},
+                  {"x": 100.0, "y": 348.0},
+                  {"x": 54.0, "y": 319.0},
+                  {"x": 0.0, "y": 310.0},
+                  {"x": -54.0, "y": 319.0},
+                  {"x": -100.0, "y": 348.0},
+                  {"x": -131.0, "y": 394.0},
+                  {"x": -267.0, "y": 347.0},
+                  {"x": -238.0, "y": 160.0},
+                  {"x": -248.0, "y": 134.0},
+                  {"x": -270.0, "y": 123.0},
+                  {"x": -259.0, "y": 0.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_s_front_facing_1",
+                name = "Front facing 1",
+                patternVariantId = "peplum_top_s",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 190.0, "y": 60.0},
+                  {"x": 144.0, "y": 67.0},
+                  {"x": 112.0, "y": 82.0},
+                  {"x": 81.0, "y": 108.0},
+                  {"x": 57.0, "y": 146.0},
+                  {"x": 0.0, "y": 126.0},
+                  {"x": 20.0, "y": 85.0},
+                  {"x": 53.0, "y": 47.0},
+                  {"x": 96.0, "y": 19.0},
+                  {"x": 140.0, "y": 5.0},
+                  {"x": 190.0, "y": 0.0},
+                  {"x": 240.0, "y": 5.0},
+                  {"x": 284.0, "y": 19.0},
+                  {"x": 327.0, "y": 47.0},
+                  {"x": 360.0, "y": 85.0},
+                  {"x": 380.0, "y": 126.0},
+                  {"x": 323.0, "y": 146.0},
+                  {"x": 299.0, "y": 108.0},
+                  {"x": 268.0, "y": 82.0},
+                  {"x": 236.0, "y": 67.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_s_front_facing_2",
+                name = "Front facing 2",
+                patternVariantId = "peplum_top_s",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 190.0, "y": 60.0},
+                  {"x": 144.0, "y": 67.0},
+                  {"x": 112.0, "y": 82.0},
+                  {"x": 81.0, "y": 108.0},
+                  {"x": 57.0, "y": 146.0},
+                  {"x": 0.0, "y": 126.0},
+                  {"x": 20.0, "y": 85.0},
+                  {"x": 53.0, "y": 47.0},
+                  {"x": 96.0, "y": 19.0},
+                  {"x": 140.0, "y": 5.0},
+                  {"x": 190.0, "y": 0.0},
+                  {"x": 240.0, "y": 5.0},
+                  {"x": 284.0, "y": 19.0},
+                  {"x": 327.0, "y": 47.0},
+                  {"x": 360.0, "y": 85.0},
+                  {"x": 380.0, "y": 126.0},
+                  {"x": 323.0, "y": 146.0},
+                  {"x": 299.0, "y": 108.0},
+                  {"x": 268.0, "y": 82.0},
+                  {"x": 236.0, "y": 67.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_s_back_facing_1",
+                name = "Back facing 1",
+                patternVariantId = "peplum_top_s",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 84.0, "y": 8.0},
+                  {"x": 130.0, "y": 25.0},
+                  {"x": 162.0, "y": 51.0},
+                  {"x": 189.0, "y": 100.0},
+                  {"x": 133.0, "y": 122.0},
+                  {"x": 117.0, "y": 96.0},
+                  {"x": 94.0, "y": 78.0},
+                  {"x": 53.0, "y": 64.0},
+                  {"x": 0.0, "y": 60.0},
+                  {"x": -53.0, "y": 64.0},
+                  {"x": -94.0, "y": 78.0},
+                  {"x": -117.0, "y": 96.0},
+                  {"x": -133.0, "y": 122.0},
+                  {"x": -189.0, "y": 100.0},
+                  {"x": -162.0, "y": 51.0},
+                  {"x": -130.0, "y": 25.0},
+                  {"x": -84.0, "y": 8.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_s_back_facing_2",
+                name = "Back facing 2",
+                patternVariantId = "peplum_top_s",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 84.0, "y": 8.0},
+                  {"x": 130.0, "y": 25.0},
+                  {"x": 162.0, "y": 51.0},
+                  {"x": 189.0, "y": 100.0},
+                  {"x": 133.0, "y": 122.0},
+                  {"x": 117.0, "y": 96.0},
+                  {"x": 94.0, "y": 78.0},
+                  {"x": 53.0, "y": 64.0},
+                  {"x": 0.0, "y": 60.0},
+                  {"x": -53.0, "y": 64.0},
+                  {"x": -94.0, "y": 78.0},
+                  {"x": -117.0, "y": 96.0},
+                  {"x": -133.0, "y": 122.0},
+                  {"x": -189.0, "y": 100.0},
+                  {"x": -162.0, "y": 51.0},
+                  {"x": -130.0, "y": 25.0},
+                  {"x": -84.0, "y": 8.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            /////////////////////// PEPLUM TOP M/////////////////////////////
+            PatternPieceEntity(
+                id = "peplum_top_m_peplum_1",
+                name = "Peplum 1",
+                patternVariantId = "peplum_top_m",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 844.0, "y": 0.0},
+                  {"x": 844.0, "y": 271.0},
+                  {"x": 0.0, "y": 271.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_m_peplum_2",
+                name = "Peplum 2",
+                patternVariantId = "peplum_top_m",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 844.0, "y": 0.0},
+                  {"x": 844.0, "y": 271.0},
+                  {"x": 0.0, "y": 271.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_m_sleeve_1",
+                name = "Sleeve 1",
+                patternVariantId = "peplum_top_m",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 15.0, "y": 0.0},
+                  {"x": 455.0, "y": 0.0},
+                  {"x": 470.0, "y": 187.0},
+                  {"x": 416.0, "y": 214.0},
+                  {"x": 333.0, "y": 273.0},
+                  {"x": 288.0, "y": 294.0},
+                  {"x": 232.0, "y": 302.0},
+                  {"x": 185.0, "y": 295.0},
+                  {"x": 141.0, "y": 275.0},
+                  {"x": 56.0, "y": 216.0},
+                  {"x": 0.0, "y": 187.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_m_sleeve_2",
+                name = "Sleeve 2",
+                patternVariantId = "peplum_top_m",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 15.0, "y": 0.0},
+                  {"x": 455.0, "y": 0.0},
+                  {"x": 470.0, "y": 187.0},
+                  {"x": 416.0, "y": 214.0},
+                  {"x": 333.0, "y": 273.0},
+                  {"x": 288.0, "y": 294.0},
+                  {"x": 232.0, "y": 302.0},
+                  {"x": 185.0, "y": 295.0},
+                  {"x": 141.0, "y": 275.0},
+                  {"x": 56.0, "y": 216.0},
+                  {"x": 0.0, "y": 187.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_m_back",
+                name = "Back",
+                patternVariantId = "peplum_top_m",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 8.0},
+                  {"x": 279.0, "y": 0.0},
+                  {"x": 290.0, "y": 119.0},
+                  {"x": 263.0, "y": 140.0},
+                  {"x": 260.0, "y": 210.0},
+                  {"x": 289.0, "y": 355.0},
+                  {"x": 136.0, "y": 411.0},
+                  {"x": 115.0, "y": 378.0},
+                  {"x": 80.0, "y": 357.0},
+                  {"x": 0.0, "y": 348.0},
+                  {"x": -80.0, "y": 357.0},
+                  {"x": -115.0, "y": 378.0},
+                  {"x": -136.0, "y": 411.0},
+                  {"x": -289.0, "y": 355.0},
+                  {"x": -260.0, "y": 210.0},
+                  {"x": -263.0, "y": 140.0},
+                  {"x": -290.0, "y": 119.0},
+                  {"x": -279.0, "y": 0.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_m_front",
+                name = "Front",
+                patternVariantId = "peplum_top_m",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 6.0},
+                  {"x": 280.0, "y": 0.0},
+                  {"x": 291.0, "y": 119.0},
+                  {"x": 266.0, "y": 134.0},
+                  {"x": 259.0, "y": 190.0},
+                  {"x": 289.0, "y": 354.0},
+                  {"x": 135.0, "y": 408.0},
+                  {"x": 105.0, "y": 358.0},
+                  {"x": 55.0, "y": 325.0},
+                  {"x": 0.0, "y": 317.0},
+                  {"x": -55.0, "y": 325.0},
+                  {"x": -105.0, "y": 358.0},
+                  {"x": -135.0, "y": 408.0},
+                  {"x": -289.0, "y": 354.0},
+                  {"x": -259.0, "y": 190.0},
+                  {"x": -266.0, "y": 134.0},
+                  {"x": -291.0, "y": 119.0},
+                  {"x": -280.0, "y": 0.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_m_front_facing_1",
+                name = "Front facing 1",
+                patternVariantId = "peplum_top_m",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 194.0, "y": 60.0},
+                  {"x": 150.0, "y": 66.0},
+                  {"x": 110.0, "y": 84.0},
+                  {"x": 79.0, "y": 112.0},
+                  {"x": 57.0, "y": 151.0},
+                  {"x": 0.0, "y": 130.0},
+                  {"x": 22.0, "y": 85.0},
+                  {"x": 56.0, "y": 46.0},
+                  {"x": 100.0, "y": 18.0},
+                  {"x": 140.0, "y": 5.0},
+                  {"x": 194.0, "y": 0.0},
+                  {"x": 248.0, "y": 5.0},
+                  {"x": 288.0, "y": 18.0},
+                  {"x": 332.0, "y": 46.0},
+                  {"x": 366.0, "y": 85.0},
+                  {"x": 388.0, "y": 130.0},
+                  {"x": 331.0, "y": 151.0},
+                  {"x": 309.0, "y": 112.0},
+                  {"x": 278.0, "y": 84.0},
+                  {"x": 238.0, "y": 66.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_m_front_facing_2",
+                name = "Front facing 2",
+                patternVariantId = "peplum_top_m",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 194.0, "y": 60.0},
+                  {"x": 150.0, "y": 66.0},
+                  {"x": 110.0, "y": 84.0},
+                  {"x": 79.0, "y": 112.0},
+                  {"x": 57.0, "y": 151.0},
+                  {"x": 0.0, "y": 130.0},
+                  {"x": 22.0, "y": 85.0},
+                  {"x": 56.0, "y": 46.0},
+                  {"x": 100.0, "y": 18.0},
+                  {"x": 140.0, "y": 5.0},
+                  {"x": 194.0, "y": 0.0},
+                  {"x": 248.0, "y": 5.0},
+                  {"x": 288.0, "y": 18.0},
+                  {"x": 332.0, "y": 46.0},
+                  {"x": 366.0, "y": 85.0},
+                  {"x": 388.0, "y": 130.0},
+                  {"x": 331.0, "y": 151.0},
+                  {"x": 309.0, "y": 112.0},
+                  {"x": 278.0, "y": 84.0},
+                  {"x": 238.0, "y": 66.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_m_back_facing_1",
+                name = "Back facing 1",
+                patternVariantId = "peplum_top_m",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 84.0, "y": 7.0},
+                  {"x": 130.0, "y": 22.0},
+                  {"x": 167.0, "y": 51.0},
+                  {"x": 194.0, "y": 100.0},
+                  {"x": 137.0, "y": 122.0},
+                  {"x": 122.0, "y": 96.0},
+                  {"x": 100.0, "y": 78.0},
+                  {"x": 55.0, "y": 63.0},
+                  {"x": 0.0, "y": 60.0},
+                  {"x": -55.0, "y": 63.0},
+                  {"x": -100.0, "y": 78.0},
+                  {"x": -122.0, "y": 96.0},
+                  {"x": -137.0, "y": 122.0},
+                  {"x": -194.0, "y": 100.0},
+                  {"x": -167.0, "y": 51.0},
+                  {"x": -130.0, "y": 22.0},
+                  {"x": -84.0, "y": 7.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_m_back_facing_2",
+                name = "Back facing 2",
+                patternVariantId = "peplum_top_m",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 84.0, "y": 7.0},
+                  {"x": 130.0, "y": 22.0},
+                  {"x": 167.0, "y": 51.0},
+                  {"x": 194.0, "y": 100.0},
+                  {"x": 137.0, "y": 122.0},
+                  {"x": 122.0, "y": 96.0},
+                  {"x": 100.0, "y": 78.0},
+                  {"x": 55.0, "y": 63.0},
+                  {"x": 0.0, "y": 60.0},
+                  {"x": -55.0, "y": 63.0},
+                  {"x": -100.0, "y": 78.0},
+                  {"x": -122.0, "y": 96.0},
+                  {"x": -137.0, "y": 122.0},
+                  {"x": -194.0, "y": 100.0},
+                  {"x": -167.0, "y": 51.0},
+                  {"x": -130.0, "y": 22.0},
+                  {"x": -84.0, "y": 7.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            /////////////////////// PEPLUM TOP L/////////////////////////////
+            PatternPieceEntity(
+                id = "peplum_top_l_peplum_1",
+                name = "Peplum 1",
+                patternVariantId = "peplum_top_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 884.0, "y": 0.0},
+                  {"x": 884.0, "y": 276.0},
+                  {"x": 0.0, "y": 276.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_l_peplum_2",
+                name = "Peplum 2",
+                patternVariantId = "peplum_top_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 884.0, "y": 0.0},
+                  {"x": 884.0, "y": 276.0},
+                  {"x": 0.0, "y": 276.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_l_sleeve_1",
+                name = "Sleeve 1",
+                patternVariantId = "peplum_top_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 14.0, "y": 0.0},
+                  {"x": 478.0, "y": 0.0},
+                  {"x": 493.0, "y": 187.0},
+                  {"x": 440.0, "y": 212.0},
+                  {"x": 350.0, "y": 273.0},
+                  {"x": 300.0, "y": 294.0},
+                  {"x": 244.0, "y": 302.0},
+                  {"x": 188.0, "y": 293.0},
+                  {"x": 142.0, "y": 272.0},
+                  {"x": 69.0, "y": 222.0},
+                  {"x": 0.0, "y": 188.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_l_sleeve_2",
+                name = "Sleeve 2",
+                patternVariantId = "peplum_top_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 14.0, "y": 0.0},
+                  {"x": 478.0, "y": 0.0},
+                  {"x": 493.0, "y": 187.0},
+                  {"x": 440.0, "y": 212.0},
+                  {"x": 350.0, "y": 273.0},
+                  {"x": 300.0, "y": 294.0},
+                  {"x": 244.0, "y": 302.0},
+                  {"x": 188.0, "y": 293.0},
+                  {"x": 142.0, "y": 272.0},
+                  {"x": 69.0, "y": 222.0},
+                  {"x": 0.0, "y": 188.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_l_back",
+                name = "Back",
+                patternVariantId = "peplum_top_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 8.0},
+                  {"x": 299.0, "y": 0.0},
+                  {"x": 311.0, "y": 115.0},
+                  {"x": 292.0, "y": 124.0},
+                  {"x": 280.0, "y": 155.0},
+                  {"x": 280.0, "y": 210.0},
+                  {"x": 310.0, "y": 363.0},
+                  {"x": 140.0, "y": 425.0},
+                  {"x": 120.0, "y": 392.0},
+                  {"x": 81.0, "y": 370.0},
+                  {"x": 0.0, "y": 364.0},
+                  {"x": -81.0, "y": 370.0},
+                  {"x": -120.0, "y": 392.0},
+                  {"x": -140.0, "y": 425.0},
+                  {"x": -310.0, "y": 363.0},
+                  {"x": -280.0, "y": 210.0},
+                  {"x": -280.0, "y": 155.0},
+                  {"x": -292.0, "y": 124.0},
+                  {"x": -311.0, "y": 115.0},
+                  {"x": -299.0, "y": 0.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_l_front",
+                name = "Front",
+                patternVariantId = "peplum_top_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 7.0},
+                  {"x": 300.0, "y": 0.0},
+                  {"x": 310.0, "y": 115.0},
+                  {"x": 290.0, "y": 128.0},
+                  {"x": 279.0, "y": 156.0},
+                  {"x": 279.0, "y": 207.0},
+                  {"x": 307.0, "y": 363.0},
+                  {"x": 138.0, "y": 423.0},
+                  {"x": 108.0, "y": 370.0},
+                  {"x": 60.0, "y": 336.0},
+                  {"x": 0.0, "y": 326.0},
+                  {"x": -60.0, "y": 336.0},
+                  {"x": -108.0, "y": 370.0},
+                  {"x": -138.0, "y": 423.0},
+                  {"x": -307.0, "y": 363.0},
+                  {"x": -279.0, "y": 207.0},
+                  {"x": -279.0, "y": 156.0},
+                  {"x": -290.0, "y": 128.0},
+                  {"x": -310.0, "y": 115.0},
+                  {"x": -300.0, "y": 0.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_l_front_facing_1",
+                name = "Front facing 1",
+                patternVariantId = "peplum_top_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 198.0, "y": 60.0},
+                  {"x": 154.0, "y": 67.0},
+                  {"x": 114.0, "y": 83.0},
+                  {"x": 83.0, "y": 111.0},
+                  {"x": 58.0, "y": 158.0},
+                  {"x": 0.0, "y": 137.0},
+                  {"x": 25.0, "y": 84.0},
+                  {"x": 57.0, "y": 48.0},
+                  {"x": 98.0, "y": 21.0},
+                  {"x": 140.0, "y": 7.0},
+                  {"x": 198.0, "y": 0.0},
+                  {"x": 256.0, "y": 7.0},
+                  {"x": 298.0, "y": 21.0},
+                  {"x": 339.0, "y": 48.0},
+                  {"x": 371.0, "y": 84.0},
+                  {"x": 396.0, "y": 137.0},
+                  {"x": 338.0, "y": 158.0},
+                  {"x": 313.0, "y": 111.0},
+                  {"x": 282.0, "y": 83.0},
+                  {"x": 242.0, "y": 67.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_l_front_facing_2",
+                name = "Front facing 2",
+                patternVariantId = "peplum_top_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 198.0, "y": 60.0},
+                  {"x": 154.0, "y": 67.0},
+                  {"x": 114.0, "y": 83.0},
+                  {"x": 83.0, "y": 111.0},
+                  {"x": 58.0, "y": 158.0},
+                  {"x": 0.0, "y": 137.0},
+                  {"x": 25.0, "y": 84.0},
+                  {"x": 57.0, "y": 48.0},
+                  {"x": 98.0, "y": 21.0},
+                  {"x": 140.0, "y": 7.0},
+                  {"x": 198.0, "y": 0.0},
+                  {"x": 256.0, "y": 7.0},
+                  {"x": 298.0, "y": 21.0},
+                  {"x": 339.0, "y": 48.0},
+                  {"x": 371.0, "y": 84.0},
+                  {"x": 396.0, "y": 137.0},
+                  {"x": 338.0, "y": 158.0},
+                  {"x": 313.0, "y": 111.0},
+                  {"x": 282.0, "y": 83.0},
+                  {"x": 242.0, "y": 67.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "peplum_top_l_back_facing_1",
+                name = "Back facing 1",
+                patternVariantId = "peplum_top_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 84.0, "y": 6.0},
+                  {"x": 130.0, "y": 19.0},
+                  {"x": 168.0, "y": 47.0},
+                  {"x": 197.0, "y": 101.0},
+                  {"x": 140.0, "y": 122.0},
+                  {"x": 128.0, "y": 98.0},
+                  {"x": 100.0, "y": 75.0},
+                  {"x": 60.0, "y": 63.0},
+                  {"x": 0.0, "y": 60.0},
+                  {"x": -60.0, "y": 63.0},
+                  {"x": -100.0, "y": 75.0},
+                  {"x": -128.0, "y": 98.0},
+                  {"x": -140.0, "y": 122.0},
+                  {"x": -197.0, "y": 101.0},
+                  {"x": -168.0, "y": 47.0},
+                  {"x": -130.0, "y": 19.0},
+                  {"x": -84.0, "y": 6.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "peplum_top_l_back_facing_2",
+                name = "Back facing 2",
+                patternVariantId = "peplum_top_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 84.0, "y": 6.0},
+                  {"x": 130.0, "y": 19.0},
+                  {"x": 168.0, "y": 47.0},
+                  {"x": 197.0, "y": 101.0},
+                  {"x": 140.0, "y": 122.0},
+                  {"x": 128.0, "y": 98.0},
+                  {"x": 100.0, "y": 75.0},
+                  {"x": 60.0, "y": 63.0},
+                  {"x": 0.0, "y": 60.0},
+                  {"x": -60.0, "y": 63.0},
+                  {"x": -100.0, "y": 75.0},
+                  {"x": -128.0, "y": 98.0},
+                  {"x": -140.0, "y": 122.0},
+                  {"x": -197.0, "y": 101.0},
+                  {"x": -168.0, "y": 47.0},
+                  {"x": -130.0, "y": 19.0},
+                  {"x": -84.0, "y": 6.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
             )
+
         )
 
         patternDao.insertPatterns(patterns)

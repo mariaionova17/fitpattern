@@ -33,6 +33,12 @@ object PatternSeeder {
                 name = "Peplum Top",
                 pictureUri = "peplum_top.png",
                 downloadLink = "https://drive.google.com/file/d/1smY1tCQiGQsOP3IICDj0kdaQ2FsyYP9Z/view?usp=sharing"
+            ),
+            PatternEntity(
+                id = "midi_dress",
+                name = "Midi Dress",
+                pictureUri = "midi_dress.png",
+                downloadLink = "https://drive.google.com/file/d/1lBpUAaF0oHfCwHIQCOHtmFAGPEL4tnt3/view?usp=sharing"
             )
         )
 
@@ -95,6 +101,11 @@ object PatternSeeder {
             PatternVariantEntity(
                 variantId = "peplum_top_l",
                 patternId = "peplum_top",
+                size = "L"
+            ),
+            PatternVariantEntity(
+                variantId = "midi_dress_l",
+                patternId = "midi_dress",
                 size = "L"
             )
         )
@@ -2913,6 +2924,395 @@ object PatternSeeder {
                   {"x": -168.0, "y": 47.0},
                   {"x": -130.0, "y": 19.0},
                   {"x": -84.0, "y": 6.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            //////////////////////////////////// MIDI DRESS L ////////////////////////////
+
+            PatternPieceEntity(
+                id = "midi_dress_l_side_back_1",
+                name = "Side back 1",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 3.0, "y": 0.0},
+                  {"x": 100.0, "y": 5.0},
+                  {"x": 112.0, "y": 105.0},
+                  {"x": 123.0, "y": 194.0},
+                  {"x": 86.0, "y": 203.0},
+                  {"x": 58.0, "y": 227.0},
+                  {"x": 44.0, "y": 258.0},
+                  {"x": 45.0, "y": 298.0},
+                  {"x": 21.0, "y": 256.0},
+                  {"x": 6.0, "y": 199.0},
+                  {"x": 1.0, "y": 130.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_side_back_2",
+                name = "Side back 2",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": -3.0, "y": 0.0},
+                  {"x": -100.0, "y": 5.0},
+                  {"x": -112.0, "y": 105.0},
+                  {"x": -123.0, "y": 194.0},
+                  {"x": -86.0, "y": 203.0},
+                  {"x": -58.0, "y": 227.0},
+                  {"x": -44.0, "y": 258.0},
+                  {"x": -45.0, "y": 298.0},
+                  {"x": -21.0, "y": 256.0},
+                  {"x": -6.0, "y": 199.0},
+                  {"x": -1.0, "y": 130.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+            PatternPieceEntity(
+                id = "midi_dress_l_side_front_1",
+                name = "Side front 1",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 23.0, "y": 11.0},
+                  {"x": 141.0, "y": 0.0},
+                  {"x": 154.0, "y": 125.0},
+                  {"x": 161.0, "y": 201.0},
+                  {"x": 159.0, "y": 212.0},
+                  {"x": 144.0, "y": 231.0},
+                  {"x": 42.0, "y": 279.0},
+                  {"x": 43.0, "y": 234.0},
+                  {"x": 32.0, "y": 212.0},
+                  {"x": 0.0, "y": 199.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_side_front_2",
+                name = "Side front 2",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": -23.0, "y": 11.0},
+                  {"x": -141.0, "y": 0.0},
+                  {"x": -154.0, "y": 125.0},
+                  {"x": -161.0, "y": 201.0},
+                  {"x": -159.0, "y": 212.0},
+                  {"x": -144.0, "y": 231.0},
+                  {"x": -42.0, "y": 279.0},
+                  {"x": -43.0, "y": 234.0},
+                  {"x": -32.0, "y": 212.0},
+                  {"x": 0.0, "y": 199.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_center_back_1",
+                name = "Center back 1",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 89.0, "y": 0.0},
+                  {"x": 100.0, "y": 52.0},
+                  {"x": 129.0, "y": 204.0},
+                  {"x": 145.0, "y": 245.0},
+                  {"x": 171.0, "y": 291.0},
+                  {"x": 198.0, "y": 400.0},
+                  {"x": 78.0, "y": 448.0},
+                  {"x": 46.0, "y": 404.0},
+                  {"x": 0.0, "y": 415.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_center_back_2",
+                name = "Center back 2",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+                {
+                    "points": [
+                      {"x": 0.0, "y": 0.0},
+                      {"x": -89.0, "y": 0.0},
+                      {"x": -100.0, "y": 52.0},
+                      {"x": -129.0, "y": 204.0},
+                      {"x": -145.0, "y": 245.0},
+                      {"x": -171.0, "y": 291.0},
+                      {"x": -198.0, "y": 400.0},
+                      {"x": -78.0, "y": 448.0},
+                      {"x": -46.0, "y": 404.0},
+                      {"x": 0.0, "y": 415.0}
+                    ]
+                }
+                """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_center_front",
+                name = "Center front",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 81.0, "y": 0.0},
+                  {"x": 99.0, "y": 198.0},
+                  {"x": 120.0, "y": 241.0},
+                  {"x": 186.0, "y": 321.0},
+                  {"x": 194.0, "y": 428.0},
+                  {"x": 75.0, "y": 466.0},
+                  {"x": 64.0, "y": 429.0},
+                  {"x": 35.0, "y": 395.0},
+                  {"x": 0.0, "y": 383.0},
+                  {"x": -35.0, "y": 395.0},
+                  {"x": -64.0, "y": 429.0},
+                  {"x": -75.0, "y": 466.0},
+                  {"x": -194.0, "y": 428.0},
+                  {"x": -186.0, "y": 321.0},
+                  {"x": -120.0, "y": 241.0},
+                  {"x": -99.0, "y": 198.0},
+                  {"x": -81.0, "y": 0.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_sleeve_1",
+                name = "Sleeve 1",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 7.0, "y": 0.0},
+                  {"x": 166.0, "y": 12.0},
+                  {"x": 338.0, "y": 0.0},
+                  {"x": 345.0, "y": 47.0},
+                  {"x": 320.0, "y": 56.0},
+                  {"x": 232.0, "y": 168.0},
+                  {"x": 199.0, "y": 196.0},
+                  {"x": 161.0, "y": 207.0},
+                  {"x": 126.0, "y": 197.0},
+                  {"x": 94.0, "y": 169.0},
+                  {"x": 25.0, "y": 58.0},
+                  {"x": 0.0, "y": 47.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_sleeve_2",
+                name = "Sleeve 2",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 7.0, "y": 0.0},
+                  {"x": 166.0, "y": 12.0},
+                  {"x": 338.0, "y": 0.0},
+                  {"x": 345.0, "y": 47.0},
+                  {"x": 320.0, "y": 56.0},
+                  {"x": 232.0, "y": 168.0},
+                  {"x": 199.0, "y": 196.0},
+                  {"x": 161.0, "y": 207.0},
+                  {"x": 126.0, "y": 197.0},
+                  {"x": 94.0, "y": 169.0},
+                  {"x": 25.0, "y": 58.0},
+                  {"x": 0.0, "y": 47.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_back_neck_facing_1",
+                name = "Back neck facing 1",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 30.0, "y": 3.0},
+                  {"x": 62.0, "y": 14.0},
+                  {"x": 88.0, "y": 30.0},
+                  {"x": 110.0, "y": 53.0},
+                  {"x": 78.0, "y": 65.0},
+                  {"x": 65.0, "y": 52.0},
+                  {"x": 47.0, "y": 40.0},
+                  {"x": 28.0, "y": 33.0},
+                  {"x": 0.0, "y": 30.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_back_neck_facing_2",
+                name = "Back neck facing 2",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": -30.0, "y": 3.0},
+                  {"x": -62.0, "y": 14.0},
+                  {"x": -88.0, "y": 30.0},
+                  {"x": -110.0, "y": 53.0},
+                  {"x": -78.0, "y": 65.0},
+                  {"x": -65.0, "y": 52.0},
+                  {"x": -47.0, "y": 40.0},
+                  {"x": -28.0, "y": 33.0},
+                  {"x": 0.0, "y": 30.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_front_neck_facing",
+                name = "Front neck facing",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 37.0, "y": 7.0},
+                  {"x": 76.0, "y": 26.0},
+                  {"x": 92.0, "y": 57.0},
+                  {"x": 108.0, "y": 102.0},
+                  {"x": 75.0, "y": 113.0},
+                  {"x": 68.0, "y": 85.0},
+                  {"x": 53.0, "y": 59.0},
+                  {"x": 30.0, "y": 39.0},
+                  {"x": 0.0, "y": 30.0},
+                  {"x": -30.0, "y": 39.0},
+                  {"x": -53.0, "y": 59.0},
+                  {"x": -68.0, "y": 85.0},
+                  {"x": -75.0, "y": 113.0},
+                  {"x": -108.0, "y": 102.0},
+                  {"x": -92.0, "y": 57.0},
+                  {"x": -76.0, "y": 26.0},
+                  {"x": -37.0, "y": 7.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_skirt_front",
+                name = "Skirt front",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 5.0, "y": 91.0},
+                  {"x": 15.0, "y": 172.0},
+                  {"x": 33.0, "y": 255.0},
+                  {"x": 65.0, "y": 356.0},
+                  {"x": 103.0, "y": 448.0},
+                  {"x": 151.0, "y": 535.0},
+                  {"x": 215.0, "y": 627.0},
+                  {"x": 308.0, "y": 733.0},
+                  {"x": 871.0, "y": 179.0},
+                  {"x": 841.0, "y": 142.0},
+                  {"x": 819.0, "y": 100.0},
+                  {"x": 804.0, "y": 53.0},
+                  {"x": 800.0, "y": 0.0},
+                  {"x": 804.0, "y": -53.0},
+                  {"x": 819.0, "y": -100.0},
+                  {"x": 841.0, "y": -142.0},
+                  {"x": 871.0, "y": -179.0},
+                  {"x": 308.0, "y": -733.0},
+                  {"x": 215.0, "y": -627.0},
+                  {"x": 151.0, "y": -535.0},
+                  {"x": 103.0, "y": -448.0},
+                  {"x": 65.0, "y": -356.0},
+                  {"x": 33.0, "y": -255.0},
+                  {"x": 15.0, "y": -172.0},
+                  {"x": 5.0, "y": -91.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_skirt_back_1",
+                name = "Skirt back 1",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": 5.0, "y": 95.0},
+                  {"x": 15.0, "y": 172.0},
+                  {"x": 34.0, "y": 257.0},
+                  {"x": 65.0, "y": 356.0},
+                  {"x": 107.0, "y": 452.0},
+                  {"x": 154.0, "y": 538.0},
+                  {"x": 216.0, "y": 627.0},
+                  {"x": 307.0, "y": 731.0},
+                  {"x": 866.0, "y": 157.0},
+                  {"x": 833.0, "y": 125.0},
+                  {"x": 807.0, "y": 76.0},
+                  {"x": 791.0, "y": 0.0}
+                ]
+            }
+        """.trimIndent(),
+                holesJson = "[]"
+            ),
+
+            PatternPieceEntity(
+                id = "midi_dress_l_skirt_back_2",
+                name = "Skirt back 2",
+                patternVariantId = "midi_dress_l",
+                contourJson = """
+            {
+                "points": [
+                  {"x": 0.0, "y": 0.0},
+                  {"x": -5.0, "y": 95.0},
+                  {"x": -15.0, "y": 172.0},
+                  {"x": -34.0, "y": 257.0},
+                  {"x": -65.0, "y": 356.0},
+                  {"x": -107.0, "y": 452.0},
+                  {"x": -154.0, "y": 538.0},
+                  {"x": -216.0, "y": 627.0},
+                  {"x": -307.0, "y": 731.0},
+                  {"x": -866.0, "y": 157.0},
+                  {"x": -833.0, "y": 125.0},
+                  {"x": -807.0, "y": 76.0},
+                  {"x": -791.0, "y": 0.0}
                 ]
             }
         """.trimIndent(),

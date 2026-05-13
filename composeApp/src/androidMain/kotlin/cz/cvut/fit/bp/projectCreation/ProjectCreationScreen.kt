@@ -41,6 +41,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import cz.cvut.fit.bp.helpersUi.FabricModeCard
+import cz.cvut.fit.bp.helpersUi.RotationOption
+import cz.cvut.fit.bp.helpersUi.TextInput
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -247,102 +250,4 @@ fun ProjectCreationScreen(
             }
         }
     }
-}
-
-@Composable
-private fun RotationOption(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    textColor: Color = MaterialTheme.colorScheme.onBackground
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        RadioButton(
-            selected = selected,
-            onClick = onClick
-        )
-        Text(label, color = textColor)
-    }
-}
-
-@Composable
-private fun FabricModeCard(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    Card(
-        modifier = modifier
-            .aspectRatio(1f)
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(
-            width = if (selected) 2.dp else 1.dp,
-            color = if (selected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.outline
-            }
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.outline
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            content()
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = label,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-    }
-}
-
-@Composable
-private fun TextInput(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    onlyNumbers: Boolean = true,
-    placeholder: String = ""
-) {
-    Text(
-        text = label,
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onBackground
-    )
-
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = true,
-        shape = RoundedCornerShape(15.dp),
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = {
-            Text(
-                text = placeholder,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-            )
-        },
-        keyboardOptions = if (onlyNumbers) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions.Default,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-
-            )
-    )
 }

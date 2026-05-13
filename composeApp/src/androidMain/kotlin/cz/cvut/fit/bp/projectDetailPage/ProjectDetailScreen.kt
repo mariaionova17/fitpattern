@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,11 +28,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,10 +38,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cz.cvut.fit.bp.LayoutPreview
 import cz.cvut.fit.bp.R
+import cz.cvut.fit.bp.helpersUi.FabricModeCard
+import cz.cvut.fit.bp.helpersUi.RotationOption
+import cz.cvut.fit.bp.helpersUi.TextInput
 import cz.cvut.fit.bp.projectCreation.UiRotationOption
 import domain.geometry.rectangleSize
 
@@ -442,10 +440,8 @@ fun ProjectDetailScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = if (selectedFabric.name.isBlank()) {
-                                        "Fabric ${selectedFabricIndex!! + 1} shape"
-                                    } else {
-                                        "${selectedFabric.name} shape"
+                                    text = selectedFabric.name.ifBlank {
+                                        "Fabric ${selectedFabricIndex!! + 1}"
                                     },
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
@@ -552,7 +548,7 @@ fun ProjectDetailScreen(
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                ProjectEditTextInput(
+                                TextInput(
                                     label = "Name:",
                                     value = state.editDraft.name,
                                     onValueChange = onEditedProjectNameChanged,
@@ -565,25 +561,25 @@ fun ProjectDetailScreen(
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
 
-                                ProjectEditRotationOption(
+                                RotationOption(
                                     label = "No",
                                     selected = state.editDraft.rotationOption == UiRotationOption.NONE,
                                     onClick = { onEditedRotationChanged(UiRotationOption.NONE) }
                                 )
 
-                                ProjectEditRotationOption(
+                                RotationOption(
                                     label = "Only vertically (keep Weft and Warp)",
                                     selected = state.editDraft.rotationOption == UiRotationOption.BY180,
                                     onClick = { onEditedRotationChanged(UiRotationOption.BY180) }
                                 )
 
-                                ProjectEditRotationOption(
+                                RotationOption(
                                     label = "By 90° at a time",
                                     selected = state.editDraft.rotationOption == UiRotationOption.BY90,
                                     onClick = { onEditedRotationChanged(UiRotationOption.BY90) }
                                 )
 
-                                ProjectEditTextInput(
+                                TextInput(
                                     label = "Seam allowance (mm):",
                                     value = state.editDraft.seamAllowance,
                                     onValueChange = onEditedSeamAllowanceChanged,
@@ -661,20 +657,40 @@ fun ProjectDetailScreen(
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                Button(
-                                    onClick = onStartManualFabricAdd,
-                                    modifier = Modifier.fillMaxWidth()
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(24.dp)
                                 ) {
-                                    Text("Add manually")
-                                }
+                                    FabricModeCard(
+                                        label = "Manually",
+                                        selected = false,
+                                        onClick = onStartManualFabricAdd,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.manual),
+                                            contentDescription = "Manual mode",
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(50.dp)
+                                        )
+                                    }
 
-                                Button(
-                                    onClick = onStartImageFabricAdd,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text("Add from image")
+                                    FabricModeCard(
+                                        label = "Add an image",
+                                        selected = false,
+                                        onClick = onStartImageFabricAdd,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.gallery),
+                                            contentDescription = "Image mode",
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(50.dp)
+                                        )
+                                    }
                                 }
-
+                                Spacer(modifier = Modifier.height(8.dp))
                                 Button(
                                     onClick = onCloseFabricOptionsDialog,
                                     modifier = Modifier.fillMaxWidth()
@@ -702,7 +718,7 @@ fun ProjectDetailScreen(
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                ProjectEditTextInput(
+                                TextInput(
                                     label = "Fabric width (mm):",
                                     value = state.fabricDraft.widthMm,
                                     onValueChange = onFabricWidthChanged,
@@ -710,7 +726,7 @@ fun ProjectDetailScreen(
                                     placeholder = "0"
                                 )
 
-                                ProjectEditTextInput(
+                                TextInput(
                                     label = "Fabric length (mm):",
                                     value = state.fabricDraft.lengthMm,
                                     onValueChange = onFabricLengthChanged,
@@ -787,7 +803,7 @@ fun ProjectDetailScreen(
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                ProjectEditTextInput(
+                                TextInput(
                                     label = "Fabric name:",
                                     value = state.fabricNameDraft,
                                     onValueChange = onFabricNameChanged,
@@ -843,64 +859,4 @@ fun DetailRow(
             color = MaterialTheme.colorScheme.onBackground
         )
     }
-}
-
-@Composable
-private fun ProjectEditRotationOption(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        RadioButton(
-            selected = selected,
-            onClick = onClick
-        )
-        Text(
-            text = label,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-    }
-}
-
-@Composable
-private fun ProjectEditTextInput(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    onlyNumbers: Boolean = true,
-    placeholder: String = ""
-) {
-    Text(
-        text = label,
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onBackground
-    )
-
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = true,
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(15.dp),
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = {
-            Text(
-                text = placeholder,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-            )
-        },
-        keyboardOptions = if (onlyNumbers) {
-            androidx.compose.foundation.text.KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            )
-        } else {
-            androidx.compose.foundation.text.KeyboardOptions.Default
-        },
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface
-        )
-    )
 }

@@ -202,7 +202,7 @@ fun LayoutScreen(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 Text(
-                                    text = "Fabric ${index + 1}",
+                                    text = if (fabricPiece.name == "") "Fabric ${index + 1}" else fabricPiece.name,
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onBackground
                                 )

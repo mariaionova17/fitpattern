@@ -11,6 +11,7 @@ import cz.cvut.fit.bp.projectCreation.FabricDraft
 import cz.cvut.fit.bp.projectCreation.FabricImageStep
 import cz.cvut.fit.bp.projectCreation.FabricInputMode
 import cz.cvut.fit.bp.projectCreation.ProjectCreationUiState
+import cz.cvut.fit.bp.helpersUi.projectRotationToUi
 import cz.cvut.fit.bp.projectCreation.UiRotationOption
 import cz.cvut.fit.bp.projectCreation.toImageFabric
 import cz.cvut.fit.bp.projectCreation.toManualFabric
@@ -109,7 +110,7 @@ class ProjectDetailViewModel(private val projectRepository: ProjectRepository, p
             editDraft = ProjectEditDraft(
                 name = project.name,
                 seamAllowance = seamAllowanceText,
-                rotationOption = projectRotationToUi(project.rules.rotation.toString()),
+                rotationOption = projectRotationToRotatonOption(project.rules.rotation),
                 allowMirror = project.rules.allowMirror
             ),
             errorMessage = null
@@ -603,11 +604,11 @@ class ProjectDetailViewModel(private val projectRepository: ProjectRepository, p
     }
 }
 
-private fun projectRotationToUi(rotation: String): UiRotationOption {
-    return when (rotation) {
-        "NONE" -> UiRotationOption.NONE
-        "BY180" -> UiRotationOption.BY180
-        "BY90" -> UiRotationOption.BY90
+private fun projectRotationToRotatonOption(rotation: domain.pattern.RotationRules): UiRotationOption {
+    return when (rotation.allowedAnglesDeg.toSet()) {
+        setOf(0.0) -> UiRotationOption.NONE
+        setOf(0.0, 180.0) -> UiRotationOption.BY180
+        setOf(0.0, 90.0, 180.0, 270.0) -> UiRotationOption.BY90
         else -> UiRotationOption.NONE
     }
 }

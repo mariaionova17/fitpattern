@@ -52,6 +52,7 @@ fun sampleProject(
         fabricPieces = listOf(
             FabricPiece(
                 id = "${id}-fabric-1",
+                name = "",
                 contour = rectangleShape(1500.0, 2500.0)
             )
         ),

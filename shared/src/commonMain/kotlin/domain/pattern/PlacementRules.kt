@@ -8,7 +8,7 @@ data class RotationRules(
         return when (allowedAnglesDeg){
             listOf(0.0) -> "not allowed"
             listOf(0.0, 180.0) -> "allowed only vertically"
-            listOf(0.0, 90.0, 180.0, 270.0) -> "allowed by 90° at a time"
+            listOf(0.0, 90.0, 180.0, 270.0) -> "allowed by 90°"
             else -> "allowed by any angle"
         }
     }

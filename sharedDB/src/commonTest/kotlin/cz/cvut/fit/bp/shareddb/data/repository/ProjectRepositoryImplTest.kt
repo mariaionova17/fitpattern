@@ -24,6 +24,7 @@ class ProjectRepositoryImplTest {
         dao.fabricsByProjectId["project-1"] = mutableListOf(
             FabricPiece(
                 id = "old-fabric",
+                name = "",
                 contour = rectangleShape(1.0, 1.0)
             ).toFabricPieceEntity("project-1")
         )
@@ -151,8 +152,8 @@ class ProjectRepositoryImplTest {
             id = "project-1",
             name = "Summer project",
             fabricPieces = listOf(
-                FabricPiece("fabric-1", rectangleShape(10.0, 5.0)),
-                FabricPiece("fabric-2", rectangleShape(8.0, 4.0))
+                FabricPiece("fabric-1", "",rectangleShape(10.0, 5.0)),
+                FabricPiece("fabric-2", "",rectangleShape(8.0, 4.0))
             ),
             rules = PlacementRules(
                 rotation = RotationRules(listOf(0.0, 180.0)),

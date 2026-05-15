@@ -30,7 +30,7 @@ fun detectA4(bitmap: Bitmap): Marker {
         mask.clone(),
         contours,
         hierarchy,
-        Imgproc.RETR_EXTERNAL,
+        Imgproc.RETR_LIST,
         Imgproc.CHAIN_APPROX_SIMPLE
     )
 

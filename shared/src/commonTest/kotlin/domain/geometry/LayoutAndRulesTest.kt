@@ -24,7 +24,7 @@ class LayoutAndRulesTest {
     fun `rotation rules string matches supported presets`() {
         assertEquals("not allowed", RotationRules(listOf(0.0)).toString())
         assertEquals("allowed only vertically", RotationRules(listOf(0.0, 180.0)).toString())
-        assertEquals("allowed by 90° at a time", RotationRules(listOf(0.0, 90.0, 180.0, 270.0)).toString())
+        assertEquals("allowed by 90°", RotationRules(listOf(0.0, 90.0, 180.0, 270.0)).toString())
     }
 
     @Test

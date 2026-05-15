@@ -145,6 +145,7 @@ class BetterSolverTest {
     private fun fabricPiece(id: String, width: Double, height: Double): FabricPiece =
         FabricPiece(
             id = id,
+            name = "",
             contour = rectangleShape(width, height)
         )
 

@@ -45,6 +45,7 @@ import cz.cvut.fit.bp.helpersUi.FabricModeCard
 import cz.cvut.fit.bp.helpersUi.RotationOption
 import cz.cvut.fit.bp.helpersUi.TextInput
 import cz.cvut.fit.bp.projectCreation.UiRotationOption
+import cz.cvut.fit.bp.helpersUi.projectRotationToUi
 import domain.geometry.rectangleSize
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -275,7 +276,7 @@ fun ProjectDetailScreen(
                             )
 
                             DetailRow(
-                                "Rotations are",
+                                "Rotations are ",
                                 project.rules.rotation.toString()
                             )
 

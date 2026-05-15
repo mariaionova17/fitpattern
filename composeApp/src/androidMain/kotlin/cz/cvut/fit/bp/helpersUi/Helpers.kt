@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import cz.cvut.fit.bp.projectCreation.UiRotationOption
 
 @Composable
 fun RotationOption(
@@ -123,4 +124,13 @@ fun TextInput(
 
             )
     )
+}
+
+fun projectRotationToUi(rotation: String): UiRotationOption {
+    return when (rotation) {
+        "NONE" -> UiRotationOption.NONE
+        "BY180" -> UiRotationOption.BY180
+        "BY90" -> UiRotationOption.BY90
+        else -> UiRotationOption.NONE
+    }
 }

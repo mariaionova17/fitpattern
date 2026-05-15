@@ -17,6 +17,7 @@ class FabricMapperTest {
 
         val entity = FabricPieceEntity(
             id = "fabric-1",
+            name = "",
             projectId = "project-1",
             contourJson = PolygonMapper.polygonToJson(contour),
             holesJson = PolygonMapper.polygonsToJson(holes)
@@ -32,6 +33,7 @@ class FabricMapperTest {
     fun `FabricPiece converts to entity with serialized contour and holes`() {
         val fabricPiece = FabricPiece(
             id = "fabric-1",
+            name = "",
             contour = Shape(
                 contour = rectangle(0.0, 0.0, 10.0, 5.0),
                 holes = listOf(rectangle(2.0, 1.0, 3.0, 2.0))

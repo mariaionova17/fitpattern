@@ -1,95 +1,37 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM), Server.
+# Sewing Pattern Layout Optimizer
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+An Android application that helps users reuse leftover fabric by automatically generating sewing pattern layouts on irregularly shaped fabric pieces.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+Developed as a Bachelor's thesis at **Czech Technical University in Prague (CTU FIT), 2026**.
 
-* [/server](./server/src/main/kotlin) is for the Ktor server application.
+## Overview
 
-* [/shared](./shared/src) is for the code that will be shared between all targets in the project.
-  The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
-  can add code to the platform-specific folders here too.
+Manually determining whether a sewing pattern fits a piece of leftover fabric can be difficult, especially when accounting for irregular shapes, grain direction, and seam allowances.
 
-### Build and Run Android Application
+This application addresses the problem by allowing users to define fabric pieces, browse sewing patterns, and generate layouts that respect sewing-specific constraints.
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+## Features
 
-### Build and Run Desktop (JVM) Application
+- **Fabric input:** Define fabric dimensions manually or import photographs of irregularly shaped fabric pieces.
+- **Image processing:** Detect fabric contours using OpenCV, with A4-based perspective correction and interactive contour editing.
+- **Pattern selection:** Browse available sewing patterns and select garment sizes.
+- **Layout generation:** Arrange irregular pattern pieces across multiple fabric remnants while respecting grain direction, seam allowance, and rotation constraints.
+- **Project management:** Save projects and generated layouts locally for later access.
 
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
+## Technical Highlights
 
-### Build and Run Server
+- Implemented a custom heuristic nesting algorithm inspired by **beam search**, combining candidate-based placement, geometric validation, scoring, and local refinement.
+- Designed a layered architecture separating presentation, shared domain logic, and persistence.
+- Used polygon-based geometric representations to handle irregular fabric and pattern shapes.
 
-To build and run the development version of the server, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :server:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :server:run
-  ```
+## Tech Stack
 
-### Build and Run Web Application
+**Kotlin · Compose Multiplatform · OpenCV · Room · SQLite · Coroutines · Kotlinx Serialization · KSP**
 
-To build and run the development version of the web app, use the run configuration from the run widget
-in your IDE's toolbar or run it directly from the terminal:
-- for the Wasm target (faster, modern browsers):
-  - on macOS/Linux
-    ```shell
-    ./gradlew :composeApp:wasmJsBrowserDevelopmentRun
-    ```
-  - on Windows
-    ```shell
-    .\gradlew.bat :composeApp:wasmJsBrowserDevelopmentRun
-    ```
-- for the JS target (slower, supports older browsers):
-  - on macOS/Linux
-    ```shell
-    ./gradlew :composeApp:jsBrowserDevelopmentRun
-    ```
-  - on Windows
-    ```shell
-    .\gradlew.bat :composeApp:jsBrowserDevelopmentRun
-    ```
+## Testing
 
-### Build and Run iOS Application
+- 259 unit tests covering geometry, solver logic, image-processing helpers, and application state.
+- 67 Android instrumented tests covering UI behavior and application workflows.
+- Manual usability testing with three participants.
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
-
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
-
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
+**Note:** The project is a functional prototype. The heuristic algorithm does not guarantee a globally optimal layout, and importing external pattern files is not currently supported.

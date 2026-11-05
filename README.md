@@ -1,6 +1,6 @@
-# Sewing Pattern Layout Optimizer
+# FitPattern – Sewing Pattern Layout Optimizer
 
-An Android application that helps users reuse leftover fabric by automatically generating sewing pattern layouts on irregularly shaped fabric pieces.
+An Android application built with Kotlin and Compose Multiplatform that helps users reuse leftover fabric by automatically generating sewing pattern layouts on irregularly shaped fabric pieces.
 
 Developed as a Bachelor's thesis at **Czech Technical University in Prague (CTU FIT), 2026**.
 
@@ -9,6 +9,27 @@ Developed as a Bachelor's thesis at **Czech Technical University in Prague (CTU 
 Manually determining whether a sewing pattern fits a piece of leftover fabric can be difficult, especially when accounting for irregular shapes, grain direction, and seam allowances.
 
 This application addresses the problem by allowing users to define fabric pieces, browse sewing patterns, and generate layouts that respect sewing-specific constraints.
+
+## Screenshots
+
+### Project Creation
+
+![New Project](screenshots/new_project_screen.png)
+
+### Fabric Detection
+
+![Fabric Contour Detection](screenshots/fabric_contour_screen.png)
+
+### Pattern Selection
+
+![Pattern Suggestions](screenshots/pattern_suggestions_screen.png)
+
+### Generated Layout
+
+| Layout – Part 1 | Layout – Part 2 |
+|:---:|:---:|
+| ![Layout 1](screenshots/generated_layout_1.png) | ![Layout 2](screenshots/generated_layout_2.png) |
+
 
 ## Features
 
